@@ -50,12 +50,19 @@ export default function Home() {
               <span className="italic font-normal">Templates</span>
             </h1>
           </div>
-          <button
-            onClick={() => setShowCreate(true)}
-            className="mt-2 w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2 mt-2">
+            <Link to="/Settings">
+              <button className="w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
+                <Settings className="w-4.5 h-4.5" />
+              </button>
+            </Link>
+            <button
+              onClick={() => setShowCreate(true)}
+              className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
