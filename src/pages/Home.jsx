@@ -86,6 +86,22 @@ export default function Home() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['templates'] }),
   });
 
+  const toggleSelect = (id) => {
+    setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+
+  const handleDeleteSelected = async () => {
+    await Promise.all(selected.map(id => base44.entities.ShootTemplate.delete(id)));
+    queryClient.invalidateQueries({ queryKey: ['templates'] });
+    setSelected([]);
+    setSelectMode(false);
+  };
+
+  const exitSelectMode = () => {
+    setSelectMode(false);
+    setSelected([]);
+  };
+
   const renameMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.ShootTemplate.update(id, data),
     onSuccess: () => {
