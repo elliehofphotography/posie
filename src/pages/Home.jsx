@@ -10,6 +10,7 @@ import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 export default function Home() {
   const [showCreate, setShowCreate] = useState(false);
   const [renaming, setRenaming] = useState(null);
+  const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
 
   const { data: templates = [], isLoading } = useQuery({
