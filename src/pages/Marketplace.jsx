@@ -4,7 +4,7 @@ import { Sparkles, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import AdminGuideSheet from '../components/marketplace/AdminGuideSheet';
+import AdminGuideSheet from '@/components/marketplace/AdminGuideSheet';
 import MarketplaceCard from '../components/marketplace/MarketplaceCard';
 
 export default function Marketplace() {
