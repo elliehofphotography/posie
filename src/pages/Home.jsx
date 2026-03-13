@@ -31,7 +31,30 @@ export default function Home() {
   const [showCreate, setShowCreate] = useState(false);
   const [renaming, setRenaming] = useState(null);
   const [search, setSearch] = useState('');
+  const [user, setUser] = useState(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
+
+  const { data: purchases = [] } = useQuery({
+    queryKey: ['my_purchases', user?.email],
+    queryFn: () => base44.entities.Purchase.filter({ user_email: user.email }),
+    enabled: !!user?.email,
+  });
+
+  const purchasedListingIds = purchases.map(p => p.listing_id);
+
+  const { data: purchasedListings = [] } = useQuery({
+    queryKey: ['purchased_listings', purchasedListingIds.join(',')],
+    queryFn: async () => {
+      if (purchasedListingIds.length === 0) return [];
+      const all = await base44.entities.MarketplaceListing.list();
+      return all.filter(l => purchasedListingIds.includes(l.id));
+    },
+    enabled: purchasedListingIds.length > 0,
+  });
 
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ['templates'],
