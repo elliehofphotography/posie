@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, LogOut, User, Mail, Shield, Bell, HelpCircle, ChevronRight, Copy, Check } from 'lucide-react';
+import {
+  ArrowLeft, Trash2, LogOut, User, Mail, Shield,
+  Bell, HelpCircle, ChevronRight, Copy, Check,
+  Pencil, MessageCircle, FileText, Star
+} from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Switch } from '@/components/ui/switch';
+import EditProfileSheet from '@/components/settings/EditProfileSheet';
 
-function SettingRow({ icon: Icon, label, value, onClick, danger }) {
+function SectionLabel({ children }) {
+  return <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">{children}</p>;
+}
+
+function SettingRow({ icon: Icon, label, value, onClick, danger, right }) {
   return (
     <button
       onClick={onClick}
@@ -31,7 +36,7 @@ function SettingRow({ icon: Icon, label, value, onClick, danger }) {
         <p className="font-dm text-sm font-medium">{label}</p>
         {value && <p className="font-dm text-xs text-muted-foreground truncate mt-0.5">{value}</p>}
       </div>
-      {!danger && <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />}
+      {right ?? (!danger && <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />)}
     </button>
   );
 }
@@ -41,9 +46,14 @@ export default function Settings() {
   const [user, setUser] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [notifEnabled, setNotifEnabled] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.me().then(u => {
+      setUser(u);
+      setNotifEnabled(u?.notifications_enabled ?? false);
+    }).catch(() => {});
   }, []);
 
   const copyId = () => {
@@ -54,9 +64,19 @@ export default function Settings() {
   };
 
   const handleLogout = () => base44.auth.logout('/');
+
   const handleDeleteAccount = async () => {
     setDeleting(true);
     await base44.auth.logout('/');
+  };
+
+  const handleNotifToggle = async (val) => {
+    setNotifEnabled(val);
+    await base44.auth.updateMe({ notifications_enabled: val });
+  };
+
+  const handleProfileSaved = (updates) => {
+    setUser(prev => ({ ...prev, ...updates }));
   };
 
   return (
@@ -79,16 +99,24 @@ export default function Settings() {
 
       <div className="p-5 space-y-6">
 
-        {/* Account Info Card */}
+        {/* Profile Card */}
         <div className="rounded-2xl bg-card border border-border overflow-hidden">
           <div className="px-4 py-4 flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-              <User className="w-5 h-5 text-primary" />
+            <div className="w-12 h-12 rounded-full bg-primary/15 overflow-hidden flex items-center justify-center shrink-0">
+              {user?.profile_photo
+                ? <img src={user.profile_photo} alt="" className="w-full h-full object-cover" />
+                : <User className="w-5 h-5 text-primary" />}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-dm text-sm font-semibold text-foreground truncate">{user?.full_name || 'Your Account'}</p>
               <p className="font-dm text-xs text-muted-foreground truncate">{user?.email || '—'}</p>
             </div>
+            <button
+              onClick={() => setShowEdit(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary transition-colors font-dm text-xs select-none"
+            >
+              <Pencil className="w-3 h-3" /> Edit
+            </button>
           </div>
           <div className="border-t border-border px-4 py-3 flex items-center justify-between">
             <div>
@@ -103,45 +131,100 @@ export default function Settings() {
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
-          <div className="border-t border-border px-4 py-3">
-            <p className="font-dm text-[10px] text-muted-foreground leading-relaxed">
-              Save your Account ID — it links your shoots to your account. Even if you reinstall the app, logging back in with the same email restores all your data.
-            </p>
-          </div>
         </div>
 
-        {/* Account Actions */}
+        {/* Account Info */}
         <div>
-          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">Account</p>
+          <SectionLabel>Account</SectionLabel>
           <div className="space-y-2">
             <SettingRow icon={Mail} label="Email Address" value={user?.email} onClick={() => {}} />
-            <SettingRow icon={Shield} label="Account Role" value={user?.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : 'User'} onClick={() => {}} />
+            <SettingRow
+              icon={Shield}
+              label="Account Role"
+              value={user?.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : 'User'}
+              onClick={() => {}}
+            />
           </div>
         </div>
 
-        {/* App Settings */}
+        {/* Notifications */}
         <div>
-          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">App</p>
-          <div className="space-y-2">
-            <SettingRow icon={Bell} label="Notifications" value="Manage preferences" onClick={() => {}} />
-            <SettingRow icon={HelpCircle} label="Help & Support" value="FAQs and contact" onClick={() => {}} />
+          <SectionLabel>Preferences</SectionLabel>
+          <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card border border-border">
+            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+              <Bell className="w-4 h-4 text-foreground" />
+            </div>
+            <div className="flex-1">
+              <p className="font-dm text-sm font-medium text-foreground">Notifications</p>
+              <p className="font-dm text-xs text-muted-foreground mt-0.5">Session reminders &amp; updates</p>
+            </div>
+            <Switch checked={notifEnabled} onCheckedChange={handleNotifToggle} />
           </div>
+        </div>
+
+        {/* Help & Support */}
+        <div>
+          <SectionLabel>Help &amp; Support</SectionLabel>
+          <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
+            <a
+              href="mailto:support@example.com"
+              className="flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors select-none"
+            >
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <MessageCircle className="w-4 h-4 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-dm text-sm font-medium text-foreground">Contact Support</p>
+                <p className="font-dm text-xs text-muted-foreground mt-0.5">support@example.com</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+            </a>
+            <a
+              href="https://example.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors select-none"
+            >
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <FileText className="w-4 h-4 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-dm text-sm font-medium text-foreground">Privacy Policy</p>
+                <p className="font-dm text-xs text-muted-foreground mt-0.5">How we handle your data</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+            </a>
+            <a
+              href="https://apps.apple.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors select-none"
+            >
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <Star className="w-4 h-4 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-dm text-sm font-medium text-foreground">Rate the App</p>
+                <p className="font-dm text-xs text-muted-foreground mt-0.5">Enjoying it? Leave a review!</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+            </a>
+          </div>
+        </div>
+
+        {/* Session */}
+        <div>
+          <SectionLabel>Session</SectionLabel>
+          <SettingRow icon={LogOut} label="Log Out" value="Sign out of your account" onClick={handleLogout} />
         </div>
 
         {/* Danger Zone */}
         <div>
-          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">Session</p>
-          <div className="space-y-2">
-            <SettingRow icon={LogOut} label="Log Out" onClick={handleLogout} />
-          </div>
-        </div>
-
-        <div>
-          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">Danger Zone</p>
+          <SectionLabel>Danger Zone</SectionLabel>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <div>
-                <SettingRow icon={Trash2} label="Delete Account" danger onClick={() => {}} />
+                <SettingRow icon={Trash2} label="Delete Account" value="Permanently remove all your data" danger onClick={() => {}} />
               </div>
             </AlertDialogTrigger>
             <AlertDialogContent className="bg-card border-border">
@@ -166,6 +249,13 @@ export default function Settings() {
         </div>
 
       </div>
+
+      <EditProfileSheet
+        open={showEdit}
+        onOpenChange={setShowEdit}
+        user={user}
+        onSaved={handleProfileSaved}
+      />
     </div>
   );
 }
