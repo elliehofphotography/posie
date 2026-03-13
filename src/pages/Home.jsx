@@ -42,6 +42,8 @@ export default function Home() {
   const [renaming, setRenaming] = useState(null);
   const [search, setSearch] = useState('');
   const [user, setUser] = useState(null);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState([]);
   const queryClient = useQueryClient();
 
   useEffect(() => {
