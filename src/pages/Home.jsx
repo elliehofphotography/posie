@@ -123,17 +123,45 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center gap-2 mt-2">
-            <Link to="/Settings">
-              <button className="w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
-                <Settings className="w-4.5 h-4.5" />
-              </button>
-            </Link>
-            <button
-              onClick={() => setShowCreate(true)}
-              className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
-            >
-              <Plus className="w-5 h-5" />
-            </button>
+            {selectMode ? (
+              <>
+                <button
+                  onClick={exitSelectMode}
+                  className="px-4 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteSelected}
+                  disabled={selected.length === 0}
+                  className="px-4 py-2 rounded-full bg-destructive text-destructive-foreground font-dm text-sm font-medium hover:bg-destructive/90 transition-colors disabled:opacity-40 select-none"
+                >
+                  Delete {selected.length > 0 ? `(${selected.length})` : ''}
+                </button>
+              </>
+            ) : (
+              <>
+                {templates.length > 0 && (
+                  <button
+                    onClick={() => setSelectMode(true)}
+                    className="px-4 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
+                  >
+                    Select
+                  </button>
+                )}
+                <Link to="/Settings">
+                  <button className="w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
+                    <Settings className="w-4.5 h-4.5" />
+                  </button>
+                </Link>
+                <button
+                  onClick={() => setShowCreate(true)}
+                  className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
