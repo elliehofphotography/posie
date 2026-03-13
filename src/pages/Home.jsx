@@ -9,7 +9,7 @@ import SelectableTemplateCard from '../components/templates/SelectableTemplateCa
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 import MarketplaceCard from '../components/marketplace/MarketplaceCard';
 
-function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename }) {
+function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, selectMode, selected, onToggle }) {
   const filtered = templates.filter(t =>
     t.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -21,7 +21,16 @@ function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename }) 
   );
   return (
     <div className="grid grid-cols-2 gap-3">
-      {filtered.map(t => (
+      {filtered.map(t => selectMode ? (
+        <SelectableTemplateCard
+          key={t.id}
+          template={t}
+          selected={selected.includes(t.id)}
+          onToggle={onToggle}
+          onDelete={onDelete}
+          onRename={onRename}
+        />
+      ) : (
         <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} />
       ))}
     </div>
