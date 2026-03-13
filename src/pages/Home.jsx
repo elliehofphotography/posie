@@ -16,7 +16,7 @@ function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, se
   );
   if (filtered.length === 0) return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <p className="font-dm text-muted-foreground text-sm">No templates match "{search}"</p>
+      <p className="font-dm text-muted-foreground text-sm">No templates match &ldquo;{search}&rdquo;</p>
       <button onClick={onClearSearch} className="mt-3 font-dm text-xs text-primary hover:underline">Clear search</button>
     </div>
   );
