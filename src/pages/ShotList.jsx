@@ -51,7 +51,7 @@ export default function ShotList() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-30 stripe-header border-b border-border px-4 py-3">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
