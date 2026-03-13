@@ -55,6 +55,7 @@ import ShootMode from './pages/ShootMode';
 import ShotList from './pages/ShotList';
 import Template from './pages/Template';
 import Settings from './pages/Settings';
+import GuideDetail from './pages/GuideDetail';
 
 
 export const PAGES = {
@@ -66,6 +67,7 @@ export const PAGES = {
     "ShotList": ShotList,
     "Template": Template,
     "Settings": Settings,
+    "GuideDetail": GuideDetail,
 }
 
 export const pagesConfig = {
