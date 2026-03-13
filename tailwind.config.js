@@ -6,7 +6,7 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			inter: ['var(--font-inter)'],
-  			playfair: ['var(--font-playfair)', 'Georgia', 'serif'],
+  			playfair: ['var(--font-playfair)', 'Georgia', 'cursive'],
   			dm: ['var(--font-dm)', 'system-ui', 'sans-serif'],
   		},
   		borderRadius: {
