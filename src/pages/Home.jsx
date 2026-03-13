@@ -8,6 +8,7 @@ import TemplateCard from '../components/templates/TemplateCard';
 import SelectableTemplateCard from '../components/templates/SelectableTemplateCard';
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 import MarketplaceCard from '../components/marketplace/MarketplaceCard';
+import PullToRefresh from '../components/layout/PullToRefresh';
 
 function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, selectMode, selected, onToggle }) {
   const filtered = templates.filter(t =>

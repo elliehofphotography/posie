@@ -49,25 +49,25 @@
  */
 import ChecklistOverview from './pages/ChecklistOverview';
 import Discover from './pages/Discover';
+import GuideDetail from './pages/GuideDetail';
 import Home from './pages/Home';
 import Marketplace from './pages/Marketplace';
+import Settings from './pages/Settings';
 import ShootMode from './pages/ShootMode';
 import ShotList from './pages/ShotList';
 import Template from './pages/Template';
-import Settings from './pages/Settings';
-import GuideDetail from './pages/GuideDetail';
 
 
 export const PAGES = {
     "ChecklistOverview": ChecklistOverview,
     "Discover": Discover,
+    "GuideDetail": GuideDetail,
     "Home": Home,
     "Marketplace": Marketplace,
+    "Settings": Settings,
     "ShootMode": ShootMode,
     "ShotList": ShotList,
     "Template": Template,
-    "Settings": Settings,
-    "GuideDetail": GuideDetail,
 }
 
 export const pagesConfig = {

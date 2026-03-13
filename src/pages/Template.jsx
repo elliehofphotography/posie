@@ -41,6 +41,18 @@ export default function Template() {
         cover_image: photos.length === 0 ? data.image_url : template?.cover_image,
       });
     },
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: ['photos', templateId] });
+      const previous = queryClient.getQueryData(['photos', templateId]);
+      queryClient.setQueryData(['photos', templateId], (old = []) => [
+        ...old,
+        { id: `optimistic-${Date.now()}`, ...data, template_id: templateId, sort_order: old.length },
+      ]);
+      return { previous };
+    },
+    onError: (_err, _data, ctx) => {
+      queryClient.setQueryData(['photos', templateId], ctx.previous);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photos', templateId] });
       queryClient.invalidateQueries({ queryKey: ['template', templateId] });
@@ -63,6 +75,15 @@ export default function Template() {
       await base44.entities.ShootTemplate.update(templateId, {
         photo_count: Math.max(0, (template?.photo_count || 1) - 1),
       });
+    },
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['photos', templateId] });
+      const previous = queryClient.getQueryData(['photos', templateId]);
+      queryClient.setQueryData(['photos', templateId], (old = []) => old.filter(p => p.id !== id));
+      return { previous };
+    },
+    onError: (_err, _id, ctx) => {
+      queryClient.setQueryData(['photos', templateId], ctx.previous);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photos', templateId] });
