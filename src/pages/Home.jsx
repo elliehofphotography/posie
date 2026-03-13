@@ -288,5 +288,6 @@ export default function Home() {
         />
       )}
     </div>
+    </PullToRefresh>
   );
 }
