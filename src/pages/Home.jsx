@@ -96,7 +96,26 @@ export default function Home() {
               <div key={i} className="aspect-[4/5] rounded-2xl bg-muted animate-pulse" />
             ))}
           </div>
-        ) : templates.length === 0 ? (
+        ) : (() => {
+          const filtered = templates.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
+          return filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <p className="font-dm text-muted-foreground text-sm">No templates match "{search}"</p>
+              <button onClick={() => setSearch('')} className="mt-3 font-dm text-xs text-primary hover:underline">Clear search</button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {filtered.map(t => (
+                <TemplateCard
+                  key={t.id}
+                  template={t}
+                  onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
+                  onRename={(tmpl) => setRenaming(tmpl)}
+                />
+              ))}
+            </div>
+          );
+        })()) : templates.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-5">
               <Camera className="w-8 h-8 text-muted-foreground" />
