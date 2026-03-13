@@ -245,6 +245,7 @@ export default function Home() {
             search={search}
             onClearSearch={() => setSearch('')}
             onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
+
             onRename={(tmpl) => setRenaming(tmpl)}
             selectMode={selectMode}
             selected={selected}
