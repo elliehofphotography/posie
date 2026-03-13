@@ -9,56 +9,56 @@
     --font-playfair: 'Beth Ellen', Georgia, cursive;
     --font-dm: 'Jost', system-ui, sans-serif;
 
-    /* Warm cream base */
-    --background: 40 30% 96%;
-    --foreground: 25 25% 15%;
+    /* Cream base */
+    --background: 30 33% 95%;
+    --foreground: 222 47% 18%;
 
-    /* Cards: off-white ivory */
-    --card: 38 35% 98%;
-    --card-foreground: 25 25% 15%;
+    /* Cards: slightly lighter cream */
+    --card: 30 33% 97%;
+    --card-foreground: 222 47% 18%;
 
-    --popover: 38 35% 98%;
-    --popover-foreground: 25 25% 15%;
+    --popover: 30 33% 97%;
+    --popover-foreground: 222 47% 18%;
 
-    /* Primary: deep burgundy */
-    --primary: 350 45% 32%;
-    --primary-foreground: 38 35% 98%;
+    /* Primary: dark navy */
+    --primary: 222 47% 28%;
+    --primary-foreground: 30 33% 97%;
 
-    /* Secondary: warm sand */
-    --secondary: 38 25% 90%;
-    --secondary-foreground: 25 25% 25%;
+    /* Secondary: light blue */
+    --secondary: 214 50% 78%;
+    --secondary-foreground: 222 47% 18%;
 
-    /* Muted: light warm gray */
-    --muted: 38 20% 92%;
-    --muted-foreground: 25 15% 50%;
+    /* Muted: soft cream-gray */
+    --muted: 30 20% 90%;
+    --muted-foreground: 222 20% 45%;
 
-    /* Accent: dusty sage green */
-    --accent: 155 20% 72%;
-    --accent-foreground: 25 25% 15%;
+    /* Accent: light blue */
+    --accent: 214 50% 78%;
+    --accent-foreground: 222 47% 18%;
 
     --destructive: 0 65% 45%;
-    --destructive-foreground: 38 35% 98%;
+    --destructive-foreground: 30 33% 97%;
 
-    --border: 35 20% 86%;
-    --input: 35 20% 88%;
-    --ring: 350 45% 32%;
+    --border: 214 25% 82%;
+    --input: 214 25% 85%;
+    --ring: 222 47% 28%;
 
-    --chart-1: 350 45% 32%;
-    --chart-2: 155 20% 55%;
-    --chart-3: 210 35% 55%;
-    --chart-4: 35 60% 55%;
-    --chart-5: 270 35% 55%;
+    --chart-1: 222 47% 28%;
+    --chart-2: 214 50% 65%;
+    --chart-3: 214 50% 78%;
+    --chart-4: 222 35% 45%;
+    --chart-5: 214 40% 55%;
 
     --radius: 0.875rem;
 
-    --sidebar-background: 38 30% 95%;
-    --sidebar-foreground: 25 25% 15%;
-    --sidebar-primary: 350 45% 32%;
-    --sidebar-primary-foreground: 38 35% 98%;
-    --sidebar-accent: 38 25% 90%;
-    --sidebar-accent-foreground: 25 25% 25%;
-    --sidebar-border: 35 20% 86%;
-    --sidebar-ring: 350 45% 32%;
+    --sidebar-background: 30 33% 95%;
+    --sidebar-foreground: 222 47% 18%;
+    --sidebar-primary: 222 47% 28%;
+    --sidebar-primary-foreground: 30 33% 97%;
+    --sidebar-accent: 214 50% 78%;
+    --sidebar-accent-foreground: 222 47% 18%;
+    --sidebar-border: 214 25% 82%;
+    --sidebar-ring: 222 47% 28%;
   }
 }
 
