@@ -178,7 +178,7 @@ export default function Home() {
                   </button>
                 )}
                 <Link to="/Settings">
-                  <button className="w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
+                  <button className="min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
                     <Settings className="w-4.5 h-4.5" />
                   </button>
                 </Link>

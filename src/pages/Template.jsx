@@ -100,7 +100,7 @@ export default function Template() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/Home')}
-              className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
+              className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
@@ -111,7 +111,7 @@ export default function Template() {
           </div>
           <div className="flex items-center gap-2">
             <Link to={`/ShotList?id=${templateId}`}>
-              <button className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
+              <button className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
                 <List className="w-4 h-4" />
               </button>
             </Link>
