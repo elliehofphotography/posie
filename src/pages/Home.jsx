@@ -76,6 +76,18 @@ export default function Home() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.ShootTemplate.create(data),
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: ['templates'] });
+      const previous = queryClient.getQueryData(['templates']);
+      queryClient.setQueryData(['templates'], (old = []) => [
+        { id: `optimistic-${Date.now()}`, ...data, photo_count: 0 },
+        ...old,
+      ]);
+      return { previous };
+    },
+    onError: (_err, _data, ctx) => {
+      queryClient.setQueryData(['templates'], ctx.previous);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['templates'] });
       setShowCreate(false);
@@ -84,8 +96,22 @@ export default function Home() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.ShootTemplate.delete(id),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['templates'] });
+      const previous = queryClient.getQueryData(['templates']);
+      queryClient.setQueryData(['templates'], (old = []) => old.filter(t => t.id !== id));
+      return { previous };
+    },
+    onError: (_err, _id, ctx) => {
+      queryClient.setQueryData(['templates'], ctx.previous);
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['templates'] }),
   });
+
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['templates'] });
+    await queryClient.invalidateQueries({ queryKey: ['my_purchases', user?.email] });
+  };
 
   const toggleSelect = (id) => {
     setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
