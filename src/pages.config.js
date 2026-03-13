@@ -54,6 +54,7 @@ import Marketplace from './pages/Marketplace';
 import ShootMode from './pages/ShootMode';
 import ShotList from './pages/ShotList';
 import Template from './pages/Template';
+import Settings from './pages/Settings';
 
 
 export const PAGES = {
@@ -64,6 +65,7 @@ export const PAGES = {
     "ShootMode": ShootMode,
     "ShotList": ShotList,
     "Template": Template,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {

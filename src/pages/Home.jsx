@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Camera } from 'lucide-react';
+import { Plus, Camera, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import TemplateCard from '../components/templates/TemplateCard';
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
