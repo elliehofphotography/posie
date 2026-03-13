@@ -138,6 +138,7 @@ export default function Home() {
   });
 
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="px-5 pt-14 pb-6">
