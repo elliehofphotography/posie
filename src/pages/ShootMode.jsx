@@ -125,7 +125,7 @@ export default function ShootMode() {
   return (
     <div className="fixed inset-0 bg-[#0d0d0d] flex flex-col">
       {/* Top bar */}
-      <div className="relative z-20 pt-3 pb-1 px-4 bg-gradient-to-b from-black/70 to-transparent">
+      <div className="relative z-20 pb-1 px-4 bg-gradient-to-b from-black/70 to-transparent" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => navigate(-1)}

@@ -47,23 +47,23 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Home from './pages/Home';
-import Template from './pages/Template';
-import ShootMode from './pages/ShootMode';
 import ChecklistOverview from './pages/ChecklistOverview';
-import ShotList from './pages/ShotList';
 import Discover from './pages/Discover';
+import Home from './pages/Home';
 import Marketplace from './pages/Marketplace';
+import ShootMode from './pages/ShootMode';
+import ShotList from './pages/ShotList';
+import Template from './pages/Template';
 
 
 export const PAGES = {
-    "Home": Home,
-    "Template": Template,
-    "ShootMode": ShootMode,
     "ChecklistOverview": ChecklistOverview,
-    "ShotList": ShotList,
     "Discover": Discover,
+    "Home": Home,
     "Marketplace": Marketplace,
+    "ShootMode": ShootMode,
+    "ShotList": ShotList,
+    "Template": Template,
 }
 
 export const pagesConfig = {
