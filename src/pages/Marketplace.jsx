@@ -1,5 +1,6 @@
-import React from 'react';
-import { Download, Star, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, Star, Sparkles, Plus } from 'lucide-react';
+import SubmitGuideSheet from '../components/marketplace/SubmitGuideSheet';
 
 const TEMPLATES = [
   { id: 1, name: '50 Wedding Couple Poses', author: 'Studio Elite', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop', price: 'Free', downloads: '2.4k', rating: 4.8, category: 'Wedding' },
@@ -11,13 +12,37 @@ const TEMPLATES = [
 ];
 
 export default function Marketplace() {
+  const [showSubmit, setShowSubmit] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (data) => {
+    // In future: save to a MarketplaceListing entity or send notification
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 4000);
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="px-5 pt-14 pb-5">
-        <p className="font-dm text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1">Browse</p>
-        <h1 className="font-playfair text-3xl font-semibold text-foreground">Marketplace</h1>
+      <div className="px-5 pt-14 pb-5 flex items-end justify-between">
+        <div>
+          <p className="font-dm text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1">Browse</p>
+          <h1 className="font-playfair text-3xl font-semibold text-foreground">Marketplace</h1>
+        </div>
+        <button
+          onClick={() => setShowSubmit(true)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors select-none mb-1"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Sell
+        </button>
       </div>
+
+      {submitted && (
+        <div className="mx-5 mb-4 px-4 py-3 rounded-2xl bg-accent/20 border border-accent/30">
+          <p className="font-dm text-sm text-foreground">✓ Your guide was submitted for review. We'll notify you when it goes live!</p>
+        </div>
+      )}
 
       {/* Featured Banner */}
       <div className="mx-5 mb-6 relative rounded-2xl overflow-hidden aspect-[16/8] bg-muted">
@@ -71,6 +96,12 @@ export default function Marketplace() {
           </div>
         ))}
       </div>
+
+      <SubmitGuideSheet
+        open={showSubmit}
+        onOpenChange={setShowSubmit}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }
