@@ -29,7 +29,7 @@ export default function TemplateCard({ template, onDelete, onRename }) {
 
           {/* Bottom label */}
           <div className="absolute bottom-0 left-0 right-0 p-3.5">
-            <h3 className="text-white font-playfair font-medium text-sm leading-snug">{template.name}</h3>
+            <h3 className="text-white font-dm font-medium text-sm leading-snug">{template.name}</h3>
             <p className="text-white/60 font-dm text-[11px] mt-0.5 tracking-wide">{template.photo_count || 0} poses</p>
           </div>
         </div>
