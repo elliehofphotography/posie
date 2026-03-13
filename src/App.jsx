@@ -5,7 +5,15 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-// Add page imports here
+import { Navigate } from 'react-router-dom';
+import AppLayout from './components/layout/AppLayout';
+import Home from './pages/Home';
+import Template from './pages/Template';
+import ShootMode from './pages/ShootMode';
+import ChecklistOverview from './pages/ChecklistOverview';
+import ShotList from './pages/ShotList';
+import Discover from './pages/Discover';
+import Marketplace from './pages/Marketplace';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -33,7 +41,16 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Navigate to="/Home" replace />} />
+        <Route path="/Home" element={<Home />} />
+        <Route path="/Template" element={<Template />} />
+        <Route path="/ChecklistOverview" element={<ChecklistOverview />} />
+        <Route path="/ShotList" element={<ShotList />} />
+        <Route path="/Discover" element={<Discover />} />
+        <Route path="/Marketplace" element={<Marketplace />} />
+      </Route>
+      <Route path="/ShootMode" element={<ShootMode />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
