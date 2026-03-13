@@ -116,11 +116,11 @@ export default function Home() {
       <div className="px-5 pt-14 pb-6">
         <div className="flex items-start justify-between mb-1">
           <div>
-            <p className="text-xs font-dm uppercase tracking-[0.2em] text-muted-foreground mb-1">Your Collection</p>
             <h1 className="font-playfair text-3xl font-semibold text-foreground leading-tight">
               Shoot<br />
               <span className="italic font-normal">Templates</span>
             </h1>
+            <p className="text-xs font-dm uppercase tracking-[0.2em] text-muted-foreground mt-1">Your Collection</p>
           </div>
           <div className="flex items-center gap-2 mt-2">
             {selectMode ? (
