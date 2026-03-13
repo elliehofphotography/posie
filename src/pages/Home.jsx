@@ -112,29 +112,15 @@ export default function Home() {
               Create Template
             </button>
           </div>
-        ) : (() => {
-          const filtered = templates.filter(t =>
-            t.name.toLowerCase().includes(search.toLowerCase())
-          );
-          if (filtered.length === 0) return (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="font-dm text-muted-foreground text-sm">No templates match "{search}"</p>
-              <button onClick={() => setSearch('')} className="mt-3 font-dm text-xs text-primary hover:underline">Clear search</button>
-            </div>
-          );
-          return (
-            <div className="grid grid-cols-2 gap-3">
-              {filtered.map(t => (
-                <TemplateCard
-                  key={t.id}
-                  template={t}
-                  onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
-                  onRename={(tmpl) => setRenaming(tmpl)}
-                />
-              ))}
-            </div>
-          );
-        })()}
+        ) : (
+          <TemplateGrid
+            templates={templates}
+            search={search}
+            onClearSearch={() => setSearch('')}
+            onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
+            onRename={(tmpl) => setRenaming(tmpl)}
+          />
+        )}
       </div>
 
       <CreateTemplateDialog
