@@ -30,6 +30,7 @@ export default function Discover() {
   });
 
   return (
+    <PullToRefresh onRefresh={() => Promise.resolve()}>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="px-5 pt-14 pb-5">
@@ -98,5 +99,6 @@ export default function Discover() {
         ))}
       </div>
     </div>
+    </PullToRefresh>
   );
 }
