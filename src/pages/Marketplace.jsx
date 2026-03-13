@@ -26,7 +26,7 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="px-5 pt-14 pb-5 flex items-end justify-between">
+      <div className="px-5 pt-14 pb-5 flex items-end justify-between stripe-header">
         <div>
           <p className="font-dm text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1">Browse</p>
           <h1 className="font-playfair text-3xl font-semibold text-foreground">Marketplace</h1>
