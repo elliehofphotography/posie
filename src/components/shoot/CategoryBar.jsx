@@ -1,5 +1,4 @@
 import React from 'react';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const CATEGORIES = [
   { value: 'all', label: 'All' },
@@ -14,28 +13,23 @@ const CATEGORIES = [
 ];
 
 export default function CategoryBar({ activeCategory, onCategoryChange, availableCategories = [] }) {
-  const filteredCategories = CATEGORIES.filter(
-    c => c.value === 'all' || availableCategories.includes(c.value)
-  );
+  const visible = CATEGORIES.filter(c => c.value === 'all' || availableCategories.includes(c.value));
 
   return (
-    <ScrollArea className="w-full">
-      <div className="flex gap-1.5 px-4 py-2">
-        {filteredCategories.map(c => (
-          <button
-            key={c.value}
-            onClick={() => onCategoryChange(c.value)}
-            className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-              activeCategory === c.value
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white/10 text-white/60 hover:bg-white/20'
-            }`}
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    <div className="flex gap-1.5 overflow-x-auto py-2 px-1" style={{ scrollbarWidth: 'none' }}>
+      {visible.map(c => (
+        <button
+          key={c.value}
+          onClick={() => onCategoryChange(c.value)}
+          className={`px-3 py-1 rounded-full font-dm text-xs font-medium whitespace-nowrap transition-all ${
+            activeCategory === c.value
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-white/10 text-white/60 hover:bg-white/20'
+          }`}
+        >
+          {c.label}
+        </button>
+      ))}
+    </div>
   );
 }
