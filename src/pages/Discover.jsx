@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Heart, Bookmark, TrendingUp } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import PullToRefresh from '../components/layout/PullToRefresh';
 
 const SAMPLE_CATEGORIES = [
   'Wedding', 'Couples', 'Portrait', 'Graduation', 'Maternity',
