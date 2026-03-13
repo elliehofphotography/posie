@@ -7,6 +7,25 @@ import { Button } from '@/components/ui/button';
 import TemplateCard from '../components/templates/TemplateCard';
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 
+function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename }) {
+  const filtered = templates.filter(t =>
+    t.name.toLowerCase().includes(search.toLowerCase())
+  );
+  if (filtered.length === 0) return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <p className="font-dm text-muted-foreground text-sm">No templates match "{search}"</p>
+      <button onClick={onClearSearch} className="mt-3 font-dm text-xs text-primary hover:underline">Clear search</button>
+    </div>
+  );
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {filtered.map(t => (
+        <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} />
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   const [showCreate, setShowCreate] = useState(false);
   const [renaming, setRenaming] = useState(null);
