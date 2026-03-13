@@ -218,6 +218,9 @@ export default function Home() {
             onClearSearch={() => setSearch('')}
             onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
             onRename={(tmpl) => setRenaming(tmpl)}
+            selectMode={selectMode}
+            selected={selected}
+            onToggle={toggleSelect}
           />
         )}
       </div>
