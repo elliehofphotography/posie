@@ -1,36 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MoreVertical, Trash2, Pencil } from 'lucide-react';
+import { Camera, MoreVertical, Trash2, Pencil, List, Images } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
-const priorityDotColors = {
-  red: '#c0392b',
-  yellow: '#d4a017',
-  green: '#5a8a6a',
-};
-
 export default function TemplateCard({ template, onDelete, onRename }) {
+  const isShotList = template.template_type === 'shot_list';
+  const linkTo = isShotList
+    ? `/ShotList?id=${template.id}`
+    : `/Template?id=${template.id}`;
+
   return (
     <div className="group relative">
-      <Link to={`/Template?id=${template.id}`} className="block">
+      <Link to={linkTo} className="block">
         <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-muted">
-          {template.cover_image ? (
+          {template.cover_image && !isShotList ? (
             <img
               src={template.cover_image}
               alt={template.name}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Camera className="w-10 h-10 text-muted-foreground/40" />
+            <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+              {isShotList
+                ? <List className="w-10 h-10 text-muted-foreground/40" />
+                : <Camera className="w-10 h-10 text-muted-foreground/40" />}
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+          {/* Type badge */}
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/40 backdrop-blur-sm">
+            {isShotList
+              ? <List className="w-2.5 h-2.5 text-white/80" />
+              : <Images className="w-2.5 h-2.5 text-white/80" />}
+            <span className="font-dm text-[9px] text-white/80 uppercase tracking-wide">
+              {isShotList ? 'Shot List' : 'Gallery'}
+            </span>
+          </div>
 
           {/* Bottom label */}
           <div className="absolute bottom-0 left-0 right-0 p-3.5">
             <h3 className="text-white font-dm font-medium text-sm leading-snug">{template.name}</h3>
-            <p className="text-white/60 font-dm text-[11px] mt-0.5 tracking-wide">{template.photo_count || 0} poses</p>
+            <p className="text-white/60 font-dm text-[11px] mt-0.5 tracking-wide">
+              {isShotList ? 'Shot list' : `${template.photo_count || 0} poses`}
+            </p>
           </div>
         </div>
       </Link>
