@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    --font-playfair: 'Dancing Script', Georgia, cursive;
+    --font-playfair: 'Boheme Floral', Georgia, cursive;
     --font-dm: 'Jost', system-ui, sans-serif;
 
     /* Warm cream base */
