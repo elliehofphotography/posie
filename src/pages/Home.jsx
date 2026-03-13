@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Camera, Settings, Search, X } from 'lucide-react';
+import { Plus, Camera, Settings, Search, X, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { createPageUrl } from '@/utils';
 import TemplateCard from '../components/templates/TemplateCard';
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
+import MarketplaceCard from '../components/marketplace/MarketplaceCard';
 
 function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename }) {
   const filtered = templates.filter(t =>
