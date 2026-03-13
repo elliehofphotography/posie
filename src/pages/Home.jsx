@@ -113,7 +113,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6 stripe-header">
+      <div className="px-5 pt-14 pb-6">
         <div className="flex items-start justify-between mb-1">
           <div>
             <h1 className="font-playfair text-3xl font-semibold text-foreground leading-tight">

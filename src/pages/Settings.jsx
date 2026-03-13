@@ -83,7 +83,7 @@ export default function Settings() {
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
       <div
-        className="sticky top-0 z-30 stripe-header border-b border-border px-4 py-3"
+        className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
         style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
       >
         <div className="flex items-center gap-3">

@@ -90,18 +90,6 @@
   --ring: 214 50% 68%;
 }
 
-@layer utilities {
-  .stripe-header {
-    background-image: repeating-linear-gradient(
-      90deg,
-      hsl(214 50% 78% / 0.55) 0px,
-      hsl(214 50% 78% / 0.55) 18px,
-      hsl(30 33% 95% / 0.85) 18px,
-      hsl(30 33% 95% / 0.85) 36px
-    );
-  }
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
