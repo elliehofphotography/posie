@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,75 +6,59 @@
 
 @layer base {
   :root {
-    --font-inter: 'Inter', sans-serif;
-    --background: 220 15% 6%;
-    --foreground: 40 20% 95%;
-    --card: 220 13% 10%;
-    --card-foreground: 40 20% 95%;
-    --popover: 220 13% 10%;
-    --popover-foreground: 40 20% 95%;
-    --primary: 38 90% 55%;
-    --primary-foreground: 220 15% 6%;
-    --secondary: 220 12% 16%;
-    --secondary-foreground: 40 15% 85%;
-    --muted: 220 12% 14%;
-    --muted-foreground: 220 10% 55%;
-    --accent: 38 70% 45%;
-    --accent-foreground: 40 20% 95%;
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 12% 18%;
-    --input: 220 12% 18%;
-    --ring: 38 90% 55%;
-    --chart-1: 38 90% 55%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 220 70% 50%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --radius: 0.75rem;
-    --sidebar-background: 220 13% 8%;
-    --sidebar-foreground: 40 20% 95%;
-    --sidebar-primary: 38 90% 55%;
-    --sidebar-primary-foreground: 220 15% 6%;
-    --sidebar-accent: 220 12% 16%;
-    --sidebar-accent-foreground: 40 20% 95%;
-    --sidebar-border: 220 12% 18%;
-    --sidebar-ring: 38 90% 55%;
-  }
+    --font-playfair: 'Playfair Display', Georgia, serif;
+    --font-dm: 'DM Sans', system-ui, sans-serif;
 
-  .dark {
-    --background: 220 15% 6%;
-    --foreground: 40 20% 95%;
-    --card: 220 13% 10%;
-    --card-foreground: 40 20% 95%;
-    --popover: 220 13% 10%;
-    --popover-foreground: 40 20% 95%;
-    --primary: 38 90% 55%;
-    --primary-foreground: 220 15% 6%;
-    --secondary: 220 12% 16%;
-    --secondary-foreground: 40 15% 85%;
-    --muted: 220 12% 14%;
-    --muted-foreground: 220 10% 55%;
-    --accent: 38 70% 45%;
-    --accent-foreground: 40 20% 95%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 12% 18%;
-    --input: 220 12% 18%;
-    --ring: 38 90% 55%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 220 13% 8%;
-    --sidebar-foreground: 40 20% 95%;
-    --sidebar-primary: 38 90% 55%;
-    --sidebar-primary-foreground: 220 15% 6%;
-    --sidebar-accent: 220 12% 16%;
-    --sidebar-accent-foreground: 40 20% 95%;
-    --sidebar-border: 220 12% 18%;
-    --sidebar-ring: 38 90% 55%;
+    /* Warm cream base */
+    --background: 40 30% 96%;
+    --foreground: 25 25% 15%;
+
+    /* Cards: off-white ivory */
+    --card: 38 35% 98%;
+    --card-foreground: 25 25% 15%;
+
+    --popover: 38 35% 98%;
+    --popover-foreground: 25 25% 15%;
+
+    /* Primary: deep burgundy */
+    --primary: 350 45% 32%;
+    --primary-foreground: 38 35% 98%;
+
+    /* Secondary: warm sand */
+    --secondary: 38 25% 90%;
+    --secondary-foreground: 25 25% 25%;
+
+    /* Muted: light warm gray */
+    --muted: 38 20% 92%;
+    --muted-foreground: 25 15% 50%;
+
+    /* Accent: dusty sage green */
+    --accent: 155 20% 72%;
+    --accent-foreground: 25 25% 15%;
+
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 38 35% 98%;
+
+    --border: 35 20% 86%;
+    --input: 35 20% 88%;
+    --ring: 350 45% 32%;
+
+    --chart-1: 350 45% 32%;
+    --chart-2: 155 20% 55%;
+    --chart-3: 210 35% 55%;
+    --chart-4: 35 60% 55%;
+    --chart-5: 270 35% 55%;
+
+    --radius: 0.875rem;
+
+    --sidebar-background: 38 30% 95%;
+    --sidebar-foreground: 25 25% 15%;
+    --sidebar-primary: 350 45% 32%;
+    --sidebar-primary-foreground: 38 35% 98%;
+    --sidebar-accent: 38 25% 90%;
+    --sidebar-accent-foreground: 25 25% 25%;
+    --sidebar-border: 35 20% 86%;
+    --sidebar-ring: 350 45% 32%;
   }
 }
 
@@ -84,6 +68,11 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground;
+    font-family: var(--font-dm);
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: var(--font-playfair);
   }
 }
