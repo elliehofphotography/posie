@@ -5,6 +5,7 @@ import { Plus, Camera, Settings, Search, X, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import TemplateCard from '../components/templates/TemplateCard';
+import SelectableTemplateCard from '../components/templates/SelectableTemplateCard';
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 import MarketplaceCard from '../components/marketplace/MarketplaceCard';
 
