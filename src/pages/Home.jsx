@@ -38,60 +38,66 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen px-5 pt-14 pb-4">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Camera className="w-4.5 h-4.5 text-primary" />
-            </div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">ShootPlan</h1>
+      <div className="px-5 pt-14 pb-6">
+        <div className="flex items-start justify-between mb-1">
+          <div>
+            <p className="text-xs font-dm uppercase tracking-[0.2em] text-muted-foreground mb-1">Your Collection</p>
+            <h1 className="font-playfair text-3xl font-semibold text-foreground leading-tight">
+              Shoot<br />
+              <span className="italic font-normal">Templates</span>
+            </h1>
           </div>
-          <p className="text-muted-foreground text-sm">Your shoot templates</p>
+          <button
+            onClick={() => setShowCreate(true)}
+            className="mt-2 w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
         </div>
-        <Button
-          onClick={() => setShowCreate(true)}
-          size="icon"
-          className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 w-11 shadow-lg shadow-primary/20"
-        >
-          <Plus className="w-5 h-5" />
-        </Button>
       </div>
 
+      {/* Divider */}
+      <div className="mx-5 h-px bg-border mb-6" />
+
       {/* Templates Grid */}
-      {isLoading ? (
-        <div className="grid grid-cols-2 gap-3">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="aspect-[4/5] rounded-2xl bg-secondary animate-pulse" />
-          ))}
-        </div>
-      ) : templates.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-20 h-20 rounded-2xl bg-secondary flex items-center justify-center mb-4">
-            <Camera className="w-8 h-8 text-muted-foreground/40" />
+      <div className="px-5 pb-6">
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="aspect-[4/5] rounded-2xl bg-muted animate-pulse" />
+            ))}
           </div>
-          <h3 className="text-foreground font-semibold mb-1">No templates yet</h3>
-          <p className="text-muted-foreground text-sm mb-6 max-w-[240px]">
-            Create your first shoot template to start planning photoshoots
-          </p>
-          <Button onClick={() => setShowCreate(true)} className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Template
-          </Button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-3">
-          {templates.map(t => (
-            <TemplateCard
-              key={t.id}
-              template={t}
-              onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
-              onRename={(tmpl) => setRenaming(tmpl)}
-            />
-          ))}
-        </div>
-      )}
+        ) : templates.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-5">
+              <Camera className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="font-playfair text-xl font-semibold text-foreground mb-2">No templates yet</h3>
+            <p className="font-dm text-muted-foreground text-sm mb-7 max-w-[220px] leading-relaxed">
+              Create your first shoot template to start planning
+            </p>
+            <button
+              onClick={() => setShowCreate(true)}
+              className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              Create Template
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {templates.map(t => (
+              <TemplateCard
+                key={t.id}
+                template={t}
+                onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
+                onRename={(tmpl) => setRenaming(tmpl)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       <CreateTemplateDialog
         open={showCreate}

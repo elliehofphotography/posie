@@ -1,7 +1,5 @@
 import React from 'react';
-import { Download, Star, Crown } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Download, Star, Sparkles } from 'lucide-react';
 
 const TEMPLATES = [
   { id: 1, name: '50 Wedding Couple Poses', author: 'Studio Elite', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop', price: 'Free', downloads: '2.4k', rating: 4.8, category: 'Wedding' },
@@ -14,52 +12,60 @@ const TEMPLATES = [
 
 export default function Marketplace() {
   return (
-    <div className="min-h-screen px-5 pt-14 pb-4">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1">Marketplace</h1>
-        <p className="text-muted-foreground text-sm">Curated shoot templates by professionals</p>
+      <div className="px-5 pt-14 pb-5">
+        <p className="font-dm text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1">Browse</p>
+        <h1 className="font-playfair text-3xl font-semibold text-foreground">Marketplace</h1>
       </div>
 
-      {/* Featured */}
-      <div className="relative rounded-2xl overflow-hidden mb-6 aspect-[16/9] bg-secondary">
+      {/* Featured Banner */}
+      <div className="mx-5 mb-6 relative rounded-2xl overflow-hidden aspect-[16/8] bg-muted">
         <img
-          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=450&fit=crop"
+          src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=400&fit=crop"
           alt="Featured"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-5">
-          <Badge className="bg-primary text-primary-foreground border-0 mb-2 text-[10px]">
-            <Crown className="w-3 h-3 mr-1" /> Featured
-          </Badge>
-          <h2 className="text-white text-lg font-bold">Complete Wedding Photography Pack</h2>
-          <p className="text-white/60 text-xs mt-1">200+ poses, lighting guides & shot lists</p>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
+        <div className="absolute inset-0 p-5 flex flex-col justify-end">
+          <div className="flex items-center gap-1.5 mb-2">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span className="font-dm text-[10px] uppercase tracking-widest text-white/70">Featured</span>
+          </div>
+          <h2 className="font-playfair text-white text-lg font-semibold leading-snug">Complete Wedding<br />Photography Pack</h2>
+          <p className="font-dm text-white/55 text-xs mt-1">200+ poses · lighting guides · shot lists</p>
         </div>
       </div>
 
+      {/* Divider */}
+      <div className="mx-5 flex items-center gap-3 mb-5">
+        <div className="h-px flex-1 bg-border" />
+        <span className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground">All Templates</span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+
       {/* Template List */}
-      <div className="space-y-3">
+      <div className="px-5 pb-6 space-y-3">
         {TEMPLATES.map(t => (
-          <div key={t.id} className="flex gap-3 p-3 rounded-xl bg-card border border-border">
-            <div className="w-20 h-20 rounded-lg overflow-hidden bg-secondary shrink-0">
+          <div key={t.id} className="flex gap-3.5 p-3.5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-colors">
+            <div className="w-[72px] h-[72px] rounded-xl overflow-hidden bg-muted shrink-0">
               <img src={t.image} alt={t.name} className="w-full h-full object-cover" />
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-foreground leading-tight truncate">{t.name}</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">{t.author}</p>
+            <div className="flex-1 min-w-0 py-0.5">
+              <h3 className="font-playfair text-sm font-semibold text-foreground leading-snug">{t.name}</h3>
+              <p className="font-dm text-xs text-muted-foreground mt-0.5">{t.author}</p>
               <div className="flex items-center gap-3 mt-2">
                 <div className="flex items-center gap-1">
                   <Star className="w-3 h-3 text-primary fill-primary" />
-                  <span className="text-xs text-foreground font-medium">{t.rating}</span>
+                  <span className="font-dm text-xs text-foreground font-medium">{t.rating}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Download className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">{t.downloads}</span>
+                  <span className="font-dm text-xs text-muted-foreground">{t.downloads}</span>
                 </div>
-                <Badge variant="secondary" className="text-[10px] ml-auto">
+                <span className={`font-dm text-xs font-semibold ml-auto ${t.price === 'Free' ? 'text-accent-foreground' : 'text-primary'}`}>
                   {t.price}
-                </Badge>
+                </span>
               </div>
             </div>
           </div>

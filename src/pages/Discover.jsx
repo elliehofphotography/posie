@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Heart, Bookmark, TrendingUp } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 
 const SAMPLE_CATEGORIES = [
   'Wedding', 'Couples', 'Portrait', 'Graduation', 'Maternity',
@@ -30,34 +29,38 @@ export default function Discover() {
   });
 
   return (
-    <div className="min-h-screen px-5 pt-14 pb-4">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1">Discover</h1>
-        <p className="text-muted-foreground text-sm">Explore pose inspiration from the community</p>
+      <div className="px-5 pt-14 pb-5">
+        <p className="font-dm text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1">Explore</p>
+        <h1 className="font-playfair text-3xl font-semibold text-foreground">
+          Discover
+        </h1>
       </div>
 
       {/* Search */}
-      <div className="relative mb-5">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search poses, categories..."
-          className="pl-10 bg-card border-border"
-        />
+      <div className="px-5 mb-4">
+        <div className="relative">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search poses, styles..."
+            className="pl-10 bg-muted border-border font-dm rounded-full"
+          />
+        </div>
       </div>
 
       {/* Categories */}
-      <div className="flex gap-2 overflow-x-auto pb-4 -mx-5 px-5 scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-4 px-5 mb-2" style={{ scrollbarWidth: 'none' }}>
         {SAMPLE_CATEGORIES.map(cat => (
           <button
             key={cat}
             onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-1.5 rounded-full text-xs font-dm font-medium whitespace-nowrap transition-all border ${
               activeCategory === cat
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-card text-muted-foreground border-border hover:border-primary/40'
             }`}
           >
             {cat}
@@ -65,27 +68,27 @@ export default function Discover() {
         ))}
       </div>
 
-      {/* Trending */}
-      <div className="flex items-center gap-2 mb-4">
-        <TrendingUp className="w-4 h-4 text-primary" />
-        <span className="text-sm font-semibold text-foreground">Trending Poses</span>
+      {/* Trending label */}
+      <div className="flex items-center gap-2 px-5 mb-4">
+        <TrendingUp className="w-3.5 h-3.5 text-primary" />
+        <span className="font-dm text-xs font-semibold text-foreground uppercase tracking-wider">Trending</span>
       </div>
 
       {/* Masonry Grid */}
-      <div className="columns-2 gap-3 space-y-3">
+      <div className="px-5 pb-6 columns-2 gap-3">
         {filtered.map((img) => (
-          <div key={img.id} className="break-inside-avoid group relative rounded-xl overflow-hidden bg-secondary">
+          <div key={img.id} className="break-inside-avoid mb-3 group relative rounded-2xl overflow-hidden bg-muted">
             <img src={img.url} alt={img.category} className="w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="flex items-center justify-between">
-                <Badge className="bg-white/20 text-white backdrop-blur-sm border-0 text-[10px]">{img.category}</Badge>
+                <span className="font-dm text-[10px] text-white/80 uppercase tracking-wider">{img.category}</span>
                 <div className="flex items-center gap-2">
-                  <button className="text-white/80 hover:text-white">
-                    <Heart className="w-4 h-4" />
+                  <button className="text-white/80 hover:text-white transition-colors">
+                    <Heart className="w-3.5 h-3.5" />
                   </button>
-                  <button className="text-white/80 hover:text-white">
-                    <Bookmark className="w-4 h-4" />
+                  <button className="text-white/80 hover:text-white transition-colors">
+                    <Bookmark className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>

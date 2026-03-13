@@ -36,7 +36,6 @@ export default function Template() {
         template_id: templateId,
         sort_order: photos.length,
       });
-      // Update photo count
       await base44.entities.ShootTemplate.update(templateId, {
         photo_count: photos.length + 1,
         cover_image: photos.length === 0 ? data.image_url : template?.cover_image,
@@ -73,31 +72,34 @@ export default function Template() {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => navigate('/Home')}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
+            <button
+              onClick={() => navigate('/Home')}
+              className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
             <div>
-              <h1 className="text-lg font-semibold text-foreground leading-tight">{template?.name || 'Template'}</h1>
-              <p className="text-xs text-muted-foreground">{photos.length} poses</p>
+              <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight">{template?.name || 'Template'}</h1>
+              <p className="font-dm text-xs text-muted-foreground">{photos.length} poses</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <Link to={`/ShotList?id=${templateId}`}>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <List className="w-5 h-5" />
-              </Button>
+              <button className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
+                <List className="w-4 h-4" />
+              </button>
             </Link>
             {photos.length > 0 && (
               <Link to={`/ShootMode?id=${templateId}`}>
-                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-4 gap-1.5">
+                <button className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors">
                   <Play className="w-3.5 h-3.5" />
                   Shoot
-                </Button>
+                </button>
               </Link>
             )}
           </div>
@@ -109,22 +111,25 @@ export default function Template() {
         {isLoading ? (
           <div className="grid grid-cols-2 gap-3">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="aspect-[3/4] rounded-xl bg-secondary animate-pulse" />
+              <div key={i} className="aspect-[3/4] rounded-2xl bg-muted animate-pulse" />
             ))}
           </div>
         ) : photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mb-4">
-              <ImageIcon className="w-7 h-7 text-muted-foreground/40" />
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+              <ImageIcon className="w-7 h-7 text-muted-foreground" />
             </div>
-            <h3 className="text-foreground font-semibold mb-1">No photos yet</h3>
-            <p className="text-muted-foreground text-sm mb-5 max-w-[220px]">
+            <h3 className="font-playfair text-lg font-semibold text-foreground mb-1.5">No photos yet</h3>
+            <p className="font-dm text-muted-foreground text-sm mb-6 max-w-[200px] leading-relaxed">
               Add inspiration photos to build your shoot plan
             </p>
-            <Button onClick={() => setShowAddPhoto(true)} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <Plus className="w-4 h-4 mr-2" />
+            <button
+              onClick={() => setShowAddPhoto(true)}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
               Add Photo
-            </Button>
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
@@ -142,13 +147,12 @@ export default function Template() {
 
       {/* FAB */}
       {photos.length > 0 && (
-        <Button
+        <button
           onClick={() => setShowAddPhoto(true)}
-          size="icon"
-          className="fixed bottom-24 right-5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-14 w-14 shadow-lg shadow-primary/25 z-40"
+          className="fixed bottom-24 right-5 h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors z-40"
         >
           <Plus className="w-6 h-6" />
-        </Button>
+        </button>
       )}
 
       <AddPhotoDialog

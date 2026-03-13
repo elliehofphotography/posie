@@ -2,13 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Camera, MoreVertical, Trash2, Pencil } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+
+const priorityDotColors = {
+  red: '#c0392b',
+  yellow: '#d4a017',
+  green: '#5a8a6a',
+};
 
 export default function TemplateCard({ template, onDelete, onRename }) {
   return (
     <div className="group relative">
       <Link to={`/Template?id=${template.id}`} className="block">
-        <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-secondary">
+        <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-muted">
           {template.cover_image ? (
             <img
               src={template.cover_image}
@@ -20,24 +25,23 @@ export default function TemplateCard({ template, onDelete, onRename }) {
               <Camera className="w-10 h-10 text-muted-foreground/40" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            <h3 className="text-white font-semibold text-sm leading-tight">{template.name}</h3>
-            <p className="text-white/60 text-xs mt-1">{template.photo_count || 0} poses</p>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+
+          {/* Bottom label */}
+          <div className="absolute bottom-0 left-0 right-0 p-3.5">
+            <h3 className="text-white font-playfair font-medium text-sm leading-snug">{template.name}</h3>
+            <p className="text-white/60 font-dm text-[11px] mt-0.5 tracking-wide">{template.photo_count || 0} poses</p>
           </div>
         </div>
       </Link>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 h-8 w-8 bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <MoreVertical className="w-4 h-4" />
-          </Button>
+          <button className="absolute top-2.5 right-2.5 h-7 w-7 bg-white/25 backdrop-blur-sm text-white hover:bg-white/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <MoreVertical className="w-3.5 h-3.5" />
+          </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="bg-card border-border">
+        <DropdownMenuContent align="end" className="bg-card border-border font-dm">
           <DropdownMenuItem onClick={() => onRename(template)}>
             <Pencil className="w-4 h-4 mr-2" /> Rename
           </DropdownMenuItem>
