@@ -156,65 +156,63 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="px-5 pt-14 pb-6">
-        <div className="flex items-start justify-between mb-1">
-          <div>
-            <h1 className="font-playfair text-3xl font-semibold text-foreground leading-tight">
-              Shoot<br />
-              <span className="italic font-normal">Templates</span>
-            </h1>
-            <p className="text-xs font-dm uppercase tracking-[0.2em] text-muted-foreground mt-1">Your Collection</p>
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-            {selectMode ? (
-              <>
-                <button
-                  onClick={exitSelectMode}
-                  className="px-3 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDeleteSelected}
-                  disabled={selected.length === 0}
-                  className="px-3 py-2 rounded-full bg-destructive/15 text-destructive font-dm text-sm font-medium hover:bg-destructive/25 transition-colors disabled:opacity-30 select-none"
-                >
-                  Delete{selected.length > 0 ? ` (${selected.length})` : ''}
-                </button>
-                {canShootTogether && (
-                  <button
-                    onClick={handleShootTogether}
-                    className="flex items-center gap-1 px-3 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors select-none"
-                  >
-                    <Shuffle className="w-3.5 h-3.5" />
-                    Together
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                {templates.length > 0 && (
-                  <button
-                    onClick={() => setSelectMode(true)}
-                    className="px-4 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
-                  >
-                    Select
-                  </button>
-                )}
-                <Link to="/Settings">
-                  <button className="min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
-                    <Settings className="w-4.5 h-4.5" />
-                  </button>
-                </Link>
-                <button
-                  onClick={() => setShowCreate(true)}
-                  className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
-                >
-                  <Plus className="w-5 h-5" />
-                </button>
-              </>
+        {selectMode ? (
+          <div className="flex items-center gap-2 w-full" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+            <button
+              onClick={exitSelectMode}
+              className="px-4 py-2.5 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none whitespace-nowrap"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteSelected}
+              disabled={selected.length === 0}
+              className="flex-1 py-2.5 rounded-full bg-destructive/15 text-destructive font-dm text-sm font-medium hover:bg-destructive/25 transition-colors disabled:opacity-30 select-none whitespace-nowrap"
+            >
+              Delete{selected.length > 0 ? ` (${selected.length})` : ''}
+            </button>
+            {canShootTogether && (
+              <button
+                onClick={handleShootTogether}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors select-none whitespace-nowrap"
+              >
+                <Shuffle className="w-3.5 h-3.5" />
+                Shoot Together
+              </button>
             )}
           </div>
-        </div>
+        ) : (
+          <div className="flex items-start justify-between mb-1">
+            <div>
+              <h1 className="font-playfair text-3xl font-semibold text-foreground leading-tight">
+                Shoot<br />
+                <span className="italic font-normal">Templates</span>
+              </h1>
+              <p className="text-xs font-dm uppercase tracking-[0.2em] text-muted-foreground mt-1">Your Collection</p>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              {templates.length > 0 && (
+                <button
+                  onClick={() => setSelectMode(true)}
+                  className="px-4 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
+                >
+                  Select
+                </button>
+              )}
+              <Link to="/Settings">
+                <button className="min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
+                  <Settings className="w-4.5 h-4.5" />
+                </button>
+              </Link>
+              <button
+                onClick={() => setShowCreate(true)}
+                className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Search */}
