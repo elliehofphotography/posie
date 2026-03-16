@@ -172,7 +172,7 @@ export default function ShootMode() {
           </div>
           <div className="flex items-center gap-1">
             <ShootTimer />
-            <Link to={`/ChecklistOverview?id=${templateId}`}>
+            <Link to={shotListOverrideId ? `/ShotList?id=${shotListOverrideId}` : `/ChecklistOverview?id=${templateId}`}>
               <button className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors ml-1">
                 <Grid3X3 className="w-4 h-4" />
               </button>
