@@ -173,13 +173,23 @@ export default function Home() {
                 >
                   Cancel
                 </button>
-                <button
-                  onClick={handleDeleteSelected}
-                  disabled={selected.length === 0}
-                  className="px-4 py-2 rounded-full bg-destructive text-destructive-foreground font-dm text-sm font-medium hover:bg-destructive/90 transition-colors disabled:opacity-40 select-none"
-                >
-                  Delete {selected.length > 0 ? `(${selected.length})` : ''}
-                </button>
+                {canShootTogether ? (
+                  <button
+                    onClick={handleShootTogether}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors select-none"
+                  >
+                    <Shuffle className="w-3.5 h-3.5" />
+                    Shoot Together
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleDeleteSelected}
+                    disabled={selected.length === 0}
+                    className="px-4 py-2 rounded-full bg-destructive text-destructive-foreground font-dm text-sm font-medium hover:bg-destructive/90 transition-colors disabled:opacity-40 select-none"
+                  >
+                    Delete {selected.length > 0 ? `(${selected.length})` : ''}
+                  </button>
+                )}
               </>
             ) : (
               <>
