@@ -130,6 +130,19 @@ export default function Home() {
     setSelected([]);
   };
 
+  const selectedTemplates = templates.filter(t => selected.includes(t.id));
+  const selectedGalleries = selectedTemplates.filter(t => t.template_type !== 'shot_list');
+  const selectedShotLists = selectedTemplates.filter(t => t.template_type === 'shot_list');
+  const canShootTogether = selected.length >= 2 && selectedGalleries.length >= 1 && selectedShotLists.length <= 1;
+
+  const handleShootTogether = () => {
+    const galleryIds = selectedGalleries.map(t => t.id).join(',');
+    const shotListId = selectedShotLists[0]?.id || '';
+    const params = new URLSearchParams({ ids: galleryIds });
+    if (shotListId) params.set('shotlist', shotListId);
+    navigate(`/ShootMode?${params.toString()}`);
+  };
+
   const renameMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.ShootTemplate.update(id, data),
     onSuccess: () => {
