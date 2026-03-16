@@ -35,13 +35,6 @@ export default function ShootMode() {
     enabled: !!singleId && !isMulti,
   });
 
-  // For multi-gallery merge, fetch all in parallel and combine
-  const multiQueries = galleryIds.map(id => ({
-    queryKey: ['shoot-photos', id],
-    queryFn: () => base44.entities.TemplatePhoto.filter({ template_id: id }, 'sort_order'),
-    enabled: isMulti,
-  }));
-
   const [allMultiPhotos, setAllMultiPhotos] = useState([]);
 
   useEffect(() => {
