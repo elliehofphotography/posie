@@ -173,7 +173,7 @@ export default function Home() {
                 >
                   Cancel
                 </button>
-                {canShootTogether ? (
+                {canShootTogether && (
                   <button
                     onClick={handleShootTogether}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors select-none"
@@ -181,7 +181,8 @@ export default function Home() {
                     <Shuffle className="w-3.5 h-3.5" />
                     Shoot Together
                   </button>
-                ) : (
+                )}
+                {!canShootTogether && (
                   <button
                     onClick={handleDeleteSelected}
                     disabled={selected.length === 0}
