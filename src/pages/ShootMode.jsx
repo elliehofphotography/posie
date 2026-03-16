@@ -12,7 +12,13 @@ const PRIORITY_ORDER = { red: 0, yellow: 1, green: 2 };
 
 export default function ShootMode() {
   const urlParams = new URLSearchParams(window.location.search);
-  const templateId = urlParams.get('id');
+  // Support single id= OR multi ids= (comma-separated gallery IDs) + optional shotlist=
+  const singleId = urlParams.get('id');
+  const multiIds = urlParams.get('ids');
+  const shotListOverrideId = urlParams.get('shotlist');
+  const templateId = singleId || (multiIds ? multiIds.split(',')[0] : null);
+  const galleryIds = multiIds ? multiIds.split(',') : (singleId ? [singleId] : []);
+  const isMulti = !!multiIds;
   const navigate = useNavigate();
 
   const [queue, setQueue] = useState([]);
@@ -22,21 +28,47 @@ export default function ShootMode() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [initialPhotos, setInitialPhotos] = useState([]);
 
+  // For single template, fetch normally
   const { data: photos = [] } = useQuery({
-    queryKey: ['shoot-photos', templateId],
-    queryFn: () => base44.entities.TemplatePhoto.filter({ template_id: templateId }, 'sort_order'),
-    enabled: !!templateId,
+    queryKey: ['shoot-photos', singleId],
+    queryFn: () => base44.entities.TemplatePhoto.filter({ template_id: singleId }, 'sort_order'),
+    enabled: !!singleId && !isMulti,
   });
 
+  // For multi-gallery merge, fetch all in parallel and combine
+  const multiQueries = galleryIds.map(id => ({
+    queryKey: ['shoot-photos', id],
+    queryFn: () => base44.entities.TemplatePhoto.filter({ template_id: id }, 'sort_order'),
+    enabled: isMulti,
+  }));
+
+  const [allMultiPhotos, setAllMultiPhotos] = useState([]);
+
   useEffect(() => {
-    if (photos.length > 0 && initialPhotos.length === 0) {
-      const sorted = [...photos].sort(
-        (a, b) => (PRIORITY_ORDER[a.color_priority] || 2) - (PRIORITY_ORDER[b.color_priority] || 2)
-      );
+    if (!isMulti || galleryIds.length === 0) return;
+    Promise.all(
+      galleryIds.map(id => base44.entities.TemplatePhoto.filter({ template_id: id }, 'sort_order'))
+    ).then(results => {
+      const merged = results.flat();
+      // Shuffle
+      const shuffled = [...merged].sort(() => Math.random() - 0.5);
+      setAllMultiPhotos(shuffled);
+    });
+  }, [multiIds]);
+
+  const sourcePhotos = isMulti ? allMultiPhotos : photos;
+
+  useEffect(() => {
+    if (sourcePhotos.length > 0 && initialPhotos.length === 0) {
+      const sorted = isMulti
+        ? sourcePhotos // already shuffled
+        : [...sourcePhotos].sort(
+            (a, b) => (PRIORITY_ORDER[a.color_priority] || 2) - (PRIORITY_ORDER[b.color_priority] || 2)
+          );
       setQueue(sorted);
       setInitialPhotos(sorted);
     }
-  }, [photos]);
+  }, [sourcePhotos]);
 
   useEffect(() => {
     let wakeLock = null;
