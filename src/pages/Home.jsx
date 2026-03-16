@@ -46,6 +46,7 @@ export default function Home() {
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState([]);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
