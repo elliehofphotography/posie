@@ -11,16 +11,7 @@ const SAMPLE_CATEGORIES = [
   'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement',
 ];
 
-const SAMPLE_IMAGES = [
-  { id: 's1', image_url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=500&fit=crop', category: 'Wedding', likes: 234 },
-  { id: 's2', image_url: 'https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=400&h=600&fit=crop', category: 'Couples', likes: 189 },
-  { id: 's3', image_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop', category: 'Portrait', likes: 312 },
-  { id: 's4', image_url: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=400&h=700&fit=crop', category: 'Graduation', likes: 156 },
-  { id: 's5', image_url: 'https://images.unsplash.com/photo-1606216794079-73f85bbd57d5?w=400&h=500&fit=crop', category: 'Maternity', likes: 278 },
-  { id: 's6', image_url: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&h=600&fit=crop', category: 'Family', likes: 198 },
-  { id: 's7', image_url: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop', category: 'Fashion', likes: 445 },
-  { id: 's8', image_url: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=600&fit=crop', category: 'Engagement', likes: 167 },
-];
+
 
 export default function Discover() {
   const [activeCategory, setActiveCategory] = useState(null);
