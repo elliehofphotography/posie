@@ -19,7 +19,7 @@ const categoryLabels = {
   other: 'Other',
 };
 
-export default function PhotoCard({ photo, onEdit, onDelete, onClick }) {
+export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGallery, hideEdit, hideDelete }) {
   return (
     <div className="group relative cursor-pointer" onClick={onClick}>
       <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
