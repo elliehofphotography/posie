@@ -184,7 +184,7 @@ export default function Home() {
 
           <div className="flex items-start justify-between mb-1">
             <div>
-              <h1 className="text-2xl font-bold uppercase tracking-widest" style={{ color: 'hsl(210 38% 48%)' }}>Shoot
+              <h1 className="text-2xl font-bold uppercase tracking-widest" style={{ color: 'hsl(224 52% 28%)' }}>Shoot
 TEMPLATES
               </h1>
               <p className="text-xs font-dm uppercase tracking-[0.2em] text-muted-foreground mt-1">Your Collection</p>
