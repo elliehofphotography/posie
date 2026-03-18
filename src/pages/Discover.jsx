@@ -92,6 +92,11 @@ export default function Discover() {
 
         {/* Masonry Grid */}
         <div className="px-5 pb-6 columns-2 gap-3">
+          {filtered.length === 0 && (
+            <div className="col-span-2 flex flex-col items-center justify-center py-20 text-center">
+              <p className="font-dm text-muted-foreground text-sm">No photos yet. Be the first to share!</p>
+            </div>
+          )}
           {filtered.map((img) => (
             <div key={img.id} className="break-inside-avoid mb-3 group relative rounded-2xl overflow-hidden bg-muted">
               <img src={img.image_url} alt={img.category} className="w-full object-cover" />
