@@ -30,7 +30,7 @@ function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, se
               <Images className="w-6 h-6 text-primary" />
             </div>
             <span className="font-dm text-sm font-semibold text-primary">All Photos</span>
-            <span className="font-dm text-[11px] text-primary/60">Every gallery</span>
+
           </div>
         </Link>
       )}
