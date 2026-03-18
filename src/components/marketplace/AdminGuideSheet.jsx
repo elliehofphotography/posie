@@ -55,7 +55,7 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
   });
 
   // Populate form when editing
-  React.useEffect(() => {
+  useEffect(() => {
     if (listing) {
       setForm({
         name: listing.name || '',
