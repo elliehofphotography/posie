@@ -10,6 +10,7 @@ import MarketplaceCard from '@/components/marketplace/MarketplaceCard';
 export default function Marketplace() {
   const [user, setUser] = useState(null);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
