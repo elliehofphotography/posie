@@ -42,6 +42,24 @@ export default function ShotList() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shotlist', templateId] }),
   });
 
+  const editTextMutation = useMutation({
+    mutationFn: ({ id, text }) => base44.entities.ShotListItem.update(id, { text }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shotlist', templateId] }),
+  });
+
+  const startEditing = (item) => {
+    setEditingId(item.id);
+    setEditingText(item.text);
+    setTimeout(() => editInputRef.current?.focus(), 50);
+  };
+
+  const commitEdit = () => {
+    if (editingText.trim() && editingText.trim() !== items.find(i => i.id === editingId)?.text) {
+      editTextMutation.mutate({ id: editingId, text: editingText.trim() });
+    }
+    setEditingId(null);
+  };
+
   const handleAdd = (e) => {
     e.preventDefault();
     if (!newItem.trim()) return;
