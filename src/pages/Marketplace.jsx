@@ -118,6 +118,14 @@ export default function Marketplace() {
       {isAdmin && (
         <AdminGuideSheet open={showAdmin} onOpenChange={setShowAdmin} onSaved={refetch} />
       )}
+      {isAdmin && editingListing && (
+        <AdminGuideSheet
+          open={!!editingListing}
+          onOpenChange={(val) => { if (!val) setEditingListing(null); }}
+          onSaved={() => { setEditingListing(null); refetch(); }}
+          listing={editingListing}
+        />
+      )}
     </div>
   );
 }
