@@ -1,5 +1,5 @@
 import React from 'react';
-import { MoreVertical, Trash2, Pencil } from 'lucide-react';
+import { MoreVertical, Trash2, Pencil, FolderPlus } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const priorityDots = {
