@@ -46,12 +46,31 @@ function ImageUploadField({ label, value, onChange }) {
   );
 }
 
-export default function AdminGuideSheet({ open, onOpenChange, onSaved }) {
+export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing = null }) {
+  const isEditing = !!listing;
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: '', description: '', author: '', category: '',
     price: '', cover_image: '', preview_image_1: '', preview_image_2: '',
   });
+
+  // Populate form when editing
+  React.useEffect(() => {
+    if (listing) {
+      setForm({
+        name: listing.name || '',
+        description: listing.description || '',
+        author: listing.author || '',
+        category: listing.category || '',
+        price: listing.price != null ? String(listing.price) : '',
+        cover_image: listing.cover_image || '',
+        preview_image_1: listing.preview_image_1 || '',
+        preview_image_2: listing.preview_image_2 || '',
+      });
+    } else {
+      setForm({ name: '', description: '', author: '', category: '', price: '', cover_image: '', preview_image_1: '', preview_image_2: '' });
+    }
+  }, [listing, open]);
 
   const update = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
@@ -59,13 +78,13 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved }) {
     e.preventDefault();
     if (!form.name.trim()) return;
     setSubmitting(true);
-    await base44.entities.MarketplaceListing.create({
-      ...form,
-      price: parseFloat(form.price) || 0,
-      is_published: true,
-    });
+    const data = { ...form, price: parseFloat(form.price) || 0, is_published: true };
+    if (isEditing) {
+      await base44.entities.MarketplaceListing.update(listing.id, data);
+    } else {
+      await base44.entities.MarketplaceListing.create(data);
+    }
     setSubmitting(false);
-    setForm({ name: '', description: '', author: '', category: '', price: '', cover_image: '', preview_image_1: '', preview_image_2: '' });
     onOpenChange(false);
     onSaved();
   };
@@ -74,7 +93,7 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved }) {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="bg-card border-border max-h-[92vh]">
         <DrawerHeader className="flex items-center justify-between pb-2">
-          <DrawerTitle className="font-playfair text-xl text-foreground">Add New Guide</DrawerTitle>
+          <DrawerTitle className="font-playfair text-xl text-foreground">{isEditing ? 'Edit Guide' : 'Add New Guide'}</DrawerTitle>
           <DrawerClose asChild>
             <button className="h-8 w-8 rounded-full bg-muted flex items-center justify-center select-none">
               <X className="w-4 h-4" />
