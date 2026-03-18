@@ -22,6 +22,18 @@ function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, se
 
   return (
     <div className="grid grid-cols-2 gap-3">
+      {/* All Photos — permanent first card */}
+      {!search && (
+        <Link to="/AllPhotos">
+          <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-primary/10 border-2 border-primary/20 flex flex-col items-center justify-center gap-2 hover:bg-primary/15 transition-colors">
+            <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center mb-1">
+              <Images className="w-6 h-6 text-primary" />
+            </div>
+            <span className="font-dm text-sm font-semibold text-primary">All Photos</span>
+            <span className="font-dm text-[11px] text-primary/60">Every gallery</span>
+          </div>
+        </Link>
+      )}
       {filtered.map((t) => selectMode ?
       <SelectableTemplateCard
         key={t.id}
