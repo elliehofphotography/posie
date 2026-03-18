@@ -184,9 +184,8 @@ export default function Home() {
         ) : (
           <div className="flex items-start justify-between mb-1">
             <div>
-              <h1 className="font-playfair text-3xl font-semibold text-foreground leading-tight">
-                Shoot<br />
-                <span className="italic font-normal">Templates</span>
+              <h1 className="font-dm text-3xl font-bold uppercase tracking-widest" style={{ color: 'hsl(210 38% 48%)' }}>
+                Shoot Templates
               </h1>
               <p className="text-xs font-dm uppercase tracking-[0.2em] text-muted-foreground mt-1">Your Collection</p>
             </div>
