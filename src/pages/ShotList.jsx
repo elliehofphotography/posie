@@ -13,6 +13,9 @@ export default function ShotList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newItem, setNewItem] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState('');
+  const editInputRef = useRef(null);
 
   const { data: items = [] } = useQuery({
     queryKey: ['shotlist', templateId],
