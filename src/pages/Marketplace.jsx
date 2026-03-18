@@ -24,6 +24,16 @@ export default function Marketplace() {
   const isAdmin = user?.role === 'admin';
   const featured = listings[0];
 
+  const filtered = listings.filter(l => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return (
+      l.name?.toLowerCase().includes(q) ||
+      l.author?.toLowerCase().includes(q) ||
+      l.category?.toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
