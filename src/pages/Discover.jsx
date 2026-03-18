@@ -32,12 +32,7 @@ export default function Discover() {
     },
   });
 
-  const allImages = [
-    ...userPosts.map(p => ({ ...p, isUserPost: true })),
-    ...SAMPLE_IMAGES,
-  ];
-
-  const filtered = allImages.filter(img => {
+  const filtered = userPosts.filter(img => {
     if (activeCategory && img.category !== activeCategory) return false;
     if (search && !img.category.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
