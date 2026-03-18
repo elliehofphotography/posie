@@ -34,7 +34,7 @@ export default function Discover() {
 
   const filtered = userPosts.filter(img => {
     if (activeCategory && img.category !== activeCategory) return false;
-    if (search && !img.category.toLowerCase().includes(search.toLowerCase())) return false;
+    if (search && !(img.category || '').toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
