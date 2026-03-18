@@ -15,6 +15,7 @@ import ShotList from './pages/ShotList';
 import Discover from './pages/Discover';
 import Marketplace from './pages/Marketplace';
 import AllPhotos from './pages/AllPhotos';
+import Settings from './pages/Settings';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
