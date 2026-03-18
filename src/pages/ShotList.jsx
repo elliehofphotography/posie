@@ -123,17 +123,37 @@ export default function ShotList() {
                 onCheckedChange={(checked) => toggleMutation.mutate({ id: item.id, completed: checked })}
                 className="data-[state=checked]:bg-primary data-[state=checked]:border-primary shrink-0"
               />
-              <span className={`flex-1 font-dm text-sm leading-snug ${
-                item.is_completed ? 'line-through text-muted-foreground' : 'text-foreground'
-              }`}>
-                {item.text}
-              </span>
-              <button
-                className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                onClick={() => deleteMutation.mutate(item.id)}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
+              {editingId === item.id ? (
+                <input
+                  ref={editInputRef}
+                  value={editingText}
+                  onChange={(e) => setEditingText(e.target.value)}
+                  onBlur={commitEdit}
+                  onKeyDown={(e) => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') setEditingId(null); }}
+                  className="flex-1 bg-transparent border-none outline-none font-dm text-sm text-foreground"
+                />
+              ) : (
+                <span
+                  className={`flex-1 font-dm text-sm leading-snug cursor-text ${
+                    item.is_completed ? 'line-through text-muted-foreground' : 'text-foreground'
+                  }`}
+                  onDoubleClick={() => !item.is_completed && startEditing(item)}
+                >
+                  {item.text}
+                </span>
+              )}
+              {editingId === item.id ? (
+                <button className="text-primary p-1" onClick={commitEdit}>
+                  <Check className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <button
+                  className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                  onClick={() => deleteMutation.mutate(item.id)}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>
