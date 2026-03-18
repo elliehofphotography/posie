@@ -10,9 +10,9 @@ import { ImagePlus, Loader2, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const CATEGORIES = [
-  'Wedding', 'Couples', 'Portrait', 'Graduation', 'Maternity',
-  'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement', 'Other',
-];
+'Wedding', 'Couples', 'Portrait', 'Graduation', 'Maternity',
+'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement', 'Other'];
+
 
 const EMPTY = {
   image_url: '',
@@ -23,7 +23,7 @@ const EMPTY = {
   lens: '',
   aperture: '',
   lighting_notes: '',
-  owns_copyright: false,
+  owns_copyright: false
 };
 
 export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) {
@@ -31,7 +31,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
 
-  const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
+  const set = (key, val) => setForm((f) => ({ ...f, [key]: val }));
 
   const handleImage = async (e) => {
     const file = e.target.files?.[0];
@@ -52,7 +52,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
   };
 
   const handleClose = (val) => {
-    if (!val) { setForm(EMPTY); setPreview(null); }
+    if (!val) {setForm(EMPTY);setPreview(null);}
     onOpenChange(val);
   };
 
@@ -62,7 +62,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="bg-card border-border max-w-sm max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-vina text-2xl text-primary tracking-widest uppercase">Share a Photo</DialogTitle>
+          <DialogTitle className="text-primary text-2xl font-extralight uppercase tracking-widest">SHARE A PHOTO</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -72,16 +72,16 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
             <label className="block cursor-pointer">
               <input type="file" accept="image/*" className="hidden" onChange={handleImage} />
               <div className={`w-full aspect-[4/3] rounded-2xl border-2 border-dashed border-border bg-muted flex items-center justify-center overflow-hidden transition-colors hover:border-primary/50 ${preview ? 'border-solid border-primary/30' : ''}`}>
-                {uploading ? (
-                  <Loader2 className="w-7 h-7 text-muted-foreground animate-spin" />
-                ) : preview ? (
-                  <img src={preview} alt="preview" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                {uploading ?
+                <Loader2 className="w-7 h-7 text-muted-foreground animate-spin" /> :
+                preview ?
+                <img src={preview} alt="preview" className="w-full h-full object-cover" /> :
+
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
                     <ImagePlus className="w-8 h-8" />
                     <span className="font-dm text-xs">Tap to upload</span>
                   </div>
-                )}
+                }
               </div>
             </label>
           </div>
@@ -94,7 +94,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -106,8 +106,8 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
               value={form.title}
               onChange={(e) => set('title', e.target.value)}
               placeholder="e.g. Golden hour portrait"
-              className="bg-muted border-border font-dm"
-            />
+              className="bg-muted border-border font-dm" />
+            
           </div>
 
           {/* Description */}
@@ -117,8 +117,8 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
               value={form.description}
               onChange={(e) => set('description', e.target.value)}
               placeholder="Pose instructions, location, mood..."
-              className="bg-muted border-border h-20 resize-none font-dm"
-            />
+              className="bg-muted border-border h-20 resize-none font-dm" />
+            
           </div>
 
           {/* Photographer name */}
@@ -128,8 +128,8 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
               value={form.photographer_name}
               onChange={(e) => set('photographer_name', e.target.value)}
               placeholder="e.g. @janedoe"
-              className="bg-muted border-border font-dm"
-            />
+              className="bg-muted border-border font-dm" />
+            
           </div>
 
           {/* Technical details */}
@@ -160,8 +160,8 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
                 <Checkbox
                   id="ip-confirm"
                   checked={form.owns_copyright}
-                  onCheckedChange={(v) => set('owns_copyright', !!v)}
-                />
+                  onCheckedChange={(v) => set('owns_copyright', !!v)} />
+                
                 <label htmlFor="ip-confirm" className="font-dm text-xs text-foreground cursor-pointer">
                   I confirm this is my original photo *
                 </label>
@@ -174,13 +174,13 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
             <Button
               type="submit"
               disabled={!canSubmit}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 font-dm rounded-full px-6"
-            >
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-dm rounded-full px-6">
+              
               {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Share'}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>);
+
 }
