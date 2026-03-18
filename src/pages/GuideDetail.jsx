@@ -158,11 +158,11 @@ export default function GuideDetail() {
           </div>
         ) : (
           <button
-            onClick={() => purchaseMutation.mutate()}
-            disabled={purchaseMutation.isPending || !user}
+            onClick={handlePurchase}
+            disabled={purchaseMutation.isPending || checkoutLoading || !user}
             className="w-full py-3.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 select-none"
           >
-            {purchaseMutation.isPending
+            {purchaseMutation.isPending || checkoutLoading
               ? 'Processing…'
               : listing.price === 0
               ? 'Add to Collection — Free'
