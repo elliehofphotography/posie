@@ -48,12 +48,21 @@ export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGa
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="bg-card border-border font-dm">
-          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(photo); }}>
-            <Pencil className="w-4 h-4 mr-2" /> Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDelete(photo); }} className="text-destructive">
-            <Trash2 className="w-4 h-4 mr-2" /> Delete
-          </DropdownMenuItem>
+          {!hideEdit && (
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(photo); }}>
+              <Pencil className="w-4 h-4 mr-2" /> Edit
+            </DropdownMenuItem>
+          )}
+          {onSaveToGallery && (
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onSaveToGallery(photo); }}>
+              <FolderPlus className="w-4 h-4 mr-2" /> Save to Gallery
+            </DropdownMenuItem>
+          )}
+          {!hideDelete && (
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDelete(photo); }} className="text-destructive">
+              <Trash2 className="w-4 h-4 mr-2" /> Delete
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
