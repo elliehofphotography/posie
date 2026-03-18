@@ -28,8 +28,7 @@ export default function Marketplace() {
       {/* Header */}
       <div className="px-5 pt-14 pb-5 flex items-end justify-between">
         <div>
-          <p className="font-dm text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1">Browse</p>
-          <h1 className="font-playfair text-3xl font-semibold text-foreground">Marketplace</h1>
+          <h1 className="font-vina text-4xl font-light uppercase tracking-widest text-primary">Marketplace</h1>
         </div>
         {isAdmin && (
           <button

@@ -34,8 +34,7 @@ export default function Discover() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="px-5 pt-14 pb-5">
-        <p className="font-dm text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1">Explore</p>
-        <h1 className="font-playfair text-3xl font-semibold text-foreground">
+        <h1 className="font-vina text-4xl font-light uppercase tracking-widest text-primary">
           Discover
         </h1>
       </div>
