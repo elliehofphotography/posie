@@ -52,6 +52,7 @@ const AuthenticatedApp = () => {
         <Route path="/Discover" element={<Discover />} />
         <Route path="/Marketplace" element={<Marketplace />} />
         <Route path="/AllPhotos" element={<AllPhotos />} />
+        <Route path="/Settings" element={<Settings />} />
       </Route>
       <Route path="/ShootMode" element={<ShootMode />} />
       <Route path="*" element={<PageNotFound />} />
