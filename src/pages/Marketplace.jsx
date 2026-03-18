@@ -10,6 +10,7 @@ import MarketplaceCard from '@/components/marketplace/MarketplaceCard';
 export default function Marketplace() {
   const [user, setUser] = useState(null);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [editingListing, setEditingListing] = useState(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
