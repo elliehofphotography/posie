@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Beth+Ellen&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,83 +6,83 @@
 
 @layer base {
   :root {
-    --font-playfair: 'Beth Ellen', Georgia, cursive;
-    --font-dm: 'Jost', system-ui, sans-serif;
+    --font-playfair: 'Playfair Display', Georgia, serif;
+    --font-dm: 'DM Sans', system-ui, sans-serif;
 
-    /* Cream base */
-    --background: 30 33% 95%;
-    --foreground: 222 47% 18%;
+    /* Warm cream base */
+    --background: 36 28% 94%;
+    --foreground: 20 15% 12%;
 
-    /* Cards: slightly lighter cream */
-    --card: 30 33% 97%;
-    --card-foreground: 222 47% 18%;
+    /* Cards: slightly lighter warm cream */
+    --card: 36 30% 97%;
+    --card-foreground: 20 15% 12%;
 
-    --popover: 30 33% 97%;
-    --popover-foreground: 222 47% 18%;
+    --popover: 36 30% 97%;
+    --popover-foreground: 20 15% 12%;
 
-    /* Primary: dark navy */
-    --primary: 222 47% 28%;
-    --primary-foreground: 30 33% 97%;
+    /* Primary: terracotta / burnt orange */
+    --primary: 14 62% 42%;
+    --primary-foreground: 36 30% 97%;
 
-    /* Secondary: light blue */
-    --secondary: 214 50% 78%;
-    --secondary-foreground: 222 47% 18%;
+    /* Secondary: warm sand */
+    --secondary: 35 25% 85%;
+    --secondary-foreground: 20 15% 20%;
 
-    /* Muted: soft cream-gray */
-    --muted: 30 20% 90%;
-    --muted-foreground: 222 20% 45%;
+    /* Muted: warm light gray-cream */
+    --muted: 35 18% 88%;
+    --muted-foreground: 20 10% 42%;
 
-    /* Accent: light blue */
-    --accent: 214 50% 78%;
-    --accent-foreground: 222 47% 18%;
+    /* Accent: terracotta tint */
+    --accent: 14 45% 88%;
+    --accent-foreground: 14 62% 32%;
 
     --destructive: 0 65% 45%;
-    --destructive-foreground: 30 33% 97%;
+    --destructive-foreground: 36 30% 97%;
 
-    --border: 214 25% 82%;
-    --input: 214 25% 85%;
-    --ring: 222 47% 28%;
+    --border: 30 18% 82%;
+    --input: 30 18% 86%;
+    --ring: 14 62% 42%;
 
-    --chart-1: 222 47% 28%;
-    --chart-2: 214 50% 65%;
-    --chart-3: 214 50% 78%;
-    --chart-4: 222 35% 45%;
-    --chart-5: 214 40% 55%;
+    --chart-1: 14 62% 42%;
+    --chart-2: 35 40% 60%;
+    --chart-3: 20 15% 40%;
+    --chart-4: 14 45% 65%;
+    --chart-5: 35 25% 75%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 30 33% 95%;
-    --sidebar-foreground: 222 47% 18%;
-    --sidebar-primary: 222 47% 28%;
-    --sidebar-primary-foreground: 30 33% 97%;
-    --sidebar-accent: 214 50% 78%;
-    --sidebar-accent-foreground: 222 47% 18%;
-    --sidebar-border: 214 25% 82%;
-    --sidebar-ring: 222 47% 28%;
+    --sidebar-background: 36 28% 94%;
+    --sidebar-foreground: 20 15% 12%;
+    --sidebar-primary: 14 62% 42%;
+    --sidebar-primary-foreground: 36 30% 97%;
+    --sidebar-accent: 14 45% 88%;
+    --sidebar-accent-foreground: 14 62% 32%;
+    --sidebar-border: 30 18% 82%;
+    --sidebar-ring: 14 62% 42%;
   }
 }
 
 @layer base {
   .dark {
-    --background: 222 35% 12%;
-    --foreground: 30 33% 95%;
-    --card: 222 35% 15%;
-    --card-foreground: 30 33% 95%;
-    --popover: 222 35% 15%;
-    --popover-foreground: 30 33% 95%;
-    --primary: 214 50% 68%;
-    --primary-foreground: 222 47% 18%;
-    --secondary: 222 35% 22%;
-    --secondary-foreground: 30 33% 90%;
-    --muted: 222 30% 18%;
-    --muted-foreground: 214 25% 60%;
-    --accent: 214 50% 68%;
-    --accent-foreground: 222 47% 18%;
+    --background: 20 15% 10%;
+    --foreground: 36 28% 92%;
+    --card: 20 15% 13%;
+    --card-foreground: 36 28% 92%;
+    --popover: 20 15% 13%;
+    --popover-foreground: 36 28% 92%;
+    --primary: 14 62% 52%;
+    --primary-foreground: 20 15% 10%;
+    --secondary: 20 12% 20%;
+    --secondary-foreground: 36 28% 88%;
+    --muted: 20 12% 16%;
+    --muted-foreground: 35 15% 55%;
+    --accent: 14 35% 22%;
+    --accent-foreground: 14 62% 62%;
     --destructive: 0 65% 55%;
-    --destructive-foreground: 30 33% 97%;
-    --border: 222 30% 22%;
-    --input: 222 30% 20%;
-    --ring: 214 50% 68%;
+    --destructive-foreground: 36 30% 97%;
+    --border: 20 12% 22%;
+    --input: 20 12% 20%;
+    --ring: 14 62% 52%;
   }
 }
 
