@@ -146,7 +146,7 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
               disabled={!form.name.trim() || submitting}
               className="w-full py-3 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 select-none"
             >
-              {submitting ? 'Publishing…' : 'Publish Guide'}
+              {submitting ? (isEditing ? 'Saving…' : 'Publishing…') : (isEditing ? 'Save Changes' : 'Publish Guide')}
             </button>
           </DrawerFooter>
         </form>
