@@ -110,7 +110,7 @@ export default function Marketplace() {
           </div>
         ) : (
           filtered.map(listing => (
-            <MarketplaceCard key={listing.id} listing={listing} />
+            <MarketplaceCard key={listing.id} listing={listing} isAdmin={isAdmin} onEdit={(l) => setEditingListing(l)} />
           ))
         )}
       </div>
