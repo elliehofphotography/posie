@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,80 +9,78 @@
     --font-playfair: 'DM Sans', system-ui, sans-serif;
     --font-dm: 'DM Sans', system-ui, sans-serif;
 
-    /* Dusty blue base */
-    --background: 210 35% 88%;
+    /* Pale yellow base */
+    --background: 52 48% 94%;
     --foreground: 22 40% 16%;
 
-    /* Cards: pale yellow-white */
-    --card: 52 45% 96%;
+    /* Cards: soft warm white-yellow */
+    --card: 50 40% 97%;
     --card-foreground: 22 40% 16%;
 
-    --popover: 52 45% 96%;
+    --popover: 50 40% 97%;
     --popover-foreground: 22 40% 16%;
 
     /* Primary: warm brown */
     --primary: 22 55% 28%;
-    --primary-foreground: 52 45% 96%;
+    --primary-foreground: 50 40% 97%;
 
-    /* Secondary: deeper dusty blue */
+    /* Secondary: dusty light blue */
     --secondary: 210 32% 72%;
     --secondary-foreground: 22 40% 16%;
 
-    /* Muted: light blue-gray */
-    --muted: 210 28% 82%;
-    --muted-foreground: 22 18% 42%;
+    /* Muted */
+    --muted: 50 28% 88%;
+    --muted-foreground: 22 18% 44%;
 
-    /* Accent: pale yellow */
-    --accent: 52 50% 90%;
+    /* Accent: pale blue */
+    --accent: 210 28% 86%;
     --accent-foreground: 22 55% 28%;
 
     --destructive: 0 58% 42%;
-    --destructive-foreground: 52 45% 96%;
+    --destructive-foreground: 50 40% 97%;
 
-    --border: 210 22% 76%;
-    --input: 210 22% 80%;
+    --border: 40 20% 82%;
+    --input: 40 20% 86%;
     --ring: 22 55% 28%;
 
-    --chart-1: 22 55% 28%;
-    --chart-2: 210 35% 60%;
-    --chart-3: 52 48% 78%;
-    --chart-4: 22 35% 48%;
-    --chart-5: 210 22% 50%;
+    /* Title color: dusty blue */
+    --title: 210 38% 48%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 210 35% 88%;
+    --sidebar-background: 52 48% 94%;
     --sidebar-foreground: 22 40% 16%;
     --sidebar-primary: 22 55% 28%;
-    --sidebar-primary-foreground: 52 45% 96%;
-    --sidebar-accent: 52 50% 90%;
+    --sidebar-primary-foreground: 50 40% 97%;
+    --sidebar-accent: 210 28% 86%;
     --sidebar-accent-foreground: 22 55% 28%;
-    --sidebar-border: 210 22% 76%;
+    --sidebar-border: 40 20% 82%;
     --sidebar-ring: 22 55% 28%;
   }
 }
 
 @layer base {
   .dark {
-    --background: 210 28% 14%;
-    --foreground: 52 40% 90%;
-    --card: 210 25% 18%;
-    --card-foreground: 52 40% 90%;
-    --popover: 210 25% 18%;
-    --popover-foreground: 52 40% 90%;
+    --background: 25 25% 12%;
+    --foreground: 50 40% 90%;
+    --card: 25 25% 15%;
+    --card-foreground: 50 40% 90%;
+    --popover: 25 25% 15%;
+    --popover-foreground: 50 40% 90%;
     --primary: 22 45% 55%;
-    --primary-foreground: 210 28% 14%;
-    --secondary: 210 22% 28%;
-    --secondary-foreground: 52 35% 85%;
-    --muted: 210 20% 22%;
-    --muted-foreground: 210 18% 55%;
-    --accent: 52 30% 22%;
-    --accent-foreground: 52 48% 78%;
+    --primary-foreground: 25 25% 12%;
+    --secondary: 210 22% 38%;
+    --secondary-foreground: 50 35% 85%;
+    --muted: 25 18% 20%;
+    --muted-foreground: 40 18% 55%;
+    --accent: 210 20% 26%;
+    --accent-foreground: 210 30% 74%;
     --destructive: 0 58% 52%;
-    --destructive-foreground: 52 40% 97%;
-    --border: 210 18% 24%;
-    --input: 210 18% 22%;
+    --destructive-foreground: 50 40% 97%;
+    --border: 25 18% 22%;
+    --input: 25 18% 20%;
     --ring: 22 45% 55%;
+    --title: 210 38% 65%;
   }
 }
 
@@ -100,5 +98,10 @@
 
   h1, h2, h3 {
     font-family: var(--font-dm);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-style: normal;
+    color: hsl(var(--title));
+    letter-spacing: 0.06em;
   }
 }
