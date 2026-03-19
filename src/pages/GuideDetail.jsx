@@ -52,16 +52,9 @@ export default function GuideDetail() {
         photo_count: guidePhotos.length
       });
 
-      // Find or create "All Photos" template
+      // Find existing "All Photos" template
       const templates = await base44.entities.ShootTemplate.list();
-      let allPhotosTemplate = templates.find(t => t.name === 'All Photos');
-      if (!allPhotosTemplate) {
-        allPhotosTemplate = await base44.entities.ShootTemplate.create({
-          name: 'All Photos',
-          template_type: 'gallery',
-          photo_count: 0
-        });
-      }
+      const allPhotosTemplate = templates.find(t => t.name === 'All Photos');
 
       // Add all guide photos to both templates
       let newTemplatePhotoCount = 0;
