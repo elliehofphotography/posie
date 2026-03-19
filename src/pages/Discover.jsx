@@ -24,9 +24,12 @@ export default function Discover() {
   const [showAdd, setShowAdd] = useState(false);
   const [savingPost, setSavingPost] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
+  const [editingPost, setEditingPost] = useState(null);
   const [user, setUser] = useState(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { user: authUser } = useAuth();
+  const isAdmin = authUser?.role === 'admin';
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
