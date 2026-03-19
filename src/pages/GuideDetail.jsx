@@ -29,8 +29,6 @@ export default function GuideDetail() {
   });
 
   const alreadyOwned = purchases.length > 0;
-  const priceLabel = listing?.price === 0 ? 'Free' : listing?.price ? `$${listing.price.toFixed(2)}` : '';
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const purchaseMutation = useMutation({
     mutationFn: () => base44.entities.Purchase.create({ listing_id: id, user_email: user.email }),
@@ -39,40 +37,10 @@ export default function GuideDetail() {
     },
   });
 
-  const handlePurchase = async () => {
+  const handleAdd = () => {
     if (!listing || !user) return;
-
-    if (listing.price === 0) {
-      purchaseMutation.mutate();
-      return;
-    }
-
-    // Check if running in iframe (preview mode)
-    if (window.self !== window.top) {
-      alert('Checkout only works from the published app. Please open the app in a new tab.');
-      return;
-    }
-
-    setCheckoutLoading(true);
-    const response = await base44.functions.invoke('createCheckoutSession', {
-      listing_id: id,
-      success_url: `${window.location.origin}/GuideDetail?id=${id}&purchased=true`,
-      cancel_url: `${window.location.origin}/GuideDetail?id=${id}`,
-    });
-    setCheckoutLoading(false);
-
-    if (response.data?.url) {
-      window.location.href = response.data.url;
-    }
+    purchaseMutation.mutate();
   };
-
-  // Handle return from Stripe
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('purchased') === 'true') {
-      queryClient.invalidateQueries({ queryKey: ['purchases', id, user?.email] });
-    }
-  }, [user?.email]);
 
   if (isLoading || !listing) {
     return (
