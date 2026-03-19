@@ -134,7 +134,7 @@ export default function AddPhotoDialog({ open, onOpenChange, onSubmit, editPhoto
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border font-dm">
-                  {CATEGORIES.map(c => (
+                  {categories.map(c => (
                     <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
                   ))}
                 </SelectContent>
