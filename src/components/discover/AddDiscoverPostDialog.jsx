@@ -212,7 +212,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
               disabled={!canSubmit}
               className="bg-primary text-primary-foreground hover:bg-primary/90 font-dm rounded-full px-6">
               
-              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Share'}
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : editPost ? 'Save' : 'Share'}
             </Button>
           </DialogFooter>
         </form>
