@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MoreVertical, Trash2, Pencil, List, Images } from 'lucide-react';
+import { Camera, MoreVertical, Trash2, Pencil, List, Images, ImagePlus } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import ChangeCoverDialog from './ChangeCoverDialog';
 
-export default function TemplateCard({ template, onDelete, onRename }) {
+export default function TemplateCard({ template, onDelete, onRename, onChangeCover }) {
   const isShotList = template.template_type === 'shot_list';
   const linkTo = isShotList
     ? `/ShotList?id=${template.id}`
     : `/Template?id=${template.id}`;
+
+  const [showCoverPicker, setShowCoverPicker] = useState(false);
 
   return (
     <div className="group relative">
@@ -58,11 +61,25 @@ export default function TemplateCard({ template, onDelete, onRename }) {
           <DropdownMenuItem onClick={() => onRename(template)}>
             <Pencil className="w-4 h-4 mr-2" /> Rename
           </DropdownMenuItem>
+          {!isShotList && (
+            <DropdownMenuItem onClick={() => setShowCoverPicker(true)}>
+              <ImagePlus className="w-4 h-4 mr-2" /> Change Cover
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => onDelete(template)} className="text-destructive">
             <Trash2 className="w-4 h-4 mr-2" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {showCoverPicker && (
+        <ChangeCoverDialog
+          open={showCoverPicker}
+          onOpenChange={setShowCoverPicker}
+          template={template}
+          onSelect={(imageUrl) => onChangeCover(template, imageUrl)}
+        />
+      )}
     </div>
   );
 }
