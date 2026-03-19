@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Compass, Store } from 'lucide-react';
 
 export const TAB_ROOTS = [
-  { path: '/Home', icon: Home, label: 'Templates' },
+  { path: '/Home', icon: Home, label: 'Home' },
   { path: '/Discover', icon: Compass, label: 'Discover' },
   { path: '/Marketplace', icon: Store, label: 'Market' },
 ];
