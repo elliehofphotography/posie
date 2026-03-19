@@ -54,31 +54,24 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
         </div>
       </Link>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="absolute top-2.5 right-2.5 h-7 w-7 bg-white/25 backdrop-blur-sm text-white hover:bg-white/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <MoreVertical className="w-3.5 h-3.5" />
+      <MobileMenu
+        trigger={
+          <button className="absolute top-2.5 right-2.5 h-9 w-9 bg-white/25 backdrop-blur-sm text-white hover:bg-white/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <MoreVertical className="w-4 h-4" />
           </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="bg-card border-border font-dm">
-          <DropdownMenuItem onClick={() => onRename(template)}>
-            <Pencil className="w-4 h-4 mr-2" /> Rename
-          </DropdownMenuItem>
-          {!isShotList && (
-            <>
-              <DropdownMenuItem onClick={() => setShowEditGallery(true)}>
-                <Settings className="w-4 h-4 mr-2" /> Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setShowCoverPicker(true)}>
-                <ImagePlus className="w-4 h-4 mr-2" /> Change Cover
-              </DropdownMenuItem>
-            </>
-          )}
-          <DropdownMenuItem onClick={() => onDelete(template)} className="text-destructive">
-            <Trash2 className="w-4 h-4 mr-2" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        }
+        items={[
+          { label: 'Rename', icon: <Pencil className="w-4 h-4" />, onClick: () => onRename(template) },
+          ...(isShotList ? [] : [
+            { label: 'Edit', icon: <Settings className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
+            { label: 'Change Cover', icon: <ImagePlus className="w-4 h-4" />, onClick: () => setShowCoverPicker(true) },
+          ]),
+          { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(template), destructive: true },
+        ]}
+        open={menuOpen}
+        onOpenChange={setMenuOpen}
+        title="Template Options"
+      />
 
       {showCoverPicker && (
         <ChangeCoverDialog
