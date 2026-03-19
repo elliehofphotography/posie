@@ -39,10 +39,20 @@ const EMPTY = {
   owns_copyright: false
 };
 
-export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) {
+export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, editPost }) {
   const [form, setForm] = useState(EMPTY);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    if (editPost) {
+      setForm({ ...EMPTY, ...editPost });
+      setPreview(editPost.image_url || null);
+    } else {
+      setForm(EMPTY);
+      setPreview(null);
+    }
+  }, [editPost, open]);
 
   const set = (key, val) => setForm((f) => ({ ...f, [key]: val }));
 
