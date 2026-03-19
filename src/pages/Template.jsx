@@ -6,6 +6,7 @@ import { ArrowLeft, Plus, Play, List, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PhotoCard from '../components/photos/PhotoCard';
 import AddPhotoDialog from '../components/photos/AddPhotoDialog';
+import ImageLightbox from '../components/ui/ImageLightbox';
 
 export default function Template() {
   const urlParams = new URLSearchParams(window.location.search);
