@@ -4,6 +4,16 @@ import { base44 } from '@/api/base44Client';
 import { getUserPoseCategories } from '@/lib/poseCategories';
 
 export default function PoseCategoryBar({ activeCategory, onChange }) {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    base44.auth.me().then(u => {
+      setCategories(getUserPoseCategories(u?.pose_categories));
+    }).catch(() => {
+      setCategories(getUserPoseCategories(null));
+    });
+  }, []);
+
   return (
     <div className="flex items-center gap-2 overflow-x-auto px-4 py-2" style={{ scrollbarWidth: 'none' }}>
       {activeCategory && (
@@ -14,7 +24,7 @@ export default function PoseCategoryBar({ activeCategory, onChange }) {
           <X className="w-3.5 h-3.5" />
         </button>
       )}
-      {POSE_CATEGORIES.map(cat => (
+      {categories.map(cat => (
         <button
           key={cat.value}
           onClick={() => onChange(activeCategory === cat.value ? null : cat.value)}
