@@ -12,6 +12,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
     : `/Template?id=${template.id}`;
 
   const [showCoverPicker, setShowCoverPicker] = useState(false);
+  const [showEditGallery, setShowEditGallery] = useState(false);
 
   return (
     <div className="group relative">
