@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import PhotoCard from '../components/photos/PhotoCard';
 import AddPhotoDialog from '../components/photos/AddPhotoDialog';
 import ImageLightbox from '../components/ui/ImageLightbox';
+import SortOptionsDialog from '../components/templates/SortOptionsDialog';
 
 export default function Template() {
   const urlParams = new URLSearchParams(window.location.search);
