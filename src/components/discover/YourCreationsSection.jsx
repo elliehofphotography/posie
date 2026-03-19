@@ -16,6 +16,7 @@ export default function YourCreationsSection({ posts, userEmail }) {
 
   const deleteCreationMutation = useMutation({
     mutationFn: async (postId) => {
+      haptic.delete();
       const post = posts.find(p => p.id === postId);
       if (!post) return;
 
