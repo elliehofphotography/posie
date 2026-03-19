@@ -1,17 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-
-const POSE_CATEGORIES = [
-  { value: 'standing', label: 'Standing' },
-  { value: 'sitting', label: 'Sitting' },
-  { value: 'walking', label: 'Walking' },
-  { value: 'close_up', label: 'Close-up' },
-  { value: 'wide_shot', label: 'Wide Shot' },
-  { value: 'detail', label: 'Detail' },
-  { value: 'interaction', label: 'Interaction' },
-  { value: 'candid', label: 'Candid' },
-  { value: 'other', label: 'Other' },
-];
+import { base44 } from '@/api/base44Client';
+import { getUserPoseCategories } from '@/lib/poseCategories';
 
 export default function PoseCategoryBar({ activeCategory, onChange }) {
   return (
