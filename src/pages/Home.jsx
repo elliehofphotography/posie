@@ -64,22 +64,22 @@ export default function Home() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const { data: purchases = [] } = useQuery({
-    queryKey: ['my_purchases', user?.email],
-    queryFn: () => base44.entities.Purchase.filter({ user_email: user.email }),
+  const { data: downloads = [] } = useQuery({
+    queryKey: ['my_downloads', user?.email],
+    queryFn: () => base44.entities.Download.filter({ user_email: user.email }),
     enabled: !!user?.email
   });
 
-  const purchasedListingIds = purchases.map((p) => p.listing_id);
+  const downloadedListingIds = downloads.map((d) => d.listing_id);
 
-  const { data: purchasedListings = [] } = useQuery({
-    queryKey: ['purchased_listings', purchasedListingIds.join(',')],
+  const { data: downloadedListings = [] } = useQuery({
+    queryKey: ['downloaded_listings', downloadedListingIds.join(',')],
     queryFn: async () => {
-      if (purchasedListingIds.length === 0) return [];
+      if (downloadedListingIds.length === 0) return [];
       const all = await base44.entities.MarketplaceListing.list();
-      return all.filter((l) => purchasedListingIds.includes(l.id));
+      return all.filter((l) => downloadedListingIds.includes(l.id));
     },
-    enabled: purchasedListingIds.length > 0
+    enabled: downloadedListingIds.length > 0
   });
 
   const { data: templates = [], isLoading } = useQuery({
