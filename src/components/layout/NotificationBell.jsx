@@ -49,7 +49,7 @@ export default function NotificationBell({ userEmail }) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-13 z-50 w-80 bg-card border border-border rounded-2xl shadow-xl overflow-hidden">
+          <div className="fixed left-4 right-4 top-24 z-50 w-auto bg-card border border-border rounded-2xl shadow-xl overflow-hidden" style={{ maxWidth: '360px', margin: '0 auto' }}>
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
               <span className="font-dm text-sm font-semibold text-foreground">Notifications</span>
               <button onClick={() => setOpen(false)}>
