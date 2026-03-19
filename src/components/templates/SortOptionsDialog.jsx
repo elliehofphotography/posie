@@ -28,8 +28,8 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
     },
     {
       id: 'category',
-      label: 'Category Priority',
-      description: categoryOrder,
+      label: 'Category Sort',
+      description: `${categoryOrder} (change order in settings)`,
       icon: Layers,
     },
     {
