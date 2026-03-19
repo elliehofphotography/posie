@@ -13,6 +13,7 @@ import ImageLightbox from '../components/ui/ImageLightbox';
 import NotificationBell from '../components/layout/NotificationBell';
 import YourCreationsSection from '../components/discover/YourCreationsSection';
 import MobileMenu from '../components/ui/mobile-menu';
+import { haptic } from '@/lib/haptic';
 
 const SAMPLE_CATEGORIES = [
   'Wedding', 'Bridal', 'Couples', 'Portrait', 'Graduation', 'Maternity',
