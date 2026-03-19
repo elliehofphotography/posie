@@ -28,6 +28,7 @@ export default function Discover() {
   const [lightboxImage, setLightboxImage] = useState(null);
   const [editingPost, setEditingPost] = useState(null);
   const [user, setUser] = useState(null);
+  const [adminMenuOpen, setAdminMenuOpen] = useState(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
