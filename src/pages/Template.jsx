@@ -186,6 +186,10 @@ export default function Template() {
         onSubmit={(data) => addPhotoMutation.mutate(data)}
       />
 
+      {lightboxImage && (
+        <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
+      )}
+
       {editingPhoto && (
         <AddPhotoDialog
           open={true}
