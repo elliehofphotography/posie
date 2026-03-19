@@ -23,6 +23,7 @@ export default function ShootMode() {
 
   const [queue, setQueue] = useState([]);
   const [completed, setCompleted] = useState([]);
+  const [skipped, setSkipped] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showMeta, setShowMeta] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
