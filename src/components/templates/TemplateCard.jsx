@@ -87,6 +87,12 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
           onSelect={(imageUrl) => onChangeCover(template, imageUrl)}
         />
       )}
+
+      <EditGallerySheet
+        open={showEditGallery}
+        onOpenChange={setShowEditGallery}
+        template={template}
+      />
     </div>
   );
 }
