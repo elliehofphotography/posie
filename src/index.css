@@ -94,6 +94,13 @@
     letter-spacing: 0.01em;
   }
 
+  button, a, [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
   h1, h2, h3 {
     font-family: var(--font-vina);
     font-weight: 700;
