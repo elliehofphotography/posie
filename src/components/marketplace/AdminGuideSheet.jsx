@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Upload, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-const CATEGORIES = ['Wedding', 'Engagement', 'Portrait', 'Family', 'Fashion', 'Graduation', 'Newborn', 'Boudoir', 'Other'];
+const CATEGORIES = ['Wedding', 'Bridal', 'Engagement', 'Portrait', 'Family', 'Fashion', 'Graduation', 'Newborn', 'Boudoir', 'Other'];
 
 function ImageUploadField({ label, value, onChange }) {
   const [uploading, setUploading] = useState(false);

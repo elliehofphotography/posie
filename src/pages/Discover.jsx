@@ -7,7 +7,7 @@ import PullToRefresh from '../components/layout/PullToRefresh';
 import AddDiscoverPostDialog from '../components/discover/AddDiscoverPostDialog';
 
 const SAMPLE_CATEGORIES = [
-  'Wedding', 'Couples', 'Portrait', 'Graduation', 'Maternity',
+  'Wedding', 'Bridal', 'Couples', 'Portrait', 'Graduation', 'Maternity',
   'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement',
 ];
 
