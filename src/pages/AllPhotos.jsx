@@ -256,10 +256,10 @@ export default function AllPhotos() {
 
       {/* Delete Button (select mode) */}
       {selectMode && selected.length > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 px-5 pb-4 z-40">
+        <div className="fixed bottom-20 left-0 right-0 px-5 pb-4 z-40" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
           <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="w-full py-4 rounded-2xl bg-destructive text-destructive-foreground font-dm text-sm font-semibold flex items-center justify-center gap-2 shadow-lg"
+            onClick={() => { setShowDeleteConfirm(true); hapticFeedback(); }}
+            className="w-full min-h-[48px] py-4 rounded-2xl bg-destructive text-destructive-foreground font-dm text-sm font-semibold flex items-center justify-center gap-2 shadow-lg"
           >
             <Trash2 className="w-4 h-4" />
             Delete ({selected.length})
