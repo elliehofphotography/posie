@@ -13,10 +13,15 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
       base44.auth.me().then(u => {
         const cats = getUserPoseCategories(u?.pose_categories);
         const labels = cats.map(c => c.label);
-        const displayLabels = labels.length > 3 ? labels.slice(0, 3).join(' → ') + ' → ...' : labels.join(' → ');
+        let displayLabels;
+        if (labels.length > 3) {
+          displayLabels = labels.slice(0, 2).join(' → ') + ' and ' + labels[2] + ' ...';
+        } else {
+          displayLabels = labels.join(' → ');
+        }
         setCategoryOrder(displayLabels);
       }).catch(() => {
-        setCategoryOrder('Standing → Sitting → Walking → ...');
+        setCategoryOrder('Standing → Sitting and Walking ...');
       });
     }
   }, [open]);
