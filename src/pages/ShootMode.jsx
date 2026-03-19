@@ -10,12 +10,25 @@ import MetadataPanel from '../components/shoot/MetadataPanel';
 
 const PRIORITY_ORDER = { red: 0, yellow: 1, green: 2 };
 
+const POSE_CATEGORY_ORDER = {
+  'standing': 0,
+  'close_up': 1,
+  'walking': 2,
+  'wide_shot': 3,
+  'sitting': 4,
+  'interaction': 5,
+  'detail': 6,
+  'candid': 7,
+  'other': 8,
+};
+
 export default function ShootMode() {
   const urlParams = new URLSearchParams(window.location.search);
-  // Support single id= OR multi ids= (comma-separated gallery IDs) + optional shotlist=
+  // Support single id= OR multi ids= (comma-separated gallery IDs) + optional shotlist= + optional sortBy=
   const singleId = urlParams.get('id');
   const multiIds = urlParams.get('ids');
   const shotListOverrideId = urlParams.get('shotlist');
+  const sortBy = urlParams.get('sortBy') || 'color';
   const templateId = singleId || (multiIds ? multiIds.split(',')[0] : null);
   const galleryIds = multiIds ? multiIds.split(',') : (singleId ? [singleId] : []);
   const isMulti = !!multiIds;
