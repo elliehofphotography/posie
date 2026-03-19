@@ -92,22 +92,45 @@ export default function CategorySortingSheet({ open, onOpenChange, user, onSaved
           </div>
 
           {availableForAdding.length > 0 && (
-            <div>
-              <p className="font-dm text-xs uppercase tracking-wider text-muted-foreground mb-3">Add Categories</p>
-              <div className="space-y-1.5">
-                {availableForAdding.map(cat => (
-                  <button
-                    key={cat.value}
-                    onClick={() => handleToggle(cat.value)}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 border border-dashed border-border hover:border-primary/40 transition-colors text-left"
-                  >
-                    <Plus className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <span className="font-dm text-sm text-foreground">{cat.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+           <div>
+             <p className="font-dm text-xs uppercase tracking-wider text-muted-foreground mb-3">Add Default Categories</p>
+             <div className="space-y-1.5">
+               {availableForAdding.map(cat => (
+                 <button
+                   key={cat.value}
+                   onClick={() => handleToggle(cat.value)}
+                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 border border-dashed border-border hover:border-primary/40 transition-colors text-left"
+                 >
+                   <Plus className="w-4 h-4 text-muted-foreground shrink-0" />
+                   <span className="font-dm text-sm text-foreground">{cat.label}</span>
+                 </button>
+               ))}
+             </div>
+           </div>
           )}
+
+          <div>
+           <p className="font-dm text-xs uppercase tracking-wider text-muted-foreground mb-3">Create Custom Category</p>
+           <div className="flex gap-2">
+             <Input
+               value={newCategoryInput}
+               onChange={(e) => setNewCategoryInput(e.target.value)}
+               onKeyDown={(e) => {
+                 if (e.key === 'Enter') handleAddCustomCategory();
+               }}
+               placeholder="Enter category name"
+               className="bg-muted border-border font-dm text-sm flex-1"
+             />
+             <Button
+               onClick={handleAddCustomCategory}
+               disabled={!newCategoryInput.trim()}
+               variant="outline"
+               className="px-3"
+             >
+               <Plus className="w-4 h-4" />
+             </Button>
+           </div>
+          </div>
         </div>
 
         <div className="border-t border-border pt-4 space-y-2 mt-4">
