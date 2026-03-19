@@ -85,7 +85,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="bg-card border-border max-w-sm max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-primary text-2xl font-extralight uppercase tracking-widest">SHARE A PHOTO</DialogTitle>
+          <DialogTitle className="text-primary text-2xl font-extralight uppercase tracking-widest">{editPost ? 'EDIT PHOTO' : 'SHARE A PHOTO'}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
