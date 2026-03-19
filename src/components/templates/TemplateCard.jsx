@@ -64,9 +64,14 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
             <Pencil className="w-4 h-4 mr-2" /> Rename
           </DropdownMenuItem>
           {!isShotList && (
-            <DropdownMenuItem onClick={() => setShowCoverPicker(true)}>
-              <ImagePlus className="w-4 h-4 mr-2" /> Change Cover
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem onClick={() => setShowEditGallery(true)}>
+                <Settings className="w-4 h-4 mr-2" /> Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setShowCoverPicker(true)}>
+                <ImagePlus className="w-4 h-4 mr-2" /> Change Cover
+              </DropdownMenuItem>
+            </>
           )}
           <DropdownMenuItem onClick={() => onDelete(template)} className="text-destructive">
             <Trash2 className="w-4 h-4 mr-2" /> Delete
