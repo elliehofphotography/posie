@@ -16,6 +16,7 @@ import Discover from './pages/Discover';
 import Marketplace from './pages/Marketplace';
 import AllPhotos from './pages/AllPhotos';
 import Settings from './pages/Settings';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -53,6 +54,7 @@ const AuthenticatedApp = () => {
         <Route path="/Marketplace" element={<Marketplace />} />
         <Route path="/AllPhotos" element={<AllPhotos />} />
         <Route path="/Settings" element={<Settings />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
       </Route>
       <Route path="/ShootMode" element={<ShootMode />} />
       <Route path="*" element={<PageNotFound />} />

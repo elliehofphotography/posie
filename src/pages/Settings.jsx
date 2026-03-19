@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft, Trash2, LogOut, User, Mail, Shield,
   Bell, HelpCircle, ChevronRight, Copy, Check,
@@ -179,10 +179,8 @@ export default function Settings() {
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
             </a>
-            <a
-              href="https://example.com/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/PrivacyPolicy"
               className="flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors select-none"
             >
               <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
@@ -193,7 +191,7 @@ export default function Settings() {
                 <p className="font-dm text-xs text-muted-foreground mt-0.5">How we handle your data</p>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-            </a>
+            </Link>
             <a
               href="https://apps.apple.com"
               target="_blank"
