@@ -108,7 +108,7 @@ export default function AllPhotos() {
           </div>
         ) : (
           <div className="columns-2 gap-3">
-            {photos.map(photo => (
+            {(activeCategory ? photos.filter(p => p.pose_category === activeCategory) : photos).map(photo => (
               <div key={photo.id} className="break-inside-avoid mb-3">
                 <PhotoCard
                   photo={photo}
