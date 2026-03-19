@@ -240,6 +240,9 @@ export default function Discover() {
           <PoseCategoryBar activeCategory={activePoseCategory} onChange={setActivePoseCategory} />
         )}
 
+        {/* Your Creations Section */}
+        <YourCreationsSection posts={userPosts.filter(p => p.created_by === user?.email)} userEmail={user?.email} />
+
         {/* Trending label */}
         <div className="flex items-center gap-2 px-5 mb-4">
           <TrendingUp className="w-3.5 h-3.5 text-primary" />
