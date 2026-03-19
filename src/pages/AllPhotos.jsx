@@ -93,7 +93,7 @@ export default function AllPhotos() {
 
   const deleteSelectedMutation = useMutation({
     mutationFn: async (selectedIds) => {
-      hapticFeedback();
+      haptic.delete();
       const selectedPhotos = photos.filter(p => selectedIds.includes(p.id));
       const selectedImageUrls = selectedPhotos.map(p => p.image_url);
 
