@@ -150,8 +150,8 @@ export default function GuideDetail() {
 
       {/* Download CTA */}
       <div
-        className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-background/95 backdrop-blur-xl border-t border-border"
-        style={{ paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}>
+        className="fixed left-0 right-0 px-5 py-4 bg-background/95 backdrop-blur-xl border-t border-border"
+        style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>
         
         {alreadyOwned ?
         <div className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-muted text-muted-foreground font-dm text-sm">
