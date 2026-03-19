@@ -22,13 +22,13 @@ export default function GuideDetail() {
     enabled: !!id
   });
 
-  const { data: purchases = [] } = useQuery({
-    queryKey: ['purchases', id, user?.email],
-    queryFn: () => base44.entities.Purchase.filter({ listing_id: id, user_email: user.email }),
+  const { data: downloads = [] } = useQuery({
+    queryKey: ['downloads', id, user?.email],
+    queryFn: () => base44.entities.Download.filter({ listing_id: id, user_email: user.email }),
     enabled: !!id && !!user?.email
   });
 
-  const alreadyOwned = purchases.length > 0;
+  const alreadyDownloaded = downloads.length > 0;
 
   const { data: guidePhotos = [] } = useQuery({
     queryKey: ['guide_photos', id],
@@ -36,10 +36,10 @@ export default function GuideDetail() {
     enabled: !!id
   });
 
-  // Creates a Purchase record AND a ShootTemplate in the user's gallery
+  // Creates a Download record AND a ShootTemplate in the user's gallery
   const downloadMutation = useMutation({
     mutationFn: async () => {
-      await base44.entities.Purchase.create({ listing_id: id, user_email: user.email });
+      await base44.entities.Download.create({ listing_id: id, user_email: user.email });
       
       // Create new template for this guide
       const newTemplate = await base44.entities.ShootTemplate.create({
@@ -94,7 +94,7 @@ export default function GuideDetail() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['purchases', id, user?.email] });
+      queryClient.invalidateQueries({ queryKey: ['downloads', id, user?.email] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
     }
   });
@@ -203,10 +203,10 @@ export default function GuideDetail() {
         className="fixed left-0 right-0 px-5 py-4 bg-background/95 backdrop-blur-xl border-t border-border"
         style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>
         
-        {alreadyOwned ?
+        {alreadyDownloaded ?
         <div className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-muted text-muted-foreground font-dm text-sm">
             <CheckCircle2 className="w-4 h-4 text-green-500" />
-            Added to your gallery
+            Added to Downloaded Guides
           </div> :
 
         <button
