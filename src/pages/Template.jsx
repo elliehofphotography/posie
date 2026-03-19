@@ -20,6 +20,7 @@ export default function Template() {
   const [editingPhoto, setEditingPhoto] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
+  const [showSortDialog, setShowSortDialog] = useState(false);
 
   const { data: template } = useQuery({
     queryKey: ['template', templateId],
