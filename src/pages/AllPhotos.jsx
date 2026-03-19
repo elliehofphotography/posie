@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import PoseCategoryBar from '../components/ui/PoseCategoryBar';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
