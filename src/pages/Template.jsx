@@ -16,6 +16,7 @@ export default function Template() {
 
   const [showAddPhoto, setShowAddPhoto] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState(null);
+  const [lightboxImage, setLightboxImage] = useState(null);
 
   const { data: template } = useQuery({
     queryKey: ['template', templateId],
