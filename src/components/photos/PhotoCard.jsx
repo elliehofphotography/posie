@@ -22,11 +22,11 @@ const categoryLabels = {
 export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGallery, hideEdit, hideDelete }) {
   return (
     <div className="group relative cursor-pointer" onClick={onClick}>
-      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
+      <div className="relative rounded-2xl overflow-hidden bg-muted">
         <img
           src={photo.image_url}
           alt={photo.description || 'Inspiration'}
-          className="w-full h-full object-cover"
+          className="w-full h-auto block"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 

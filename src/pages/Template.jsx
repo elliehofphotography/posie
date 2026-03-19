@@ -130,9 +130,9 @@ export default function Template() {
       {/* Photo Grid */}
       <div className="p-4">
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="columns-2 gap-3">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="aspect-[3/4] rounded-2xl bg-muted animate-pulse" />
+              <div key={i} className="break-inside-avoid mb-3 aspect-[3/4] rounded-2xl bg-muted animate-pulse" />
             ))}
           </div>
         ) : photos.length === 0 ? (
@@ -153,14 +153,15 @@ export default function Template() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="columns-2 gap-3">
             {photos.map(p => (
-              <PhotoCard
-                key={p.id}
-                photo={p}
-                onEdit={(photo) => setEditingPhoto(photo)}
-                onDelete={(photo) => deletePhotoMutation.mutate(photo.id)}
-              />
+              <div key={p.id} className="break-inside-avoid mb-3">
+                <PhotoCard
+                  photo={p}
+                  onEdit={(photo) => setEditingPhoto(photo)}
+                  onDelete={(photo) => deletePhotoMutation.mutate(photo.id)}
+                />
+              </div>
             ))}
           </div>
         )}
