@@ -17,6 +17,18 @@ export default function Template() {
   const [showAddPhoto, setShowAddPhoto] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
+  const [activeCategory, setActiveCategory] = useState(null);
+
+  const CATEGORY_LABELS = {
+    standing: 'Standing',
+    sitting: 'Sitting',
+    walking: 'Walking',
+    close_up: 'Close-up',
+    wide_shot: 'Wide Shot',
+    detail: 'Detail',
+    interaction: 'Interaction',
+    other: 'Other',
+  };
 
   const { data: template } = useQuery({
     queryKey: ['template', templateId],
