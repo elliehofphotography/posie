@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import PhotoCard from '../components/photos/PhotoCard';
 import SaveToGalleryDialog from '../components/photos/SaveToGalleryDialog';
 import ImageLightbox from '../components/ui/ImageLightbox';
+import { haptic } from '@/lib/haptic';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription,
