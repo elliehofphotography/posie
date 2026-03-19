@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft, Trash2, LogOut, User, Mail, Shield,
   Bell, HelpCircle, ChevronRight, Copy, Check,
-  Pencil, MessageCircle, FileText, Star
+  Pencil, MessageCircle, FileText
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
