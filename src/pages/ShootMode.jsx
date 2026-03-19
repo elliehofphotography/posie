@@ -167,7 +167,7 @@ export default function ShootMode() {
           </button>
           <div className="text-center">
             <span className="font-dm text-white/70 text-xs">
-              {Math.min(currentIndex + 1, filteredQueue.length)} / {filteredQueue.length}
+              {completed.length} / {initialPhotos.length - skipped.length}
             </span>
           </div>
           <div className="flex items-center gap-1">
