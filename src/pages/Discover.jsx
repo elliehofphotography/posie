@@ -186,7 +186,11 @@ export default function Discover() {
           {SAMPLE_CATEGORIES.map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+              onClick={() => {
+                const next = activeCategory === cat ? null : cat;
+                setActiveCategory(next);
+                if (!next) setActivePoseCategory(null);
+              }}
               className={`px-4 py-1.5 rounded-full text-xs font-dm font-medium whitespace-nowrap transition-all border ${
                 activeCategory === cat
                   ? 'bg-primary text-primary-foreground border-primary'
@@ -198,8 +202,10 @@ export default function Discover() {
           ))}
         </div>
 
-        {/* Pose Category Filter */}
-        <PoseCategoryBar activeCategory={activePoseCategory} onChange={setActivePoseCategory} />
+        {/* Pose Category Filter — only shown once a category is selected */}
+        {activeCategory && (
+          <PoseCategoryBar activeCategory={activePoseCategory} onChange={setActivePoseCategory} />
+        )}
 
         {/* Trending label */}
         <div className="flex items-center gap-2 px-5 mb-4">
