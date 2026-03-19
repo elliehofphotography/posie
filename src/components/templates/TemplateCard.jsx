@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MoreVertical, Trash2, Pencil, List, Images, ImagePlus } from 'lucide-react';
+import { Camera, MoreVertical, Trash2, Pencil, List, Images, ImagePlus, Settings } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import ChangeCoverDialog from './ChangeCoverDialog';
+import EditGallerySheet from './EditGallerySheet';
 
 export default function TemplateCard({ template, onDelete, onRename, onChangeCover }) {
   const isShotList = template.template_type === 'shot_list';
