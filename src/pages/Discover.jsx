@@ -17,6 +17,7 @@ const SAMPLE_CATEGORIES = [
 
 export default function Discover() {
   const [activeCategory, setActiveCategory] = useState(null);
+  const [activePoseCategory, setActivePoseCategory] = useState(null);
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [savingPost, setSavingPost] = useState(null);
