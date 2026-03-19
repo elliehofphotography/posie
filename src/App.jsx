@@ -17,6 +17,7 @@ import Marketplace from './pages/Marketplace';
 import AllPhotos from './pages/AllPhotos';
 import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import GuideDetail from './pages/GuideDetail';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
