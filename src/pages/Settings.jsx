@@ -149,18 +149,26 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Notifications */}
+        {/* Preferences */}
         <div>
           <SectionLabel>Preferences</SectionLabel>
-          <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card border border-border">
-            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-              <Bell className="w-4 h-4 text-foreground" />
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card border border-border">
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <Bell className="w-4 h-4 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-dm text-sm font-medium text-foreground">Notifications</p>
+                <p className="font-dm text-xs text-muted-foreground mt-0.5">Session reminders &amp; updates</p>
+              </div>
+              <Switch checked={notifEnabled} onCheckedChange={handleNotifToggle} />
             </div>
-            <div className="flex-1">
-              <p className="font-dm text-sm font-medium text-foreground">Notifications</p>
-              <p className="font-dm text-xs text-muted-foreground mt-0.5">Session reminders &amp; updates</p>
-            </div>
-            <Switch checked={notifEnabled} onCheckedChange={handleNotifToggle} />
+            <SettingRow 
+              icon={Layers} 
+              label="Pose Categories" 
+              value="Customize &amp; reorder" 
+              onClick={() => setShowCategorySorting(true)} 
+            />
           </div>
         </div>
 
