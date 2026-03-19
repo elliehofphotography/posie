@@ -12,9 +12,11 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
     if (open) {
       base44.auth.me().then(u => {
         const cats = getUserPoseCategories(u?.pose_categories);
-        setCategoryOrder(cats.map(c => c.label).join(' → '));
+        const labels = cats.map(c => c.label);
+        const displayLabels = labels.length > 3 ? labels.slice(0, 3).join(' → ') + ' → ...' : labels.join(' → ');
+        setCategoryOrder(displayLabels);
       }).catch(() => {
-        setCategoryOrder('Standing → Sitting → Walking → Close-up → Wide Shot → Detail → Interaction → Candid → Other');
+        setCategoryOrder('Standing → Sitting → Walking → ...');
       });
     }
   }, [open]);
