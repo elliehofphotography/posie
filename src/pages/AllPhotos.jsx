@@ -266,7 +266,7 @@ export default function AllPhotos() {
           <AlertDialogHeader>
             <AlertDialogTitle className="font-playfair text-foreground">Delete these images?</AlertDialogTitle>
             <AlertDialogDescription className="font-dm text-muted-foreground">
-              Photos will be removed from any connected gallery. This action cannot be undone.
+              Photos will be removed from your galleries only. Other users' galleries are not affected.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
