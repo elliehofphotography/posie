@@ -167,7 +167,7 @@ export default function Home() {
     <PullToRefresh onRefresh={handleRefresh}>
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6">
+      <div className="px-5 pb-6" style={{ paddingTop: 'max(3.5rem, env(safe-area-inset-top))' }}>
         {selectMode ?
           <div className="flex items-center gap-2 w-full" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
             <button

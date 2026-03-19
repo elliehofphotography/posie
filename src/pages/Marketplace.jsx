@@ -38,7 +38,7 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="px-5 pt-14 pb-5 flex items-end justify-between">
+      <div className="px-5 pb-5 flex items-end justify-between" style={{ paddingTop: 'max(3.5rem, env(safe-area-inset-top))' }}>
         <div>
           <h1 className="font-vina text-4xl font-light uppercase tracking-widest text-primary">Marketplace</h1>
         </div>
