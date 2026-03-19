@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import BottomNav from './BottomNav';
+import BottomNav, { getActiveTab, TAB_ROOTS } from './BottomNav';
 
 const HIDE_NAV_PATHS = ['/ShootMode'];
 
@@ -28,7 +28,35 @@ const pageVariants = {
 export default function AppLayout() {
   useDarkMode();
   const location = useLocation();
+  const navigate = useNavigate();
   const hideNav = HIDE_NAV_PATHS.some(p => location.pathname.startsWith(p));
+  const activeTab = getActiveTab(location.pathname);
+
+  // Track the last visited path for each tab
+  const tabHistory = useRef({
+    '/Home': '/Home',
+    '/Discover': '/Discover',
+    '/Marketplace': '/Marketplace',
+  });
+
+  // Update tab history on every navigation
+  useEffect(() => {
+    const tab = getActiveTab(location.pathname);
+    if (tab) {
+      tabHistory.current[tab] = location.pathname + location.search;
+    }
+  }, [location.pathname, location.search]);
+
+  const handleTabPress = (tabPath) => {
+    if (tabPath === activeTab) {
+      // Tap active tab → go to root of that tab
+      navigate(tabPath);
+    } else {
+      // Switch to last visited path within that tab
+      const dest = tabHistory.current[tabPath] || tabPath;
+      navigate(dest);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background font-inter">
@@ -45,7 +73,7 @@ export default function AppLayout() {
           </motion.div>
         </AnimatePresence>
       </main>
-      {!hideNav && <BottomNav />}
+      {!hideNav && <BottomNav onTabPress={handleTabPress} />}
     </div>
   );
 }
