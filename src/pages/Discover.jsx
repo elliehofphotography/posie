@@ -305,6 +305,15 @@ export default function Discover() {
         onSubmit={(data) => createMutation.mutate(data)}
       />
 
+      {editingPost && (
+        <AddDiscoverPostDialog
+          open={true}
+          onOpenChange={(v) => { if (!v) setEditingPost(null); }}
+          editPost={editingPost}
+          onSubmit={(data) => updatePostMutation.mutate({ id: editingPost.id, data })}
+        />
+      )}
+
       {savingPost && (
         <DiscoverSaveToGalleryDialog
           open={true}
