@@ -185,7 +185,7 @@ export default function Discover() {
     <PullToRefresh onRefresh={() => queryClient.invalidateQueries({ queryKey: ['discover_posts'] })}>
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <div className="px-5 pb-5 flex items-center justify-between" style={{ paddingTop: 'max(3.5rem, env(safe-area-inset-top))' }}>
+        <div className="px-5 pb-5 flex items-center justify-between" style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
           <h1 className="font-vina text-4xl font-light uppercase tracking-widest text-primary">
             Discover
           </h1>
