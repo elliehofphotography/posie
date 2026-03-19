@@ -44,7 +44,7 @@ function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, on
         onRename={onRename} /> :
 
 
-      <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} />
+      <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} onChangeCover={onChangeCover} />
       )}
     </div>);
 
