@@ -5,8 +5,6 @@ import { MoreVertical, Pencil } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 export default function MarketplaceCard({ listing, isAdmin, onEdit }) {
-  const priceLabel = listing.price === 0 ? 'Free' : `$${listing.price.toFixed(2)}`;
-
   return (
     <div className="relative">
       <Link to={createPageUrl(`GuideDetail?id=${listing.id}`)}>
@@ -23,9 +21,7 @@ export default function MarketplaceCard({ listing, isAdmin, onEdit }) {
               {listing.category && (
                 <span className="font-dm text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground mr-2">{listing.category}</span>
               )}
-              <span className={`font-dm text-xs font-semibold ml-auto ${listing.price === 0 ? 'text-accent-foreground' : 'text-primary'}`}>
-                {priceLabel}
-              </span>
+              <span className="font-dm text-xs font-semibold ml-auto text-accent-foreground">Free</span>
             </div>
           </div>
         </div>
