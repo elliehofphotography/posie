@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft, Trash2, LogOut, User, Mail, Shield,
   Bell, HelpCircle, ChevronRight, Copy, Check,
-  Pencil, MessageCircle, FileText
+  Pencil, MessageCircle, FileText, Layers
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Switch } from '@/components/ui/switch';
 import EditProfileSheet from '@/components/settings/EditProfileSheet';
+import CategorySortingSheet from '@/components/settings/CategorySortingSheet';
 
 function SectionLabel({ children }) {
   return <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">{children}</p>;
