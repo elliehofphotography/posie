@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MoreVertical, Trash2, Pencil, FolderPlus } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import MobileMenu from '@/components/ui/mobile-menu';
 
 const priorityDots = {
   red: 'bg-red-500',
