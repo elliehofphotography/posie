@@ -56,9 +56,12 @@ export default function GuideDetail() {
       const templates = await base44.entities.ShootTemplate.list();
       const allPhotosTemplate = templates.find(t => t.name === 'All Photos');
 
-      // Add all guide photos to both templates
+      // Add all guide photos to new template and to All Photos if it exists
       let newTemplatePhotoCount = 0;
-      let allPhotosPhotoCount = await base44.entities.TemplatePhoto.filter({ template_id: allPhotosTemplate.id }).then(p => p.length);
+      let allPhotosPhotoCount = 0;
+      if (allPhotosTemplate) {
+        allPhotosPhotoCount = await base44.entities.TemplatePhoto.filter({ template_id: allPhotosTemplate.id }).then(p => p.length);
+      }
 
       for (const photo of guidePhotos) {
         // Add to new template
@@ -71,20 +74,24 @@ export default function GuideDetail() {
         });
         newTemplatePhotoCount++;
 
-        // Add to All Photos
-        await base44.entities.TemplatePhoto.create({
-          template_id: allPhotosTemplate.id,
-          image_url: photo.image_url,
-          description: photo.description || '',
-          pose_category: photo.pose_category || '',
-          sort_order: allPhotosPhotoCount
-        });
-        allPhotosPhotoCount++;
+        // Add to All Photos if it exists
+        if (allPhotosTemplate) {
+          await base44.entities.TemplatePhoto.create({
+            template_id: allPhotosTemplate.id,
+            image_url: photo.image_url,
+            description: photo.description || '',
+            pose_category: photo.pose_category || '',
+            sort_order: allPhotosPhotoCount
+          });
+          allPhotosPhotoCount++;
+        }
       }
 
       // Update template photo counts
       await base44.entities.ShootTemplate.update(newTemplate.id, { photo_count: newTemplatePhotoCount });
-      await base44.entities.ShootTemplate.update(allPhotosTemplate.id, { photo_count: allPhotosPhotoCount });
+      if (allPhotosTemplate) {
+        await base44.entities.ShootTemplate.update(allPhotosTemplate.id, { photo_count: allPhotosPhotoCount });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['purchases', id, user?.email] });
