@@ -111,6 +111,19 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit }) 
             </Select>
           </div>
 
+          {/* Shot Type / Pose Category */}
+          <div className="space-y-1.5">
+            <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Shot Type</Label>
+            <Select value={form.pose_category} onValueChange={(v) => set('pose_category', v)}>
+              <SelectTrigger className="bg-muted border-border font-dm">
+                <SelectValue placeholder="e.g. Standing, Sitting..." />
+              </SelectTrigger>
+              <SelectContent>
+                {POSE_CATEGORIES.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Title */}
           <div className="space-y-1.5">
             <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Title / Caption</Label>
