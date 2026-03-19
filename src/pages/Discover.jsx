@@ -79,7 +79,7 @@ export default function Discover() {
     if (!post.created_by || post.created_by === user?.email) return;
     await base44.entities.Notification.create({
       user_email: post.created_by,
-      message: `🎉 Someone saved your photo! Your shot is inspiring others.`,
+      message: `🎉 Someone saved your photo! Thank you for inspiring our community.`,
       image_url: post.image_url,
     });
   };
