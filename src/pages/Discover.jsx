@@ -248,6 +248,29 @@ export default function Discover() {
               >
                 <img src={img.image_url} alt={img.category} className="w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                {/* Admin three-dot menu */}
+                {isAdmin && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                      <button className="absolute top-2 right-2 z-10 h-7 w-7 bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <MoreVertical className="w-3.5 h-3.5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-card border-border font-dm">
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditingPost(img); }}>
+                        <Pencil className="w-4 h-4 mr-2" /> Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => { e.stopPropagation(); deletePostMutation.mutate(img.id); }}
+                        className="text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" /> Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+
                 <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="flex items-center justify-between">
                     <div>
