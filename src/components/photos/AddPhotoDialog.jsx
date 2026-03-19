@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,17 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-
-const CATEGORIES = [
-  { value: 'standing', label: 'Standing' },
-  { value: 'sitting', label: 'Sitting' },
-  { value: 'walking', label: 'Walking' },
-  { value: 'close_up', label: 'Close-up' },
-  { value: 'wide_shot', label: 'Wide Shot' },
-  { value: 'detail', label: 'Detail' },
-  { value: 'interaction', label: 'Interaction' },
-  { value: 'other', label: 'Other' },
-];
+import { getUserPoseCategories } from '@/lib/poseCategories';
 
 const PRIORITIES = [
   { value: 'red', label: 'Must Capture', color: 'bg-red-500' },
@@ -27,10 +17,11 @@ const PRIORITIES = [
 
 export default function AddPhotoDialog({ open, onOpenChange, onSubmit, editPhoto = null }) {
   const [uploading, setUploading] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(editPhoto || {
     image_url: '',
     description: '',
-    pose_category: 'standing',
+    pose_category: '',
     color_priority: 'green',
     lens_suggestion: '',
     aperture_suggestion: '',
@@ -38,6 +29,24 @@ export default function AddPhotoDialog({ open, onOpenChange, onSubmit, editPhoto
     camera_angle: '',
     technical_notes: '',
   });
+
+  useEffect(() => {
+    if (open) {
+      base44.auth.me().then(u => {
+        const cats = getUserPoseCategories(u?.pose_categories);
+        setCategories(cats);
+        if (!editPhoto && cats.length > 0 && !form.pose_category) {
+          setForm(prev => ({ ...prev, pose_category: cats[0].value }));
+        }
+      }).catch(() => {
+        const cats = getUserPoseCategories(null);
+        setCategories(cats);
+        if (!editPhoto && cats.length > 0 && !form.pose_category) {
+          setForm(prev => ({ ...prev, pose_category: cats[0].value }));
+        }
+      });
+    }
+  }, [open]);
 
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
