@@ -35,6 +35,15 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
   const [poseCategories, setPoseCategories] = useState([]);
 
   useEffect(() => {
+    base44.auth.me().then(u => {
+      setUser(u);
+      setPoseCategories(getUserPoseCategories(u?.pose_categories));
+    }).catch(() => {
+      setPoseCategories(getUserPoseCategories(null));
+    });
+  }, [open]);
+
+  useEffect(() => {
     if (editPost) {
       setForm({ ...EMPTY, ...editPost });
       setPreview(editPost.image_url || null);
