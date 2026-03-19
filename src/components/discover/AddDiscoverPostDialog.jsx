@@ -10,7 +10,7 @@ import { ImagePlus, Loader2, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const CATEGORIES = [
-'Wedding', 'Couples', 'Portrait', 'Graduation', 'Maternity',
+'Wedding', 'Bridal', 'Couples', 'Portrait', 'Graduation', 'Maternity',
 'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement', 'Other'];
 
 
