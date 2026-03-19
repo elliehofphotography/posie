@@ -58,6 +58,7 @@ const AuthenticatedApp = () => {
         <Route path="/Settings" element={<Settings />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/GuideDetail" element={<GuideDetail />} />
+        <Route path="/DiscoverFavorites" element={<DiscoverFavorites />} />
       </Route>
       <Route path="/ShootMode" element={<ShootMode />} />
       <Route path="*" element={<PageNotFound />} />
