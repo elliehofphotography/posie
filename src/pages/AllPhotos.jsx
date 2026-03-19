@@ -144,7 +144,7 @@ export default function AllPhotos() {
       {/* Header */}
       <div
         className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
-        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
+        style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
       >
         {selectMode ? (
           <div className="flex items-center gap-2">
