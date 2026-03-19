@@ -22,6 +22,7 @@ const POSE_CATEGORIES = [
   { value: 'wide_shot', label: 'Wide Shot' },
   { value: 'detail', label: 'Detail' },
   { value: 'interaction', label: 'Interaction' },
+  { value: 'candid', label: 'Candid' },
   { value: 'other', label: 'Other' },
 ];
 
