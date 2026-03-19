@@ -14,9 +14,21 @@ const CATEGORIES = [
 'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement', 'Other'];
 
 
+const POSE_CATEGORIES = [
+  { value: 'standing', label: 'Standing' },
+  { value: 'sitting', label: 'Sitting' },
+  { value: 'walking', label: 'Walking' },
+  { value: 'close_up', label: 'Close-up' },
+  { value: 'wide_shot', label: 'Wide Shot' },
+  { value: 'detail', label: 'Detail' },
+  { value: 'interaction', label: 'Interaction' },
+  { value: 'other', label: 'Other' },
+];
+
 const EMPTY = {
   image_url: '',
   category: '',
+  pose_category: '',
   title: '',
   description: '',
   photographer_name: '',
