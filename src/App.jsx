@@ -12,7 +12,7 @@ import Template from './pages/Template';
 import ShootMode from './pages/ShootMode';
 import ChecklistOverview from './pages/ChecklistOverview';
 import ShotList from './pages/ShotList';
-import Discover from './pages/Discover';
+import Discover from './pages/Discover.jsx';
 import Marketplace from './pages/Marketplace';
 import AllPhotos from './pages/AllPhotos';
 import Settings from './pages/Settings';
