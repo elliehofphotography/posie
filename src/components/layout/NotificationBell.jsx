@@ -69,9 +69,9 @@ export default function NotificationBell({ userEmail }) {
                       <img src={n.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
                     )}
                     <p className="font-dm text-xs text-foreground flex-1 leading-relaxed">{n.message}</p>
-                    <button onClick={() => dismissMutation.mutate(n.id)} className="shrink-0 text-muted-foreground hover:text-foreground transition-colors">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
+                    <button onClick={() => dismissMutation.mutate(n.id)} className="shrink-0 h-8 w-8 min-h-[32px] min-w-[32px] rounded flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors hover:bg-muted">
+                       <X className="w-4 h-4" />
+                     </button>
                   </div>
                 ))}
               </div>
