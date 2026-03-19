@@ -163,6 +163,11 @@ export default function Home() {
     }
   });
 
+  const changeCoverMutation = useMutation({
+    mutationFn: ({ id, cover_image }) => base44.entities.ShootTemplate.update(id, { cover_image }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['templates'] }),
+  });
+
   return (
     <PullToRefresh onRefresh={handleRefresh}>
     <div className="min-h-screen bg-background">
