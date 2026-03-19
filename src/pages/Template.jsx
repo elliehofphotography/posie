@@ -162,6 +162,7 @@ export default function Template() {
                   photo={p}
                   onEdit={(photo) => setEditingPhoto(photo)}
                   onDelete={(photo) => deletePhotoMutation.mutate(photo.id)}
+                  onClick={() => setLightboxImage(p.image_url)}
                 />
               </div>
             ))}
