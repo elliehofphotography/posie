@@ -35,9 +35,9 @@ export default function NotificationBell({ userEmail }) {
   return (
     <div className="relative">
       <button
-        onClick={() => { setOpen(o => !o); if (unread.length > 0) markAllRead(); }}
-        className="w-11 h-11 rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors select-none relative"
-      >
+         onClick={() => { setOpen(o => !o); if (unread.length > 0) markAllRead(); }}
+         className="w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors select-none relative"
+       >
         <Bell className="w-5 h-5 text-foreground" />
         {unread.length > 0 && (
           <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground font-dm text-[9px] flex items-center justify-center">
