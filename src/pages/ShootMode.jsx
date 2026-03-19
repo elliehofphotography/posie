@@ -258,17 +258,16 @@ export default function ShootMode() {
 
       {/* Bottom bar */}
       <div className="z-20 pb-4 px-5 bg-gradient-to-t from-black/70 to-transparent" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">← Skip</span>
-          <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">↑ Skip</span>
-          <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">Later →</span>
-        </div>
-        <button
-          onClick={handleDone}
-          className="w-full py-3 rounded-full bg-white/15 backdrop-blur-sm text-white font-dm text-sm font-medium hover:bg-white/25 transition-colors select-none"
-        >
-          Skip Photo
-        </button>
+       <div className="flex items-center justify-between mb-3">
+         <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">← Later</span>
+         <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">Done →</span>
+       </div>
+       <button
+         onClick={handleSkip}
+         className="w-full py-3 rounded-full bg-white/15 backdrop-blur-sm text-white font-dm text-sm font-medium hover:bg-white/25 transition-colors select-none"
+       >
+         Remove Photo
+       </button>
       </div>
     </div>
   );
