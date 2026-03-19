@@ -51,6 +51,15 @@ export default function CategorySortingSheet({ open, onOpenChange, user, onSaved
 
   const availableForAdding = DEFAULT_POSE_CATEGORIES.filter(c => !categories.includes(c.value));
 
+  const handleAddCustomCategory = () => {
+    if (!newCategoryInput.trim()) return;
+    const customValue = newCategoryInput.trim().toLowerCase().replace(/\s+/g, '_');
+    if (!categories.includes(customValue)) {
+      setCategories(prev => [...prev, customValue]);
+      setNewCategoryInput('');
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="bg-card border-border flex flex-col max-h-screen overflow-y-auto">
