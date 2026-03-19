@@ -250,6 +250,13 @@ export default function Settings() {
         user={user}
         onSaved={handleProfileSaved}
       />
+
+      <CategorySortingSheet
+        open={showCategorySorting}
+        onOpenChange={setShowCategorySorting}
+        user={user}
+        onSaved={handleProfileSaved}
+      />
     </div>
   );
 }
