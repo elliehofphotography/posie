@@ -122,12 +122,13 @@ export default function Template() {
               </button>
             </Link>
             {photos.length > 0 && (
-              <Link to={`/ShootMode?id=${templateId}`}>
-                <button className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors">
-                  <Play className="w-3.5 h-3.5" />
-                  Shoot
-                </button>
-              </Link>
+              <button 
+                onClick={() => setShowSortDialog(true)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                <Play className="w-3.5 h-3.5" />
+                Shoot
+              </button>
             )}
           </div>
         </div>
