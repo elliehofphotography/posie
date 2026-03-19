@@ -30,18 +30,68 @@ export default function GuideDetail() {
 
   const alreadyOwned = purchases.length > 0;
 
+  const { data: guidePhotos = [] } = useQuery({
+    queryKey: ['guide_photos', id],
+    queryFn: () => base44.entities.GuidePhoto.filter({ listing_id: id }, 'sort_order'),
+    enabled: !!id
+  });
+
   // Creates a Purchase record AND a ShootTemplate in the user's gallery
   const downloadMutation = useMutation({
     mutationFn: async () => {
       await base44.entities.Purchase.create({ listing_id: id, user_email: user.email });
-      await base44.entities.ShootTemplate.create({
+      
+      // Create new template for this guide
+      const newTemplate = await base44.entities.ShootTemplate.create({
         name: listing.name,
         description: listing.description || '',
         cover_image: listing.cover_image || '',
         template_type: 'gallery',
         is_public: false,
-        tags: listing.category ? [listing.category] : []
+        tags: listing.category ? [listing.category] : [],
+        photo_count: guidePhotos.length
       });
+
+      // Find or create "All Photos" template
+      const templates = await base44.entities.ShootTemplate.list();
+      let allPhotosTemplate = templates.find(t => t.name === 'All Photos');
+      if (!allPhotosTemplate) {
+        allPhotosTemplate = await base44.entities.ShootTemplate.create({
+          name: 'All Photos',
+          template_type: 'gallery',
+          photo_count: 0
+        });
+      }
+
+      // Add all guide photos to both templates
+      let newTemplatePhotoCount = 0;
+      let allPhotosPhotoCount = await base44.entities.TemplatePhoto.filter({ template_id: allPhotosTemplate.id }).then(p => p.length);
+
+      for (const photo of guidePhotos) {
+        // Add to new template
+        await base44.entities.TemplatePhoto.create({
+          template_id: newTemplate.id,
+          image_url: photo.image_url,
+          description: photo.description || '',
+          pose_category: photo.pose_category || '',
+          sort_order: newTemplatePhotoCount
+        });
+        newTemplatePhotoCount++;
+
+        // Add to All Photos
+        await base44.entities.TemplatePhoto.create({
+          template_id: allPhotosTemplate.id,
+          image_url: photo.image_url,
+          description: photo.description || '',
+          pose_category: photo.pose_category || '',
+          sort_order: allPhotosPhotoCount
+        });
+        allPhotosPhotoCount++;
+      }
+
+      // Update template photo counts
+      await base44.entities.ShootTemplate.update(newTemplate.id, { photo_count: newTemplatePhotoCount });
+      await base44.entities.ShootTemplate.update(allPhotosTemplate.id, { photo_count: allPhotosPhotoCount });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['purchases', id, user?.email] });
