@@ -12,7 +12,7 @@ import DiscoverSaveToGalleryDialog from '../components/discover/DiscoverSaveToGa
 import ImageLightbox from '../components/ui/ImageLightbox';
 import NotificationBell from '../components/layout/NotificationBell';
 import YourCreationsSection from '../components/discover/YourCreationsSection';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import MobileMenu from '../components/ui/mobile-menu';
 
 const SAMPLE_CATEGORIES = [
   'Wedding', 'Bridal', 'Couples', 'Portrait', 'Graduation', 'Maternity',
