@@ -84,8 +84,15 @@ export default function AllPhotos() {
   });
 
   // Delete selected photos only from current user's galleries
+  const hapticFeedback = () => {
+    if (window.navigator?.vibrate) {
+      window.navigator.vibrate([10, 5, 10]);
+    }
+  };
+
   const deleteSelectedMutation = useMutation({
     mutationFn: async (selectedIds) => {
+      hapticFeedback();
       const selectedPhotos = photos.filter(p => selectedIds.includes(p.id));
       const selectedImageUrls = selectedPhotos.map(p => p.image_url);
 
