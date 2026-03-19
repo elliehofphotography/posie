@@ -203,9 +203,9 @@ export default function Discover() {
               )}
             </button>
             <button
-              onClick={() => setShowAdd(true)}
-              className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
-            >
+               onClick={() => setShowAdd(true)}
+               className="w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
+             >
               <Plus className="w-5 h-5" />
             </button>
           </div>
