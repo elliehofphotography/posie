@@ -199,7 +199,7 @@ export default function Template() {
           </div>
         ) : (
           <div className="columns-2 gap-3">
-            {photos.map(p => (
+            {(activeCategory ? photos.filter(p => p.pose_category === activeCategory) : photos).map(p => (
               <div key={p.id} className="break-inside-avoid mb-3">
                 <PhotoCard
                   photo={p}
