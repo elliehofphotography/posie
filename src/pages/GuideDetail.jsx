@@ -124,15 +124,11 @@ export default function GuideDetail() {
           </div>
         ) : (
           <button
-            onClick={handlePurchase}
-            disabled={purchaseMutation.isPending || checkoutLoading || !user}
+            onClick={handleAdd}
+            disabled={purchaseMutation.isPending || !user}
             className="w-full py-3.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 select-none"
           >
-            {purchaseMutation.isPending || checkoutLoading
-              ? 'Processing…'
-              : listing.price === 0
-              ? 'Add to Collection — Free'
-              : `Purchase — ${priceLabel}`}
+            {purchaseMutation.isPending ? 'Adding…' : 'Add to Collection — Free'}
           </button>
         )}
       </div>
