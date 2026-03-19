@@ -207,7 +207,7 @@ export default function Discover() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search poses, styles..."
+              placeholder="Search pose, styles, author..."
               className="pl-10 bg-muted border-border font-dm rounded-full"
             />
           </div>
