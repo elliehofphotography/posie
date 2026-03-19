@@ -141,6 +141,37 @@ export default function Template() {
         </div>
       </div>
 
+      {/* Category Filter Bar */}
+      {photos.length > 0 && (() => {
+        const presentCategories = [...new Set(photos.map(p => p.pose_category).filter(Boolean))];
+        if (presentCategories.length === 0) return null;
+        return (
+          <div className="flex items-center gap-2 overflow-x-auto px-4 py-2 pb-3" style={{ scrollbarWidth: 'none' }}>
+            {activeCategory && (
+              <button
+                onClick={() => setActiveCategory(null)}
+                className="shrink-0 h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+            {presentCategories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-dm font-medium whitespace-nowrap transition-all border ${
+                  activeCategory === cat
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card text-muted-foreground border-border hover:border-primary/40'
+                }`}
+              >
+                {CATEGORY_LABELS[cat] || cat}
+              </button>
+            ))}
+          </div>
+        );
+      })()}
+
       {/* Photo Grid */}
       <div className="p-4">
         {isLoading ? (
