@@ -13,6 +13,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
 
   const [showCoverPicker, setShowCoverPicker] = useState(false);
   const [showEditGallery, setShowEditGallery] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="group relative">
