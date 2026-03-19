@@ -137,7 +137,7 @@ export default function Discover() {
   });
 
   const deletePostMutation = useMutation({
-    mutationFn: (id) => base44.entities.DiscoverPost.delete(id),
+    mutationFn: (id) => base44.functions.invoke('adminDeleteDiscoverPost', { postId: id }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['discover_posts'] }),
   });
 
