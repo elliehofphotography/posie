@@ -83,20 +83,26 @@ export default function AllPhotos() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPhoto(null); setIsSaving(false); },
   });
 
-  // Delete selected photos from ALL galleries, and if user-created, from discover too
+  // Delete selected photos only from current user's galleries
   const deleteSelectedMutation = useMutation({
     mutationFn: async (selectedIds) => {
       const selectedPhotos = photos.filter(p => selectedIds.includes(p.id));
       const selectedImageUrls = selectedPhotos.map(p => p.image_url);
 
-      // Find all TemplatePhoto records across all galleries with matching image URLs
-      const allTemplatePhotos = await base44.entities.TemplatePhoto.list();
-      const toDelete = allTemplatePhotos.filter(p => selectedImageUrls.includes(p.image_url));
+      // Get only current user's templates
+      const userTemplates = templates.filter(t => t.created_by === user?.email);
+      const userTemplateIds = userTemplates.map(t => t.id);
 
-      // Delete all matching TemplatePhoto records
+      // Find TemplatePhoto records in ONLY the current user's templates with matching image URLs
+      const userTemplatePhotos = await base44.entities.TemplatePhoto.list();
+      const toDelete = userTemplatePhotos.filter(p =>
+        userTemplateIds.includes(p.template_id) && selectedImageUrls.includes(p.image_url)
+      );
+
+      // Delete only from current user's templates
       await Promise.all(toDelete.map(p => base44.entities.TemplatePhoto.delete(p.id)));
 
-      // Update photo counts for affected templates
+      // Update photo counts for affected user templates only
       const affectedTemplateIds = [...new Set(toDelete.map(p => p.template_id))];
       await Promise.all(affectedTemplateIds.map(async (templateId) => {
         const remaining = await base44.entities.TemplatePhoto.filter({ template_id: templateId });
@@ -105,20 +111,10 @@ export default function AllPhotos() {
           cover_image: remaining.length > 0 ? remaining[0].image_url : '',
         });
       }));
-
-      // Delete user-created DiscoverPost entries for these image URLs
-      const myDiscoverImageUrls = discoverPosts.map(d => d.image_url);
-      for (const imageUrl of selectedImageUrls) {
-        if (myDiscoverImageUrls.includes(imageUrl)) {
-          const match = discoverPosts.find(d => d.image_url === imageUrl);
-          if (match) await base44.entities.DiscoverPost.delete(match.id);
-        }
-      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['all_photos'] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
-      queryClient.invalidateQueries({ queryKey: ['discover_posts'] });
       setSelected([]);
       setSelectMode(false);
       setShowDeleteConfirm(false);
