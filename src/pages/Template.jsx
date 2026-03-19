@@ -208,6 +208,14 @@ export default function Template() {
           onSubmit={(data) => editPhotoMutation.mutate({ id: editingPhoto.id, data })}
         />
       )}
+
+      <SortOptionsDialog
+        open={showSortDialog}
+        onOpenChange={setShowSortDialog}
+        onSelect={(sortBy) => {
+          navigate(`/ShootMode?id=${templateId}&sortBy=${sortBy}`);
+        }}
+      />
     </div>
   );
 }
