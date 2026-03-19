@@ -16,11 +16,24 @@ import {
 
 export default function DownloadedGuides() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
+  const [deletingGuideId, setDeletingGuideId] = useState(null);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
+
+  const deleteGuideMutation = useMutation({
+    mutationFn: async ({ downloadId, listingId }) => {
+      await base44.functions.invoke('deleteDownloadedGuide', { downloadId, listingId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['downloads', user?.email] });
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      setDeletingGuideId(null);
+    }
+  });
 
   const { data: downloads = [] } = useQuery({
     queryKey: ['downloads', user?.email],
