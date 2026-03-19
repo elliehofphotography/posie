@@ -125,6 +125,35 @@ export default function DownloadedGuides() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {deletingGuideId && downloads.length > 0 && (
+        <AlertDialog open={!!deletingGuideId} onOpenChange={(open) => { if (!open) setDeletingGuideId(null); }}>
+          <AlertDialogContent className="bg-card border-border">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="font-playfair text-foreground">Delete guide?</AlertDialogTitle>
+              <AlertDialogDescription className="font-dm text-muted-foreground">
+                This will permanently remove this guide and all its photos from your galleries. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="font-dm">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  const download = downloads.find(d => d.listing_id === deletingGuideId);
+                  if (download) {
+                    deleteGuideMutation.mutate({ downloadId: download.id, listingId: deletingGuideId });
+                  }
+                }}
+                disabled={deleteGuideMutation.isPending}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 font-dm"
+              >
+                {deleteGuideMutation.isPending ? 'Deleting...' : 'Delete'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }
