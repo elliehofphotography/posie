@@ -115,11 +115,11 @@ export default function GuideDetail() {
         style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         
         <button
-          onClick={() => navigate(-1)}
-          className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
-          
-          <ArrowLeft className="w-4 h-4" />
-        </button>
+           onClick={() => navigate('/Marketplace')}
+           className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
+
+           <ArrowLeft className="w-4 h-4" />
+         </button>
       </div>
 
       {/* Cover Image */}
