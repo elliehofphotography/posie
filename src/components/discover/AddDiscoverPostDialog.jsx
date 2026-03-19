@@ -129,7 +129,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
                 <SelectValue placeholder="e.g. Standing, Sitting..." />
               </SelectTrigger>
               <SelectContent>
-                {POSE_CATEGORIES.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                {poseCategories.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
