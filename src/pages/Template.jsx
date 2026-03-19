@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Play, List, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Plus, Play, List, Image as ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PhotoCard from '../components/photos/PhotoCard';
 import AddPhotoDialog from '../components/photos/AddPhotoDialog';
