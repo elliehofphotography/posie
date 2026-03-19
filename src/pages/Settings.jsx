@@ -164,10 +164,10 @@ export default function Settings() {
               <Switch checked={notifEnabled} onCheckedChange={handleNotifToggle} />
             </div>
             <SettingRow 
-              icon={Layers} 
-              label="Pose Categories" 
-              value="Customize &amp; reorder" 
-              onClick={() => setShowCategorySorting(true)} 
+             icon={Layers} 
+             label="Posing Categories" 
+             value="Customize &amp; reorder" 
+             onClick={() => setShowCategorySorting(true)} 
             />
           </div>
         </div>
