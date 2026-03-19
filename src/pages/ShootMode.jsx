@@ -108,6 +108,7 @@ export default function ShootMode() {
   const handleRestart = () => {
     setQueue([...initialPhotos]);
     setCompleted([]);
+    setSkipped([]);
     setCurrentIndex(0);
     setActiveCategory('all');
   };
