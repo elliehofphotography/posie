@@ -154,9 +154,9 @@ export default function ShootMode() {
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => navigate(-1)}
-            className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
           >
-            <X className="w-4.5 h-4.5" />
+            <X className="w-5 h-5" />
           </button>
           <div className="text-center">
             <span className="font-dm text-white/70 text-xs">
@@ -166,13 +166,13 @@ export default function ShootMode() {
           <div className="flex items-center gap-1">
             <ShootTimer />
             <Link to={shotListOverrideId ? `/ShotList?id=${shotListOverrideId}` : `/ChecklistOverview?id=${templateId}`}>
-              <button className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors ml-1">
+              <button className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors ml-1">
                 <Grid3X3 className="w-4 h-4" />
               </button>
             </Link>
             <button
               onClick={handleRestart}
-              className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
