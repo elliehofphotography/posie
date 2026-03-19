@@ -18,6 +18,7 @@ import AllPhotos from './pages/AllPhotos';
 import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import GuideDetail from './pages/GuideDetail';
+import DiscoverFavorites from './pages/DiscoverFavorites';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
