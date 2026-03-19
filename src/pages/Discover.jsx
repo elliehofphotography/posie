@@ -151,15 +151,9 @@ export default function Discover() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
 
-  const hapticFeedback = () => {
-    if (window.navigator?.vibrate) {
-      window.navigator.vibrate([10, 5, 10]);
-    }
-  };
-
   const deletePostMutation = useMutation({
     mutationFn: (id) => {
-      hapticFeedback();
+      haptic.delete();
       return base44.functions.invoke('adminDeleteDiscoverPost', { postId: id });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['discover_posts'] }),
