@@ -167,15 +167,9 @@ export default function Settings() {
           <SectionLabel>Help &amp; Support</SectionLabel>
           <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
             <a
-              href="mailto:support@example.com"
-              className="flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors select-none"
-            >
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <MessageCircle className="w-4 h-4 text-foreground" />
-              </div>
-              <div className="flex-1">
-                <p className="font-dm text-sm font-medium text-foreground">Contact Support</p>
-                <p className="font-dm text-xs text-muted-foreground mt-0.5">support@example.com</p>
+              href="mailto:help.posie@gmail.com"
+...
+                <p className="font-dm text-xs text-muted-foreground mt-0.5">help.posie@gmail.com</p>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
             </a>
