@@ -81,9 +81,7 @@ export default function GuideDetail() {
             {listing.category && (
               <span className="font-dm text-[10px] px-2.5 py-1 rounded-full bg-muted text-muted-foreground">{listing.category}</span>
             )}
-            <span className={`font-dm text-sm font-semibold ${listing.price === 0 ? 'text-accent-foreground' : 'text-primary'}`}>
-              {priceLabel}
-            </span>
+            <span className="font-dm text-sm font-semibold text-accent-foreground">Free</span>
           </div>
         </div>
 
