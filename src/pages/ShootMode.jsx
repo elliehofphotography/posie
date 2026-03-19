@@ -120,11 +120,9 @@ export default function ShootMode() {
 
   const handleDragEnd = (_, info) => {
     const { offset, velocity } = info;
-    if (offset.y < -80 && Math.abs(offset.y) > Math.abs(offset.x)) {
+    if (offset.x > 80 || velocity.x > 400) {
       handleDone();
     } else if (offset.x < -80 || velocity.x < -400) {
-      handleDone();
-    } else if (offset.x > 80 || velocity.x > 400) {
       handleLater();
     }
   };
