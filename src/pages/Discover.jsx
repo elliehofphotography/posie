@@ -135,6 +135,19 @@ export default function Discover() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
 
+  const deletePostMutation = useMutation({
+    mutationFn: (id) => base44.entities.DiscoverPost.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['discover_posts'] }),
+  });
+
+  const updatePostMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.DiscoverPost.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['discover_posts'] });
+      setEditingPost(null);
+    },
+  });
+
   const isSaving = saveToAllPhotosMutation.isPending || saveToExistingMutation.isPending || createAndSaveMutation.isPending;
 
   const filtered = userPosts.filter(img => {
