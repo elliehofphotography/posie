@@ -280,6 +280,7 @@ export default function Home() {
             onClearSearch={() => setSearch('')}
             onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
             onRename={(tmpl) => setRenaming(tmpl)}
+            onChangeCover={(tmpl, imageUrl) => changeCoverMutation.mutate({ id: tmpl.id, cover_image: imageUrl })}
             selectMode={selectMode}
             selected={selected}
             onToggle={toggleSelect} />
