@@ -85,6 +85,9 @@ export default function AllPhotos() {
         </div>
       </div>
 
+      {/* Pose Category Filter */}
+      <PoseCategoryBar activeCategory={activeCategory} onChange={setActiveCategory} />
+
       {/* Grid */}
       <div className="p-4">
         {isLoading ? (
