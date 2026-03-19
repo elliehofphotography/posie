@@ -79,7 +79,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
     onOpenChange(val);
   };
 
-  const canSubmit = form.image_url && form.category && form.owns_copyright && !uploading;
+  const canSubmit = form.image_url && form.category && (form.owns_copyright || !!editPost) && !uploading;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
