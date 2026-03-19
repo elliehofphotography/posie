@@ -21,6 +21,16 @@ export function getUserPoseCategories(userCategories) {
     ? userCategories
     : DEFAULT_POSE_CATEGORIES.map(c => c.value);
   
-  return DEFAULT_POSE_CATEGORIES.filter(cat => categoryValues.includes(cat.value))
-    .sort((a, b) => categoryValues.indexOf(a.value) - categoryValues.indexOf(b.value));
+  // Build map of default categories
+  const defaultMap = Object.fromEntries(DEFAULT_POSE_CATEGORIES.map(c => [c.value, c]));
+  
+  // Map category values to labels, supporting custom categories
+  return categoryValues.map(value => {
+    if (defaultMap[value]) {
+      return defaultMap[value];
+    } else {
+      // Custom category - create on the fly
+      return { value, label: value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, ' ') };
+    }
+  });
 }
