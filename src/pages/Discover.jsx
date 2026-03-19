@@ -134,7 +134,7 @@ export default function Discover() {
 
   const filtered = userPosts.filter(img => {
     if (activeCategory && img.category !== activeCategory) return false;
-    if (activePoseCategory && img.pose_category !== activePoseCategory) return false;
+    if (activePoseCategory && img.pose_category && img.pose_category !== activePoseCategory) return false;
     if (search && !(img.category || '').toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
