@@ -20,6 +20,13 @@ const categoryLabels = {
 };
 
 export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGallery, hideEdit, hideDelete }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const menuItems = [];
+  if (!hideEdit) menuItems.push({ label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => onEdit(photo) });
+  if (onSaveToGallery) menuItems.push({ label: 'Save to Gallery', icon: <FolderPlus className="w-4 h-4" />, onClick: () => onSaveToGallery(photo) });
+  if (!hideDelete) menuItems.push({ label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(photo), destructive: true });
+
   return (
     <div className="group relative cursor-pointer" onClick={onClick}>
       <div className="relative rounded-2xl overflow-hidden bg-muted">
@@ -41,30 +48,17 @@ export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGa
         )}
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-          <button className="absolute top-2 right-2 h-7 w-7 bg-white/30 backdrop-blur-sm text-white hover:bg-white/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <MoreVertical className="w-3.5 h-3.5" />
+      <MobileMenu
+        trigger={
+          <button className="absolute top-2 right-2 h-9 w-9 bg-white/30 backdrop-blur-sm text-white hover:bg-white/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+            <MoreVertical className="w-4 h-4" />
           </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="bg-card border-border font-dm">
-          {!hideEdit && (
-            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(photo); }}>
-              <Pencil className="w-4 h-4 mr-2" /> Edit
-            </DropdownMenuItem>
-          )}
-          {onSaveToGallery && (
-            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onSaveToGallery(photo); }}>
-              <FolderPlus className="w-4 h-4 mr-2" /> Save to Gallery
-            </DropdownMenuItem>
-          )}
-          {!hideDelete && (
-            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDelete(photo); }} className="text-destructive">
-              <Trash2 className="w-4 h-4 mr-2" /> Delete
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        }
+        items={menuItems}
+        open={menuOpen}
+        onOpenChange={setMenuOpen}
+        title="Photo Options"
+      />
     </div>
   );
 }
