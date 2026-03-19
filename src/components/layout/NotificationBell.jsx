@@ -65,6 +65,9 @@ export default function NotificationBell({ userEmail }) {
                 {notifications.map(n => (
                   <div key={n.id} className={`flex items-start gap-3 px-4 py-3 ${!n.is_read ? 'bg-primary/5' : ''}`}>
                     <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${!n.is_read ? 'bg-primary' : 'bg-transparent'}`} />
+                    {n.image_url && (
+                      <img src={n.image_url} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                    )}
                     <p className="font-dm text-xs text-foreground flex-1 leading-relaxed">{n.message}</p>
                     <button onClick={() => dismissMutation.mutate(n.id)} className="shrink-0 text-muted-foreground hover:text-foreground transition-colors">
                       <X className="w-3.5 h-3.5" />
