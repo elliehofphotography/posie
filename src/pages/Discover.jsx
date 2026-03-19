@@ -198,6 +198,9 @@ export default function Discover() {
           ))}
         </div>
 
+        {/* Pose Category Filter */}
+        <PoseCategoryBar activeCategory={activePoseCategory} onChange={setActivePoseCategory} />
+
         {/* Trending label */}
         <div className="flex items-center gap-2 px-5 mb-4">
           <TrendingUp className="w-3.5 h-3.5 text-primary" />
