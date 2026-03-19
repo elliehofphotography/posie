@@ -72,11 +72,13 @@ export default function CategorySortingSheet({ open, onOpenChange, user, onSaved
             <p className="font-dm text-xs uppercase tracking-wider text-muted-foreground mb-3">Active Categories (drag to reorder)</p>
             <Reorder.Group values={categories} onReorder={setCategories} className="space-y-2">
               {categories.map(value => {
-                const label = DEFAULT_POSE_CATEGORIES.find(c => c.value === value)?.label || value;
+                const defaultCat = DEFAULT_POSE_CATEGORIES.find(c => c.value === value);
+                const label = defaultCat?.label || value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, ' ');
+                const isCustom = !defaultCat;
                 return (
                   <Reorder.Item key={value} value={value} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted border border-border cursor-grab active:cursor-grabbing">
                     <GripVertical className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <span className="font-dm text-sm text-foreground flex-1">{label}</span>
+                    <span className="font-dm text-sm text-foreground flex-1">{label} {isCustom && <span className="text-[10px] text-primary ml-1">(custom)</span>}</span>
                     <button
                       onClick={() => handleToggle(value)}
                       className="text-muted-foreground hover:text-foreground transition-colors"
