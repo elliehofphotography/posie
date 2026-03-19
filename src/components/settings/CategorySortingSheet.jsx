@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { GripVertical, Plus, X } from 'lucide-react';
 import { Reorder } from 'framer-motion';
 import { DEFAULT_POSE_CATEGORIES } from '@/lib/poseCategories';
@@ -14,6 +15,7 @@ export default function CategorySortingSheet({ open, onOpenChange, user, onSaved
       : DEFAULT_POSE_CATEGORIES.map(c => c.value)
   );
   const [saving, setSaving] = useState(false);
+  const [newCategoryInput, setNewCategoryInput] = useState('');
 
   useEffect(() => {
     if (user?.pose_categories && user.pose_categories.length > 0) {
