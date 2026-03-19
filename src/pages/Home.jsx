@@ -123,7 +123,7 @@ export default function Home() {
 
   const handleRefresh = async () => {
     await queryClient.invalidateQueries({ queryKey: ['templates'] });
-    await queryClient.invalidateQueries({ queryKey: ['my_purchases', user?.email] });
+    await queryClient.invalidateQueries({ queryKey: ['my_downloads', user?.email] });
   };
 
   const toggleSelect = (id) => {
