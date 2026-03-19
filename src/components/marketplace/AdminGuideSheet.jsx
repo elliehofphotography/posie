@@ -51,7 +51,8 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: '', description: '', author: '', category: '',
-    price: '', cover_image: '', preview_image_1: '', preview_image_2: '',
+    price: '', cover_image: '', preview_image_1: '', preview_image_1_direction: '',
+    preview_image_2: '', preview_image_2_direction: '',
   });
 
   // Populate form when editing
@@ -65,10 +66,12 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
         price: listing.price != null ? String(listing.price) : '',
         cover_image: listing.cover_image || '',
         preview_image_1: listing.preview_image_1 || '',
+        preview_image_1_direction: listing.preview_image_1_direction || '',
         preview_image_2: listing.preview_image_2 || '',
+        preview_image_2_direction: listing.preview_image_2_direction || '',
       });
     } else {
-      setForm({ name: '', description: '', author: '', category: '', price: '', cover_image: '', preview_image_1: '', preview_image_2: '' });
+      setForm({ name: '', description: '', author: '', category: '', price: '', cover_image: '', preview_image_1: '', preview_image_1_direction: '', preview_image_2: '', preview_image_2_direction: '' });
     }
   }, [listing, open]);
 
@@ -136,8 +139,14 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <ImageUploadField label="Pose Preview 1" value={form.preview_image_1} onChange={v => update('preview_image_1', v)} />
-            <ImageUploadField label="Pose Preview 2" value={form.preview_image_2} onChange={v => update('preview_image_2', v)} />
+            <div className="space-y-2">
+              <ImageUploadField label="Pose Preview 1" value={form.preview_image_1} onChange={v => update('preview_image_1', v)} />
+              <Textarea value={form.preview_image_1_direction} onChange={e => update('preview_image_1_direction', e.target.value)} placeholder="Posing direction for photo 1…" className="bg-muted border-border h-16 resize-none font-dm text-xs" />
+            </div>
+            <div className="space-y-2">
+              <ImageUploadField label="Pose Preview 2" value={form.preview_image_2} onChange={v => update('preview_image_2', v)} />
+              <Textarea value={form.preview_image_2_direction} onChange={e => update('preview_image_2_direction', e.target.value)} placeholder="Posing direction for photo 2…" className="bg-muted border-border h-16 resize-none font-dm text-xs" />
+            </div>
           </div>
 
           <DrawerFooter className="px-0 pt-2">
