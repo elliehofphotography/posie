@@ -8,23 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ImagePlus, Loader2, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { getUserPoseCategories } from '@/lib/poseCategories';
 
 const CATEGORIES = [
 'Wedding', 'Bridal', 'Couples', 'Portrait', 'Graduation', 'Maternity',
 'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement', 'Other'];
-
-
-const POSE_CATEGORIES = [
-  { value: 'standing', label: 'Standing' },
-  { value: 'sitting', label: 'Sitting' },
-  { value: 'walking', label: 'Walking' },
-  { value: 'close_up', label: 'Close-up' },
-  { value: 'wide_shot', label: 'Wide Shot' },
-  { value: 'detail', label: 'Detail' },
-  { value: 'interaction', label: 'Interaction' },
-  { value: 'candid', label: 'Candid' },
-  { value: 'other', label: 'Other' },
-];
 
 const EMPTY = {
   image_url: '',
@@ -43,6 +31,8 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
   const [form, setForm] = useState(EMPTY);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [user, setUser] = useState(null);
+  const [poseCategories, setPoseCategories] = useState([]);
 
   useEffect(() => {
     if (editPost) {
