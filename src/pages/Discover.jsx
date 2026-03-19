@@ -10,6 +10,7 @@ import PoseCategoryBar from '../components/ui/PoseCategoryBar';
 import AddDiscoverPostDialog from '../components/discover/AddDiscoverPostDialog';
 import DiscoverSaveToGalleryDialog from '../components/discover/DiscoverSaveToGalleryDialog';
 import ImageLightbox from '../components/ui/ImageLightbox';
+import NotificationBell from '../components/layout/NotificationBell';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const SAMPLE_CATEGORIES = [
