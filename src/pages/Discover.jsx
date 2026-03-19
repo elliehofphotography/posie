@@ -167,6 +167,7 @@ export default function Discover() {
             Discover
           </h1>
           <div className="flex items-center gap-2">
+            <NotificationBell userEmail={user?.email} />
             <button
               onClick={() => navigate('/DiscoverFavorites')}
               className="w-11 h-11 rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors select-none relative"
