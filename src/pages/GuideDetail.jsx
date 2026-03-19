@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Download, User, Tag } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
@@ -30,17 +30,24 @@ export default function GuideDetail() {
 
   const alreadyOwned = purchases.length > 0;
 
-  const purchaseMutation = useMutation({
-    mutationFn: () => base44.entities.Purchase.create({ listing_id: id, user_email: user.email }),
+  // Creates a Purchase record AND a ShootTemplate in the user's gallery
+  const downloadMutation = useMutation({
+    mutationFn: async () => {
+      await base44.entities.Purchase.create({ listing_id: id, user_email: user.email });
+      await base44.entities.ShootTemplate.create({
+        name: listing.name,
+        description: listing.description || '',
+        cover_image: listing.cover_image || '',
+        template_type: 'gallery',
+        is_public: false,
+        tags: listing.category ? [listing.category] : [],
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['purchases', id, user?.email] });
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
     },
   });
-
-  const handleAdd = () => {
-    if (!listing || !user) return;
-    purchaseMutation.mutate();
-  };
 
   if (isLoading || !listing) {
     return (
@@ -51,8 +58,8 @@ export default function GuideDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
-      {/* Header */}
+    <div className="min-h-screen bg-background pb-36">
+      {/* Sticky Header */}
       <div
         className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
         style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
@@ -65,70 +72,100 @@ export default function GuideDetail() {
         </button>
       </div>
 
-      {/* Cover */}
+      {/* Cover Image */}
       {listing.cover_image && (
-        <div className="aspect-[4/3] w-full bg-muted">
+        <div className="w-full aspect-[4/3] bg-muted overflow-hidden">
           <img src={listing.cover_image} alt={listing.name} className="w-full h-full object-cover" />
         </div>
       )}
 
-      {/* Content */}
-      <div className="px-5 pt-5 space-y-5">
-        <div>
-          <h1 className="font-playfair text-2xl font-semibold text-foreground leading-snug">{listing.name}</h1>
-          {listing.author && <p className="font-dm text-sm text-muted-foreground mt-1">by {listing.author}</p>}
-          <div className="flex items-center gap-2 mt-2">
-            {listing.category && (
-              <span className="font-dm text-[10px] px-2.5 py-1 rounded-full bg-muted text-muted-foreground">{listing.category}</span>
-            )}
-            <span className="font-dm text-sm font-semibold text-accent-foreground">Free</span>
-          </div>
-        </div>
+      {/* Title & Meta */}
+      <div className="px-5 pt-5 pb-1">
+        <h1 className="font-vina text-3xl text-primary uppercase tracking-wide leading-tight">{listing.name}</h1>
 
-        {listing.description && (
-          <div>
-            <p className="font-dm text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">About</p>
-            <p className="font-dm text-sm text-foreground leading-relaxed">{listing.description}</p>
-          </div>
-        )}
-
-        {/* Pose Previews */}
-        {(listing.preview_image_1 || listing.preview_image_2) && (
-          <div>
-            <p className="font-dm text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Pose Previews</p>
-            <div className="grid grid-cols-2 gap-3">
-              {listing.preview_image_1 && (
-                <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-                  <img src={listing.preview_image_1} alt="Preview 1" className="w-full h-full object-cover" />
-                </div>
-              )}
-              {listing.preview_image_2 && (
-                <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-                  <img src={listing.preview_image_2} alt="Preview 2" className="w-full h-full object-cover" />
-                </div>
-              )}
+        <div className="flex items-center gap-4 mt-3">
+          {listing.author && (
+            <div className="flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="font-dm text-sm text-muted-foreground">{listing.author}</span>
             </div>
-          </div>
-        )}
+          )}
+          {listing.category && (
+            <div className="flex items-center gap-1.5">
+              <Tag className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="font-dm text-sm text-muted-foreground">{listing.category}</span>
+            </div>
+          )}
+          <span className="font-dm text-sm font-semibold text-primary ml-auto">Free</span>
+        </div>
       </div>
 
-      {/* Purchase CTA */}
+      {/* Divider */}
+      <div className="mx-5 mt-4 h-px bg-border" />
+
+      {/* Description */}
+      {listing.description && (
+        <div className="px-5 pt-4">
+          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2">About This Guide</p>
+          <p className="font-dm text-sm text-foreground leading-relaxed">{listing.description}</p>
+        </div>
+      )}
+
+      {/* Pose Previews */}
+      {(listing.preview_image_1 || listing.preview_image_2) && (
+        <div className="px-5 pt-6">
+          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">Sample Poses</p>
+          <div className="grid grid-cols-2 gap-4">
+            {listing.preview_image_1 && (
+              <div>
+                <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-muted mb-2">
+                  <img src={listing.preview_image_1} alt="Sample pose 1" className="w-full h-full object-cover" />
+                </div>
+                {listing.preview_image_1_direction && (
+                  <p className="font-dm text-xs text-foreground leading-snug">{listing.preview_image_1_direction}</p>
+                )}
+              </div>
+            )}
+            {listing.preview_image_2 && (
+              <div>
+                <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-muted mb-2">
+                  <img src={listing.preview_image_2} alt="Sample pose 2" className="w-full h-full object-cover" />
+                </div>
+                {listing.preview_image_2_direction && (
+                  <p className="font-dm text-xs text-foreground leading-snug">{listing.preview_image_2_direction}</p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* What's Included note */}
+      <div className="mx-5 mt-6 p-4 rounded-2xl bg-primary/8 border border-primary/20">
+        <p className="font-dm text-xs text-primary font-medium mb-0.5">What you'll get</p>
+        <p className="font-dm text-xs text-muted-foreground leading-relaxed">
+          This guide will be added directly to your template gallery, ready to use in shoot mode.
+        </p>
+      </div>
+
+      {/* Download CTA */}
       <div
-        className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-background/90 backdrop-blur-xl border-t border-border"
-        style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
+        className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-background/95 backdrop-blur-xl border-t border-border"
+        style={{ paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}
       >
         {alreadyOwned ? (
-          <div className="flex items-center justify-center gap-2 py-3 rounded-full bg-muted text-muted-foreground font-dm text-sm">
-            <CheckCircle2 className="w-4 h-4 text-accent" />
-            Added to your collection
+          <div className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-muted text-muted-foreground font-dm text-sm">
+            <CheckCircle2 className="w-4 h-4 text-green-500" />
+            Added to your gallery
           </div>
         ) : (
           <button
-            onClick={handleAdd}
-            disabled={purchaseMutation.isPending || !user}
-            className="w-full py-3.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 select-none"
+            onClick={() => downloadMutation.mutate()}
+            disabled={downloadMutation.isPending || !user}
+            className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-vina text-xl tracking-widest uppercase hover:bg-primary/90 transition-colors disabled:opacity-50 select-none flex items-center justify-center gap-3"
           >
-            {purchaseMutation.isPending ? 'Adding…' : 'Add to Collection — Free'}
+            <Download className="w-5 h-5" />
+            {downloadMutation.isPending ? 'Downloading…' : 'Download'}
           </button>
         )}
       </div>
