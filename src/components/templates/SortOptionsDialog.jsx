@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Layers, Clock } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { getUserPoseCategories } from '@/lib/poseCategories';
 
 export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
+  const [categoryOrder, setCategoryOrder] = useState('');
+
+  useEffect(() => {
+    if (open) {
+      base44.auth.me().then(u => {
+        const cats = getUserPoseCategories(u?.pose_categories);
+        setCategoryOrder(cats.map(c => c.label).join(' → '));
+      }).catch(() => {
+        setCategoryOrder('Standing → Sitting → Walking → Close-up → Wide Shot → Detail → Interaction → Candid → Other');
+      });
+    }
+  }, [open]);
+
   const options = [
     {
       id: 'color',
@@ -14,7 +29,7 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
     {
       id: 'category',
       label: 'Category Priority',
-      description: 'Standing → Closeup → Walking → Wide → Sitting → Interaction → Detail → Candid → Other',
+      description: categoryOrder,
       icon: Layers,
     },
     {
