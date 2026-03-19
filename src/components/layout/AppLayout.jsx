@@ -39,6 +39,11 @@ export default function AppLayout() {
     '/Marketplace': '/Marketplace',
   });
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   // Update tab history on every navigation
   useEffect(() => {
     const tab = getActiveTab(location.pathname);
