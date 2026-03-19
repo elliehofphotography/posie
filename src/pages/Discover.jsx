@@ -75,6 +75,15 @@ export default function Discover() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['discover_favorites', user?.email] }),
   });
 
+  const notifyPostCreator = async (post) => {
+    if (!post.created_by || post.created_by === user?.email) return;
+    await base44.entities.Notification.create({
+      user_email: post.created_by,
+      message: `🎉 Someone saved your photo! Your shot is inspiring others.`,
+      image_url: post.image_url,
+    });
+  };
+
   const saveToAllPhotosMutation = useMutation({
     mutationFn: async (post) => {
       let targetTemplate = galleryTemplates[0];
@@ -96,6 +105,7 @@ export default function Discover() {
         photo_count: existing.length + 1,
         cover_image: existing.length === 0 ? post.image_url : targetTemplate.cover_image,
       });
+      await notifyPostCreator(post);
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
@@ -114,6 +124,7 @@ export default function Discover() {
         photo_count: existing.length + 1,
         cover_image: existing.length === 0 ? post.image_url : target?.cover_image,
       });
+      await notifyPostCreator(post);
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
@@ -132,6 +143,7 @@ export default function Discover() {
         description: post.description || '',
         sort_order: 0,
       });
+      await notifyPostCreator(post);
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
