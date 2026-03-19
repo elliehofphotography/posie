@@ -49,6 +49,7 @@ export default function Settings() {
   const [copied, setCopied] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [notifEnabled, setNotifEnabled] = useState(false);
+  const [showCategorySorting, setShowCategorySorting] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(u => {
