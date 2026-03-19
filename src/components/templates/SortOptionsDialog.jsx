@@ -13,7 +13,6 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
       base44.auth.me().then(u => {
         const cats = getUserPoseCategories(u?.pose_categories);
         const labels = cats.map(c => c.label);
-        let displayLabels;
         const displayLabels = labels.length > 3 ? labels.slice(0, 3).join(' → ') + '...' : labels.join(' → ');
         setCategoryOrder(displayLabels);
       }).catch(() => {
