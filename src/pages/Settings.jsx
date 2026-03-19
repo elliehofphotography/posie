@@ -192,21 +192,7 @@ export default function Settings() {
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
             </Link>
-            <a
-              href="https://apps.apple.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors select-none"
-            >
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <Star className="w-4 h-4 text-foreground" />
-              </div>
-              <div className="flex-1">
-                <p className="font-dm text-sm font-medium text-foreground">Rate the App</p>
-                <p className="font-dm text-xs text-muted-foreground mt-0.5">Enjoying it? Leave a review!</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-            </a>
+
           </div>
         </div>
 
