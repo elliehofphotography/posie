@@ -11,6 +11,7 @@ import AddDiscoverPostDialog from '../components/discover/AddDiscoverPostDialog'
 import DiscoverSaveToGalleryDialog from '../components/discover/DiscoverSaveToGalleryDialog';
 import ImageLightbox from '../components/ui/ImageLightbox';
 import NotificationBell from '../components/layout/NotificationBell';
+import YourCreationsSection from '../components/discover/YourCreationsSection';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const SAMPLE_CATEGORIES = [
