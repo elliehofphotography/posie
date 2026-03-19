@@ -58,7 +58,7 @@ export default function GuideDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-36">
+    <div className="min-h-screen bg-background pb-52">
       {/* Sticky Header */}
       <div
         className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
