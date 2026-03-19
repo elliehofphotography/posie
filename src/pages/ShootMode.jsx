@@ -67,15 +67,29 @@ export default function ShootMode() {
 
   useEffect(() => {
     if (sourcePhotos.length > 0 && initialPhotos.length === 0) {
-      const sorted = isMulti
-        ? sourcePhotos // already shuffled
-        : [...sourcePhotos].sort(
-            (a, b) => (PRIORITY_ORDER[a.color_priority] || 2) - (PRIORITY_ORDER[b.color_priority] || 2)
-          );
+      let sorted;
+      
+      if (isMulti) {
+        sorted = sourcePhotos; // already shuffled
+      } else if (sortBy === 'color') {
+        sorted = [...sourcePhotos].sort(
+          (a, b) => (PRIORITY_ORDER[a.color_priority] || 2) - (PRIORITY_ORDER[b.color_priority] || 2)
+        );
+      } else if (sortBy === 'category') {
+        sorted = [...sourcePhotos].sort(
+          (a, b) => (POSE_CATEGORY_ORDER[a.pose_category] || 8) - (POSE_CATEGORY_ORDER[b.pose_category] || 8)
+        );
+      } else if (sortBy === 'natural') {
+        // Natural order: most recently added first (reverse sort_order)
+        sorted = [...sourcePhotos].sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));
+      } else {
+        sorted = sourcePhotos;
+      }
+      
       setQueue(sorted);
       setInitialPhotos(sorted);
     }
-  }, [sourcePhotos]);
+  }, [sourcePhotos, sortBy]);
 
   useEffect(() => {
     let wakeLock = null;
