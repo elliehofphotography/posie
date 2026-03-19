@@ -14,6 +14,7 @@ export default function AllPhotos() {
   const [savingPhoto, setSavingPhoto] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   const { data: photos = [], isLoading } = useQuery({
     queryKey: ['all_photos'],
