@@ -4,12 +4,14 @@ import { ArrowLeft, Heart, Bookmark } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import DiscoverSaveToGalleryDialog from '@/components/discover/DiscoverSaveToGalleryDialog';
+import ImageLightbox from '@/components/ui/ImageLightbox';
 
 export default function DiscoverFavorites() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [savingPost, setSavingPost] = useState(null);
+  const [lightboxImage, setLightboxImage] = useState(null);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -140,17 +142,27 @@ export default function DiscoverFavorites() {
         ) : (
           <div className="columns-2 gap-3">
             {favoritedPosts.map((post) => (
-              <div key={post.id} className="break-inside-avoid mb-3 relative group rounded-2xl overflow-hidden bg-muted">
+              <div
+                key={post.id}
+                className="break-inside-avoid mb-3 relative group rounded-2xl overflow-hidden bg-muted cursor-pointer"
+                onClick={() => setLightboxImage(post.image_url)}
+              >
                 <img src={post.image_url} alt={post.category} className="w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="flex items-center justify-between">
                     <span className="font-dm text-[10px] text-white/70 uppercase tracking-wider">{post.category}</span>
                     <div className="flex items-center gap-2">
-                      <button className="text-red-400 hover:text-white transition-colors" onClick={() => unfavoriteMutation.mutate(post.id)}>
+                      <button
+                        className="text-red-400 hover:text-white transition-colors"
+                        onClick={(e) => { e.stopPropagation(); unfavoriteMutation.mutate(post.id); }}
+                      >
                         <Heart className="w-3.5 h-3.5 fill-red-400" />
                       </button>
-                      <button className="text-white/80 hover:text-white transition-colors" onClick={() => setSavingPost(post)}>
+                      <button
+                        className="text-white/80 hover:text-white transition-colors"
+                        onClick={(e) => { e.stopPropagation(); setSavingPost(post); }}
+                      >
                         <Bookmark className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -173,6 +185,10 @@ export default function DiscoverFavorites() {
           onCreateNew={(name) => createAndSaveMutation.mutate({ post: savingPost, name })}
           isSaving={isSaving}
         />
+      )}
+
+      {lightboxImage && (
+        <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
       )}
     </div>
   );

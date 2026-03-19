@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import PullToRefresh from '../components/layout/PullToRefresh';
 import AddDiscoverPostDialog from '../components/discover/AddDiscoverPostDialog';
 import DiscoverSaveToGalleryDialog from '../components/discover/DiscoverSaveToGalleryDialog';
+import ImageLightbox from '../components/ui/ImageLightbox';
 
 const SAMPLE_CATEGORIES = [
   'Wedding', 'Bridal', 'Couples', 'Portrait', 'Graduation', 'Maternity',
@@ -18,6 +19,7 @@ export default function Discover() {
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [savingPost, setSavingPost] = useState(null);
+  const [lightboxImage, setLightboxImage] = useState(null);
   const [user, setUser] = useState(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -43,7 +45,6 @@ export default function Discover() {
   });
 
   const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list');
-
   const favoritedPostIds = new Set(favorites.map(f => f.post_id));
 
   const createMutation = useMutation({
@@ -88,10 +89,7 @@ export default function Discover() {
         cover_image: existing.length === 0 ? post.image_url : targetTemplate.cover_image,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates'] });
-      setSavingPost(null);
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
 
   const saveToExistingMutation = useMutation({
@@ -109,10 +107,7 @@ export default function Discover() {
         cover_image: existing.length === 0 ? post.image_url : target?.cover_image,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates'] });
-      setSavingPost(null);
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
 
   const createAndSaveMutation = useMutation({
@@ -130,10 +125,7 @@ export default function Discover() {
         sort_order: 0,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['templates'] });
-      setSavingPost(null);
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPost(null); },
   });
 
   const isSaving = saveToAllPhotosMutation.isPending || saveToExistingMutation.isPending || createAndSaveMutation.isPending;
@@ -153,7 +145,6 @@ export default function Discover() {
             Discover
           </h1>
           <div className="flex items-center gap-2">
-            {/* Favorites button */}
             <button
               onClick={() => navigate('/DiscoverFavorites')}
               className="w-11 h-11 rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors select-none relative"
@@ -165,7 +156,6 @@ export default function Discover() {
                 </span>
               )}
             </button>
-            {/* Add button */}
             <button
               onClick={() => setShowAdd(true)}
               className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
@@ -221,7 +211,11 @@ export default function Discover() {
           {filtered.map((img) => {
             const isFavorited = favoritedPostIds.has(img.id);
             return (
-              <div key={img.id} className="break-inside-avoid mb-3 group relative rounded-2xl overflow-hidden bg-muted">
+              <div
+                key={img.id}
+                className="break-inside-avoid mb-3 group relative rounded-2xl overflow-hidden bg-muted cursor-pointer"
+                onClick={() => setLightboxImage(img.image_url)}
+              >
                 <img src={img.image_url} alt={img.category} className="w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -233,13 +227,13 @@ export default function Discover() {
                     <div className="flex items-center gap-2">
                       <button
                         className="text-white/80 hover:text-white transition-colors"
-                        onClick={() => user && toggleFavoriteMutation.mutate(img.id)}
+                        onClick={(e) => { e.stopPropagation(); user && toggleFavoriteMutation.mutate(img.id); }}
                       >
                         <Heart className={`w-3.5 h-3.5 transition-all ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
                       </button>
                       <button
                         className="text-white/80 hover:text-white transition-colors"
-                        onClick={() => setSavingPost(img)}
+                        onClick={(e) => { e.stopPropagation(); setSavingPost(img); }}
                       >
                         <Bookmark className="w-3.5 h-3.5" />
                       </button>
@@ -269,6 +263,10 @@ export default function Discover() {
           onCreateNew={(name) => createAndSaveMutation.mutate({ post: savingPost, name })}
           isSaving={isSaving}
         />
+      )}
+
+      {lightboxImage && (
+        <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
       )}
     </PullToRefresh>
   );
