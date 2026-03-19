@@ -14,14 +14,10 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
         const cats = getUserPoseCategories(u?.pose_categories);
         const labels = cats.map(c => c.label);
         let displayLabels;
-        if (labels.length > 3) {
-          displayLabels = labels.slice(0, 2).join(' → ') + ' and ' + labels[2] + ' ...';
-        } else {
-          displayLabels = labels.join(' → ');
-        }
+        const displayLabels = labels.length > 3 ? labels.slice(0, 3).join(' → ') + '...' : labels.join(' → ');
         setCategoryOrder(displayLabels);
       }).catch(() => {
-        setCategoryOrder('Standing → Sitting and Walking ...');
+        setCategoryOrder('Standing → Sitting → Walking...');
       });
     }
   }, [open]);
