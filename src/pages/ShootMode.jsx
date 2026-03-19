@@ -98,6 +98,13 @@ export default function ShootMode() {
     if (currentIndex >= filteredQueue.length - 1) setCurrentIndex(0);
   }, [currentPhoto, currentIndex, filteredQueue.length]);
 
+  const handleSkip = useCallback(() => {
+    if (!currentPhoto) return;
+    setSkipped(prev => [...prev, currentPhoto.id]);
+    setQueue(prev => prev.filter(p => p.id !== currentPhoto.id));
+    if (currentIndex >= filteredQueue.length - 1) setCurrentIndex(Math.max(0, currentIndex - 1));
+  }, [currentPhoto, currentIndex, filteredQueue.length]);
+
   const handleRestart = () => {
     setQueue([...initialPhotos]);
     setCompleted([]);
