@@ -82,30 +82,46 @@ export default function DownloadedGuides() {
           </div>
         ) : (
           <div className="space-y-3">
-            {downloadedListings.map((listing) => (
-              <button
-                key={listing.id}
-                onClick={() => navigate(`/GuideDetail?id=${listing.id}`)}
-                className="w-full text-left rounded-2xl overflow-hidden border border-border bg-card hover:bg-muted transition-colors"
-              >
-                <div className="flex gap-3 p-3">
-                  {listing.cover_image && (
-                    <div className="w-20 h-20 rounded-lg overflow-hidden bg-muted shrink-0">
-                      <img src={listing.cover_image} alt={listing.name} className="w-full h-full object-cover" />
+            {downloadedListings.map((listing) => {
+              const download = downloads.find(d => d.listing_id === listing.id);
+              return (
+                <div
+                  key={listing.id}
+                  className="rounded-2xl overflow-hidden border border-border bg-card"
+                >
+                  <button
+                    onClick={() => navigate(`/GuideDetail?id=${listing.id}`)}
+                    className="w-full text-left hover:bg-muted transition-colors p-3"
+                  >
+                    <div className="flex gap-3">
+                      {listing.cover_image && (
+                        <div className="w-20 h-20 rounded-lg overflow-hidden bg-muted shrink-0">
+                          <img src={listing.cover_image} alt={listing.name} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-playfair text-sm font-semibold text-foreground uppercase leading-tight truncate">{listing.name}</h3>
+                        {listing.author && (
+                          <p className="font-dm text-xs text-muted-foreground mt-1">{listing.author}</p>
+                        )}
+                        {listing.description && (
+                          <p className="font-dm text-xs text-muted-foreground mt-1.5 line-clamp-2">{listing.description}</p>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-playfair text-sm font-semibold text-foreground uppercase leading-tight truncate">{listing.name}</h3>
-                    {listing.author && (
-                      <p className="font-dm text-xs text-muted-foreground mt-1">{listing.author}</p>
-                    )}
-                    {listing.description && (
-                      <p className="font-dm text-xs text-muted-foreground mt-1.5 line-clamp-2">{listing.description}</p>
-                    )}
+                  </button>
+                  <div className="border-t border-border px-3 py-2">
+                    <button
+                      onClick={() => setDeletingGuideId(listing.id)}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-dm text-destructive hover:bg-destructive/5 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete Guide
+                    </button>
                   </div>
                 </div>
-              </button>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
