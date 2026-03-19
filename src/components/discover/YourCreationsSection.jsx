@@ -77,9 +77,9 @@ export default function YourCreationsSection({ posts, userEmail }) {
 
               <button
                 onClick={() => setDeletingPostId(post.id)}
-                className="absolute top-2 right-2 z-10 h-7 w-7 bg-black/40 backdrop-blur-sm text-white hover:bg-destructive rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-2 right-2 z-10 h-9 w-9 bg-black/40 backdrop-blur-sm text-white hover:bg-destructive rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-4 h-4" />
               </button>
 
               <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
