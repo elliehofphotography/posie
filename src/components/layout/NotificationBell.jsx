@@ -52,7 +52,7 @@ export default function NotificationBell({ userEmail }) {
           <div className="fixed left-4 right-4 top-24 z-50 w-auto bg-card border border-border rounded-2xl shadow-xl overflow-hidden" style={{ maxWidth: '360px', margin: '0 auto' }}>
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
               <span className="font-dm text-sm font-semibold text-foreground">Notifications</span>
-              <button onClick={() => setOpen(false)}>
+              <button onClick={() => setOpen(false)} className="h-9 w-9 min-h-[36px] min-w-[36px] rounded flex items-center justify-center hover:bg-muted transition-colors">
                 <X className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
