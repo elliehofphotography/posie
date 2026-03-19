@@ -150,7 +150,7 @@ export default function AllPhotos() {
           <div className="flex items-center gap-2">
             <button
               onClick={exitSelectMode}
-              className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
+              className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
             >
               <X className="w-4 h-4" />
             </button>
