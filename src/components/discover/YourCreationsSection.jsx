@@ -11,7 +11,7 @@ import {
 
 export default function YourCreationsSection({ posts, userEmail }) {
   const queryClient = useQueryClient();
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [deletingPostId, setDeletingPostId] = useState(null);
 
   const deleteCreationMutation = useMutation({
