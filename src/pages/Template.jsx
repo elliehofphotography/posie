@@ -8,7 +8,7 @@ import PoseCategoryBar from '../components/ui/PoseCategoryBar';
 import { Button } from '@/components/ui/button';
 import PhotoCard from '../components/photos/PhotoCard';
 import AddPhotoDialog from '../components/photos/AddPhotoDialog';
-import ImageLightbox from '../components/ui/ImageLightbox';
+import PhotoDetailLightbox from '../components/ui/PhotoDetailLightbox';
 import SortOptionsDialog from '../components/templates/SortOptionsDialog';
 
 export default function Template() {
@@ -19,7 +19,7 @@ export default function Template() {
 
   const [showAddPhoto, setShowAddPhoto] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState(null);
-  const [lightboxImage, setLightboxImage] = useState(null);
+  const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
   const [showSortDialog, setShowSortDialog] = useState(false);
 
@@ -163,7 +163,7 @@ export default function Template() {
                   photo={p}
                   onEdit={(photo) => setEditingPhoto(photo)}
                   onDelete={(photo) => deletePhotoMutation.mutate(photo.id)}
-                  onClick={() => setLightboxImage(p.image_url)}
+                  onClick={() => setLightboxPhoto(p)}
                 />
               </div>
             ))}
@@ -187,8 +187,8 @@ export default function Template() {
         onSubmit={(data) => addPhotoMutation.mutate(data)}
       />
 
-      {lightboxImage && (
-        <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
+      {lightboxPhoto && (
+        <PhotoDetailLightbox photo={lightboxPhoto} onClose={() => setLightboxPhoto(null)} />
       )}
 
       {editingPhoto && (
