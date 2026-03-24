@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Bookmark } from 'lucide-react';
+import { Heart, Bookmark } from 'lucide-react';
+import PageHeader from '../components/ui/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import DiscoverSaveToGalleryDialog from '@/components/discover/DiscoverSaveToGalleryDialog';
@@ -110,23 +111,7 @@ export default function DiscoverFavorites() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      <div
-        className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
-        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
-      >
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/Discover')}
-            className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div className="flex items-center gap-2">
-            <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-            <h1 className="font-playfair text-lg font-semibold text-foreground">Favorites</h1>
-          </div>
-        </div>
-      </div>
+      <PageHeader title="Favorites" backTo="/Discover" />
 
       <div className="p-4">
         {favoritedPosts.length === 0 ? (

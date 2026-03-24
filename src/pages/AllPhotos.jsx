@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Image as ImageIcon, CheckSquare, X, Trash2 } from 'lucide-react';
+import { Image as ImageIcon, X, Trash2 } from 'lucide-react';
+import PageHeader from '../components/ui/PageHeader';
 import PoseCategoryBar from '../components/ui/PoseCategoryBar';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -139,11 +140,11 @@ export default function AllPhotos() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div
-        className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
-        style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
-      >
-        {selectMode ? (
+      {selectMode ? (
+        <div
+          className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4"
+          style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))', paddingBottom: '0.75rem' }}
+        >
           <div className="flex items-center gap-2">
             <button
               onClick={exitSelectMode}
@@ -151,37 +152,27 @@ export default function AllPhotos() {
             >
               <X className="w-4 h-4" />
             </button>
-            <div className="flex-1">
-              <p className="font-dm text-sm font-medium text-foreground">
-                {selected.length > 0 ? `${selected.length} selected` : 'Select photos'}
-              </p>
-            </div>
+            <p className="font-dm text-sm font-medium text-foreground flex-1">
+              {selected.length > 0 ? `${selected.length} selected` : 'Select photos'}
+            </p>
           </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => navigate(-1)}
-                className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-              <div>
-                <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight">All Photos</h1>
-                <p className="font-dm text-xs text-muted-foreground">{photos.length} photos</p>
-              </div>
-            </div>
-            {photos.length > 0 && (
+        </div>
+      ) : (
+        <PageHeader
+          title="All Photos"
+          subtitle={`${photos.length} photos`}
+          right={
+            photos.length > 0 && (
               <button
                 onClick={() => setSelectMode(true)}
-                className="px-4 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
+                className="px-4 py-2 h-11 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
               >
                 Select
               </button>
-            )}
-          </div>
-        )}
-      </div>
+            )
+          }
+        />
+      )}
 
       {/* Pose Category Filter */}
       <PoseCategoryBar activeCategory={activeCategory} onChange={setActiveCategory} />
@@ -253,7 +244,7 @@ export default function AllPhotos() {
 
       {/* Delete Button (select mode) */}
       {selectMode && selected.length > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 px-5 pb-4 z-40" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
+        <div className="fixed bottom-0 left-0 right-0 px-5 z-40" style={{ paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom))' }}>
           <button
             onClick={() => { setShowDeleteConfirm(true); hapticFeedback(); }}
             className="w-full min-h-[48px] py-4 rounded-2xl bg-destructive text-destructive-foreground font-dm text-sm font-semibold flex items-center justify-center gap-2 shadow-lg"

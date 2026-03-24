@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, Download, User, Tag } from 'lucide-react';
+import { CheckCircle2, Download, User, Tag } from 'lucide-react';
+import PageHeader from '../components/ui/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
@@ -109,18 +110,7 @@ export default function GuideDetail() {
 
   return (
     <div className="min-h-screen bg-background pb-52">
-      {/* Sticky Header */}
-      <div
-        className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
-        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
-        
-        <button
-           onClick={() => navigate('/Marketplace')}
-           className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
-
-           <ArrowLeft className="w-4 h-4" />
-         </button>
-      </div>
+      <PageHeader title={listing?.name || ''} backTo="/Marketplace" />
 
       {/* Cover Image */}
       {listing.cover_image &&

@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Check } from 'lucide-react';
+import { Plus, Trash2, Check } from 'lucide-react';
+import PageHeader from '../components/ui/PageHeader';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -71,21 +72,10 @@ export default function ShotList() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <h1 className="font-playfair text-lg font-semibold text-foreground">Shot List</h1>
-            <p className="font-dm text-xs text-muted-foreground">{completedCount} of {items.length} done</p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Shot List"
+        subtitle={`${completedCount} of ${items.length} done`}
+      />
 
       {/* Progress bar */}
       {items.length > 0 && (
@@ -167,7 +157,7 @@ export default function ShotList() {
       </div>
 
       {/* Add input pinned above bottom nav */}
-      <div className="fixed bottom-20 left-0 right-0 px-5 pb-2">
+      <div className="fixed bottom-0 left-0 right-0 px-5 pb-2" style={{ paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))' }}>
         <form onSubmit={handleAdd} className="flex gap-2 bg-card border border-border rounded-2xl p-2 shadow-sm">
           <Input
             value={newItem}

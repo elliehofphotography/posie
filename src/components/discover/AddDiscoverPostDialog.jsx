@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import BottomSheetSelect from '@/components/ui/BottomSheetSelect';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ImagePlus, Loader2, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -111,27 +111,25 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
           {/* Category */}
           <div className="space-y-1.5">
             <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Category *</Label>
-            <Select value={form.category} onValueChange={(v) => set('category', v)}>
-              <SelectTrigger className="bg-muted border-border font-dm">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <BottomSheetSelect
+              label="Category"
+              value={form.category}
+              onChange={(v) => set('category', v)}
+              options={CATEGORIES.map(c => ({ value: c, label: c }))}
+              placeholder="Select a category"
+            />
           </div>
 
           {/* Shot Type / Pose Category */}
           <div className="space-y-1.5">
             <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Shot Type</Label>
-            <Select value={form.pose_category} onValueChange={(v) => set('pose_category', v)}>
-              <SelectTrigger className="bg-muted border-border font-dm">
-                <SelectValue placeholder="e.g. Standing, Sitting..." />
-              </SelectTrigger>
-              <SelectContent>
-                {poseCategories.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <BottomSheetSelect
+              label="Shot Type"
+              value={form.pose_category}
+              onChange={(v) => set('pose_category', v)}
+              options={poseCategories}
+              placeholder="e.g. Standing, Sitting..."
+            />
           </div>
 
           {/* Title */}

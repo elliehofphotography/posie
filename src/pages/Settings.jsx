@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  ArrowLeft, Trash2, LogOut, User, Mail, Shield,
-  Bell, HelpCircle, ChevronRight, Copy, Check,
+  Trash2, LogOut, User, Mail, Shield,
+  Bell, ChevronRight, Copy, Check,
   Pencil, MessageCircle, FileText, Layers
 } from 'lucide-react';
+import PageHeader from '@/components/ui/PageHeader';
 import { base44 } from '@/api/base44Client';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
@@ -83,21 +84,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      {/* Header */}
-      <div
-        className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
-        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
-      >
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <h1 className="font-playfair text-lg font-semibold text-foreground">Settings</h1>
-        </div>
-      </div>
+      <PageHeader title="Settings" />
 
       <div className="p-5 space-y-6">
 

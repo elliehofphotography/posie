@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+// Note: ChecklistOverview uses a dark (black) theme so PageHeader doesn't apply here
 
 export default function ChecklistOverview() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -18,11 +19,14 @@ export default function ChecklistOverview() {
   return (
     <div className="min-h-screen bg-black">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 px-4 py-3">
+      <div
+        className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10 px-4"
+        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))', paddingBottom: '0.75rem' }}
+      >
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>

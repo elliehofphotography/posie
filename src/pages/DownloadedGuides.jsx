@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Zap, Trash2 } from 'lucide-react';
+import { Zap, Trash2 } from 'lucide-react';
+import PageHeader from '@/components/ui/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
@@ -50,23 +51,7 @@ export default function DownloadedGuides() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      {/* Header */}
-      <div
-        className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3"
-        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
-        
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <h1 className="font-playfair text-lg font-semibold text-foreground">Downloaded Guides</h1>
-            <p className="font-dm text-xs text-muted-foreground">{downloadedListings.length} guides</p>
-          </div>
-        </div>
-      </div>
+      <PageHeader title="Downloaded Guides" subtitle={`${downloadedListings.length} guides`} />
 
       {/* Guides Grid */}
       <div className="p-4 space-y-3">

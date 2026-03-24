@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Play, List, Image as ImageIcon } from 'lucide-react';
+import { Plus, Play, List, Image as ImageIcon } from 'lucide-react';
+import PageHeader from '../components/ui/PageHeader';
 import PoseCategoryBar from '../components/ui/PoseCategoryBar';
 import { Button } from '@/components/ui/button';
 import PhotoCard from '../components/photos/PhotoCard';
@@ -100,39 +101,29 @@ export default function Template() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/Home')}
-              className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <div>
-              <h1 className="font-playfair text-lg font-semibold text-foreground leading-tight">{template?.name || 'Template'}</h1>
-              <p className="font-dm text-xs text-muted-foreground">{photos.length} poses</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
+      <PageHeader
+        title={template?.name || 'Template'}
+        subtitle={`${photos.length} poses`}
+        backTo="/Home"
+        right={
+          <>
             <Link to={`/ShotList?id=${templateId}`}>
-              <button className="h-11 w-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
+              <button className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
                 <List className="w-4 h-4" />
               </button>
             </Link>
             {photos.length > 0 && (
-              <button 
+              <button
                 onClick={() => setShowSortDialog(true)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2 h-11 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 <Play className="w-3.5 h-3.5" />
                 Shoot
               </button>
             )}
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Pose Category Filter */}
       {photos.length > 0 && (

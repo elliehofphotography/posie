@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import BottomSheetSelect from '@/components/ui/BottomSheetSelect';
 import { Upload } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { getUserPoseCategories } from '@/lib/poseCategories';
@@ -129,34 +129,27 @@ export default function AddPhotoDialog({ open, onOpenChange, onSubmit, editPhoto
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Category</Label>
-              <Select value={form.pose_category} onValueChange={(v) => update('pose_category', v)}>
-                <SelectTrigger className="bg-muted border-border font-dm text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-border font-dm">
-                  {categories.map(c => (
-                    <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <BottomSheetSelect
+                label="Category"
+                value={form.pose_category}
+                onChange={(v) => update('pose_category', v)}
+                options={categories}
+              />
             </div>
             <div className="space-y-1.5">
               <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Priority</Label>
-              <Select value={form.color_priority} onValueChange={(v) => update('color_priority', v)}>
-                <SelectTrigger className="bg-muted border-border font-dm text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-border font-dm">
-                  {PRIORITIES.map(p => (
-                    <SelectItem key={p.value} value={p.value}>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2.5 h-2.5 rounded-full ${p.color}`} />
-                        {p.label}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <BottomSheetSelect
+                label="Priority"
+                value={form.color_priority}
+                onChange={(v) => update('color_priority', v)}
+                options={PRIORITIES}
+                renderOption={(opt) => (
+                  <span className="flex items-center gap-2">
+                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${opt.color}`} />
+                    {opt.label}
+                  </span>
+                )}
+              />
             </div>
           </div>
 
