@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, Download, User, Tag } from 'lucide-react';
+import { Download, User, Tag, Trash2 } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function GuideDetail() {
   const navigate = useNavigate();
@@ -12,6 +17,7 @@ export default function GuideDetail() {
   const id = params.get('id');
 
   const [user, setUser] = useState(null);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
@@ -97,6 +103,46 @@ export default function GuideDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['downloads', id, user?.email] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
+    }
+  });
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const download = downloads[0];
+
+      // Delete the download record
+      await base44.entities.Download.delete(download.id);
+
+      // Get all guide photo image URLs
+      const guideImageUrls = new Set(guidePhotos.map(p => p.image_url));
+
+      // Find all TemplatePhotos belonging to this user that match those URLs
+      const allTemplatePhotos = await base44.entities.TemplatePhoto.list();
+      const toDelete = allTemplatePhotos.filter(p => guideImageUrls.has(p.image_url));
+
+      await Promise.all(toDelete.map(p => base44.entities.TemplatePhoto.delete(p.id)));
+
+      // Update photo counts for affected templates
+      const affectedTemplateIds = [...new Set(toDelete.map(p => p.template_id))];
+      await Promise.all(affectedTemplateIds.map(async (templateId) => {
+        const remaining = await base44.entities.TemplatePhoto.filter({ template_id: templateId });
+        await base44.entities.ShootTemplate.update(templateId, {
+          photo_count: remaining.length,
+          cover_image: remaining.length > 0 ? remaining[0].image_url : '',
+        });
+      }));
+
+      // Delete any ShootTemplate that was created for this guide (same name, now empty or still named the same)
+      const allTemplates = await base44.entities.ShootTemplate.list();
+      const guideTemplate = allTemplates.find(t => t.name === listing.name && t.created_by === user.email);
+      if (guideTemplate) {
+        await base44.entities.ShootTemplate.delete(guideTemplate.id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['downloads', id, user?.email] });
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
     }
   });
 
@@ -193,22 +239,46 @@ export default function GuideDetail() {
         className="fixed left-0 right-0 px-5 py-4 bg-background/95 backdrop-blur-xl border-t border-border"
         style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>
         
-        {alreadyDownloaded ?
-        <div className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-muted text-muted-foreground font-dm text-sm">
-            <CheckCircle2 className="w-4 h-4 text-green-500" />
-            Added to Downloaded Guides
-          </div> :
-
-        <button
-          onClick={() => downloadMutation.mutate()}
-          disabled={downloadMutation.isPending || !user}
-          className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-vina text-xl tracking-widest uppercase hover:bg-primary/90 transition-colors disabled:opacity-50 select-none flex items-center justify-center gap-3">
-          
+        {alreadyDownloaded ? (
+          <button
+            onClick={() => setShowRemoveConfirm(true)}
+            className="w-full py-4 rounded-2xl bg-muted text-destructive font-dm text-sm font-semibold hover:bg-destructive/10 transition-colors select-none flex items-center justify-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            Remove from Downloaded Guides
+          </button>
+        ) : (
+          <button
+            onClick={() => downloadMutation.mutate()}
+            disabled={downloadMutation.isPending || !user}
+            className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-vina text-xl tracking-widest uppercase hover:bg-primary/90 transition-colors disabled:opacity-50 select-none flex items-center justify-center gap-3"
+          >
             <Download className="w-5 h-5" />
             {downloadMutation.isPending ? 'Downloading…' : 'Download'}
           </button>
-        }
+        )}
       </div>
+
+      <AlertDialog open={showRemoveConfirm} onOpenChange={setShowRemoveConfirm}>
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-playfair text-foreground">Remove this guide?</AlertDialogTitle>
+            <AlertDialogDescription className="font-dm text-muted-foreground">
+              Are you sure you want to remove this guide? All photos connected with the guide will also be removed from your galleries.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="font-dm">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { removeMutation.mutate(); setShowRemoveConfirm(false); }}
+              disabled={removeMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 font-dm"
+            >
+              {removeMutation.isPending ? 'Removing…' : 'Remove'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>);
 
 }
