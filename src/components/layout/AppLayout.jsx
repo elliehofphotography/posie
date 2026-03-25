@@ -65,7 +65,7 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen bg-background font-inter flex flex-col">
-      <main className={hideNav ? 'flex-1' : 'flex-1 pb-20'}>
+      <main className={hideNav ? 'flex-1' : 'flex-1'} style={hideNav ? {} : { paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))' }}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={location.pathname}

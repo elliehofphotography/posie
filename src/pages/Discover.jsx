@@ -188,6 +188,7 @@ export default function Discover() {
             <NotificationBell userEmail={user?.email} />
             <button
                onClick={() => navigate('/DiscoverFavorites')}
+               aria-label="View favorites"
                className="w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors select-none relative"
              >
               <Heart className="w-5 h-5 text-red-500" />
@@ -199,6 +200,7 @@ export default function Discover() {
             </button>
             <button
                onClick={() => setShowAdd(true)}
+               aria-label="Add post"
                className="w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none"
              >
               <Plus className="w-5 h-5" />
@@ -298,12 +300,14 @@ export default function Discover() {
                     </div>
                     <div className="flex items-center gap-2">
                       <button
+                        aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
                         className="text-white/80 hover:text-white transition-colors"
                         onClick={(e) => { e.stopPropagation(); user && toggleFavoriteMutation.mutate(img.id); }}
                       >
                         <Heart className={`w-3.5 h-3.5 transition-all ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
                       </button>
                       <button
+                        aria-label="Save to gallery"
                         className="text-white/80 hover:text-white transition-colors"
                         onClick={(e) => { e.stopPropagation(); setSavingPost(img); }}
                       >

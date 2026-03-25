@@ -196,6 +196,7 @@ export default function ShootMode() {
         <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => navigate(-1)}
+            aria-label="Close shoot mode"
             className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -208,12 +209,13 @@ export default function ShootMode() {
           <div className="flex items-center gap-1">
             <ShootTimer />
             <Link to={shotListOverrideId ? `/ShotList?id=${shotListOverrideId}` : `/ChecklistOverview?id=${templateId}`}>
-              <button className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors ml-1">
+              <button aria-label="View shot list" className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors ml-1">
                 <Grid3X3 className="w-4 h-4" />
               </button>
             </Link>
             <button
               onClick={handleRestart}
+              aria-label="Restart shoot"
               className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />

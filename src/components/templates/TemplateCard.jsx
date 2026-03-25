@@ -56,7 +56,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
 
       <MobileMenu
         trigger={
-          <button className="absolute top-2.5 right-2.5 h-9 w-9 bg-white/25 backdrop-blur-sm text-white hover:bg-white/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <button aria-label="Template options" className="absolute top-2.5 right-2.5 h-9 w-9 bg-white/25 backdrop-blur-sm text-white hover:bg-white/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <MoreVertical className="w-4 h-4" />
           </button>
         }

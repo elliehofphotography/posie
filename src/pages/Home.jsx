@@ -136,12 +136,25 @@ export default function Home() {
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
   };
 
-  const handleDeleteSelected = async () => {
-    await Promise.all(selected.map((id) => base44.entities.ShootTemplate.delete(id)));
-    queryClient.invalidateQueries({ queryKey: ['templates'] });
-    setSelected([]);
-    setSelectMode(false);
-  };
+  const deleteSelectedMutation = useMutation({
+    mutationFn: (ids) => Promise.all(ids.map((id) => base44.entities.ShootTemplate.delete(id))),
+    onMutate: async (ids) => {
+      await queryClient.cancelQueries({ queryKey: ['templates'] });
+      const previous = queryClient.getQueryData(['templates']);
+      queryClient.setQueryData(['templates'], (old = []) => old.filter((t) => !ids.includes(t.id)));
+      return { previous };
+    },
+    onError: (_err, _ids, ctx) => {
+      queryClient.setQueryData(['templates'], ctx.previous);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      setSelected([]);
+      setSelectMode(false);
+    },
+  });
+
+  const handleDeleteSelected = () => deleteSelectedMutation.mutate(selected);
 
   const exitSelectMode = () => {
     setSelectMode(false);
@@ -198,7 +211,7 @@ export default function Home() {
       {/* Header */}
       <div className="px-5 pb-6" style={{ paddingTop: 'max(3.5rem, env(safe-area-inset-top))' }}>
         {selectMode ?
-          <div className="flex items-center gap-2 w-full" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+          <div className="flex items-center gap-2 w-full">
             <button
               onClick={exitSelectMode}
               className="px-4 py-2.5 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none whitespace-nowrap">

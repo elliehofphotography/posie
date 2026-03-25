@@ -96,20 +96,16 @@ export default function AllPhotos() {
       const selectedPhotos = photos.filter(p => selectedIds.includes(p.id));
       const selectedImageUrls = selectedPhotos.map(p => p.image_url);
 
-      // Get only current user's templates
       const userTemplates = templates.filter(t => t.created_by === user?.email);
       const userTemplateIds = userTemplates.map(t => t.id);
 
-      // Find TemplatePhoto records in ONLY the current user's templates with matching image URLs
       const userTemplatePhotos = await base44.entities.TemplatePhoto.list();
       const toDelete = userTemplatePhotos.filter(p =>
         userTemplateIds.includes(p.template_id) && selectedImageUrls.includes(p.image_url)
       );
 
-      // Delete only from current user's templates
       await Promise.all(toDelete.map(p => base44.entities.TemplatePhoto.delete(p.id)));
 
-      // Update photo counts for affected user templates only
       const affectedTemplateIds = [...new Set(toDelete.map(p => p.template_id))];
       await Promise.all(affectedTemplateIds.map(async (templateId) => {
         const remaining = await base44.entities.TemplatePhoto.filter({ template_id: templateId });
@@ -118,6 +114,15 @@ export default function AllPhotos() {
           cover_image: remaining.length > 0 ? remaining[0].image_url : '',
         });
       }));
+    },
+    onMutate: async (selectedIds) => {
+      await queryClient.cancelQueries({ queryKey: ['all_photos'] });
+      const previous = queryClient.getQueryData(['all_photos']);
+      queryClient.setQueryData(['all_photos'], (old = []) => old.filter(p => !selectedIds.includes(p.id)));
+      return { previous };
+    },
+    onError: (_err, _ids, ctx) => {
+      queryClient.setQueryData(['all_photos'], ctx.previous);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['all_photos'] });
@@ -150,6 +155,7 @@ export default function AllPhotos() {
           <div className="flex items-center gap-2">
             <button
               onClick={exitSelectMode}
+              aria-label="Cancel selection"
               className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
             >
               <X className="w-4 h-4" />
@@ -246,9 +252,9 @@ export default function AllPhotos() {
 
       {/* Delete Button (select mode) */}
       {selectMode && selected.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 px-5 z-40" style={{ paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom))' }}>
+        <div className="fixed bottom-0 left-0 right-0 px-5 z-40" style={{ paddingBottom: 'calc(5rem + env(safe-area-inset-bottom))' }}>
           <button
-            onClick={() => { setShowDeleteConfirm(true); hapticFeedback(); }}
+            onClick={() => { setShowDeleteConfirm(true); haptic.delete(); }}
             className="w-full min-h-[48px] py-4 rounded-2xl bg-destructive text-destructive-foreground font-dm text-sm font-semibold flex items-center justify-center gap-2 shadow-lg"
           >
             <Trash2 className="w-4 h-4" />

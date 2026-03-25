@@ -40,6 +40,7 @@ export default function PhotoDetailLightbox({ photo, onClose }) {
         {/* Back button */}
         <button
           onClick={onClose}
+          aria-label="Close"
           className="absolute top-4 left-4 z-20 h-11 w-11 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/60 transition-colors select-none"
           style={{ top: 'max(1rem, env(safe-area-inset-top))' }}
         >
