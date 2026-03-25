@@ -20,6 +20,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import GuideDetail from './pages/GuideDetail';
 import DiscoverFavorites from './pages/DiscoverFavorites.jsx';
 import DownloadedGuides from './pages/DownloadedGuides';
+import Support from './pages/Support';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
         <Route path="/GuideDetail" element={<GuideDetail />} />
         <Route path="/DiscoverFavorites" element={<DiscoverFavorites />} />
         <Route path="/DownloadedGuides" element={<DownloadedGuides />} />
+        <Route path="/Support" element={<Support />} />
       </Route>
       <Route path="/ShootMode" element={<ShootMode />} />
       <Route path="*" element={<PageNotFound />} />
