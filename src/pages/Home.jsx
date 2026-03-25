@@ -87,7 +87,7 @@ export default function Home() {
 
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ['templates'],
-    queryFn: () => base44.entities.ShootTemplate.list('-created_date')
+    queryFn: () => base44.entities.ShootTemplate.list('-updated_date')
   });
 
   const createMutation = useMutation({

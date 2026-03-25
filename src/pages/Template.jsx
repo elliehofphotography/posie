@@ -77,9 +77,13 @@ export default function Template() {
   });
 
   const editPhotoMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.TemplatePhoto.update(id, data),
+    mutationFn: async ({ id, data }) => {
+      await base44.entities.TemplatePhoto.update(id, data);
+      await base44.entities.ShootTemplate.update(templateId, { updated_date: new Date().toISOString() });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photos', templateId] });
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
       setEditingPhoto(null);
     },
   });
