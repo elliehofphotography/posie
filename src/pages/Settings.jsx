@@ -3,8 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Trash2, LogOut, User, Mail, Shield,
   Bell, ChevronRight, Copy, Check,
-  Pencil, MessageCircle, FileText, Layers
+  Pencil, MessageCircle, FileText, Layers, Sparkles, Crown
 } from 'lucide-react';
+import UpgradeModal from '@/components/subscription/UpgradeModal';
+import { isPro } from '@/lib/subscription';
 import PageHeader from '@/components/ui/PageHeader';
 import { base44 } from '@/api/base44Client';
 import {
@@ -51,6 +53,7 @@ export default function Settings() {
   const [showEdit, setShowEdit] = useState(false);
   const [notifEnabled, setNotifEnabled] = useState(false);
   const [showCategorySorting, setShowCategorySorting] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -120,6 +123,36 @@ export default function Settings() {
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
+        </div>
+
+        {/* Subscription */}
+        <div>
+          <SectionLabel>Subscription</SectionLabel>
+          {isPro(user) ? (
+            <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-primary/10 border border-primary/30">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+                <Crown className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-dm text-sm font-semibold text-primary">Pro Member</p>
+                <p className="font-dm text-xs text-muted-foreground mt-0.5">Unlimited galleries, photos & guides</p>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowUpgrade(true)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors select-none text-left"
+            >
+              <div className="w-8 h-8 rounded-full bg-primary-foreground/20 flex items-center justify-center shrink-0">
+                <Sparkles className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-dm text-sm font-semibold">Upgrade to Pro</p>
+                <p className="font-dm text-xs opacity-80 mt-0.5">From $3.99/mo · Unlimited everything</p>
+              </div>
+              <ChevronRight className="w-4 h-4 opacity-70 shrink-0" />
+            </button>
+          )}
         </div>
 
         {/* Account Info */}
@@ -243,6 +276,11 @@ export default function Settings() {
         onOpenChange={setShowCategorySorting}
         user={user}
         onSaved={handleProfileSaved}
+      />
+
+      <UpgradeModal
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
       />
     </div>
   );

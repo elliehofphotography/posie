@@ -9,6 +9,8 @@ import SelectableTemplateCard from '../components/templates/SelectableTemplateCa
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 import MarketplaceCard from '../components/marketplace/MarketplaceCard';
 import PullToRefresh from '../components/layout/PullToRefresh';
+import UpgradeModal from '../components/subscription/UpgradeModal';
+import { isPro, canCreateGallery, FREE_GALLERY_LIMIT } from '../lib/subscription';
 
 function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, onChangeCover, selectMode, selected, onToggle }) {
   const filtered = templates.filter((t) =>
@@ -57,6 +59,7 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -218,7 +221,14 @@ export default function Home() {
                 </button>
               </Link>
               <button
-                onClick={() => setShowCreate(true)}
+                onClick={() => {
+                  const galleryCount = templates.filter(t => t.template_type !== 'shot_list').length;
+                  if (!canCreateGallery(user, galleryCount)) {
+                    setShowUpgrade(true);
+                  } else {
+                    setShowCreate(true);
+                  }
+                }}
                 className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none">
                 
                 <Plus className="w-5 h-5" />
@@ -267,7 +277,14 @@ export default function Home() {
               Create your first shoot template to start planning
             </p>
             <button
-              onClick={() => setShowCreate(true)}
+              onClick={() => {
+                const galleryCount = templates.filter(t => t.template_type !== 'shot_list').length;
+                if (!canCreateGallery(user, galleryCount)) {
+                  setShowUpgrade(true);
+                } else {
+                  setShowCreate(true);
+                }
+              }}
               className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors">
               
               Create Template
@@ -305,6 +322,12 @@ export default function Home() {
           </div>
         </div>
         }
+
+      <UpgradeModal
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        reason={`Free accounts are limited to ${FREE_GALLERY_LIMIT} galleries. Upgrade to Pro for unlimited galleries and photos.`}
+      />
 
       <CreateTemplateDialog
           open={showCreate}

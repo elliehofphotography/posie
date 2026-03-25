@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, User, Tag, Trash2 } from 'lucide-react';
+import { Download, User, Tag, Trash2, Sparkles } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -9,6 +9,7 @@ import {
   AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { isPro } from '../lib/subscription';
 
 export default function GuideDetail() {
   const navigate = useNavigate();
@@ -182,7 +183,11 @@ export default function GuideDetail() {
               <span className="font-dm text-sm text-muted-foreground">{listing.category}</span>
             </div>
           }
-          <span className="font-dm text-sm font-semibold text-primary ml-auto">Free</span>
+          <span className="font-dm text-sm font-semibold text-primary ml-auto">
+            {listing.price && listing.price > 0
+              ? isPro(user) ? <span className="flex items-center gap-1"><Sparkles className="w-3.5 h-3.5" />Free with Pro</span> : `$${listing.price.toFixed(2)}`
+              : 'Free'}
+          </span>
         </div>
       </div>
 
@@ -246,6 +251,26 @@ export default function GuideDetail() {
           >
             <Trash2 className="w-4 h-4" />
             Remove from Downloaded Guides
+          </button>
+        ) : listing?.price > 0 && !isPro(user) ? (
+          <button
+            onClick={async () => {
+              if (window.self !== window.top) {
+                alert('Checkout only works from the published app.');
+                return;
+              }
+              const res = await base44.functions.invoke('createCheckoutSession', {
+                listing_id: id,
+                success_url: `${window.location.origin}/GuideDetail?id=${id}`,
+                cancel_url: `${window.location.origin}/GuideDetail?id=${id}`,
+              });
+              if (res.data?.url) window.location.href = res.data.url;
+            }}
+            disabled={!user}
+            className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-vina text-xl tracking-widest uppercase hover:bg-primary/90 transition-colors disabled:opacity-50 select-none flex items-center justify-center gap-3"
+          >
+            <Download className="w-5 h-5" />
+            Buy — ${listing.price.toFixed(2)}
           </button>
         ) : (
           <button

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,6 +10,8 @@ import PhotoCard from '../components/photos/PhotoCard';
 import AddPhotoDialog from '../components/photos/AddPhotoDialog';
 import PhotoDetailLightbox from '../components/ui/PhotoDetailLightbox';
 import SortOptionsDialog from '../components/templates/SortOptionsDialog';
+import UpgradeModal from '../components/subscription/UpgradeModal';
+import { canAddPhoto, FREE_PHOTO_LIMIT } from '../lib/subscription';
 
 export default function Template() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -22,6 +24,12 @@ export default function Template() {
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
   const [showSortDialog, setShowSortDialog] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
 
   const { data: template } = useQuery({
     queryKey: ['template', templateId],
@@ -148,7 +156,13 @@ export default function Template() {
               Add inspiration photos to build your shoot plan
             </p>
             <button
-              onClick={() => setShowAddPhoto(true)}
+              onClick={() => {
+                if (!canAddPhoto(user, photos.length)) {
+                  setShowUpgrade(true);
+                } else {
+                  setShowAddPhoto(true);
+                }
+              }}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
             >
               <Plus className="w-4 h-4" />
@@ -174,12 +188,24 @@ export default function Template() {
       {/* FAB */}
       {photos.length > 0 && (
         <button
-          onClick={() => setShowAddPhoto(true)}
+          onClick={() => {
+            if (!canAddPhoto(user, photos.length)) {
+              setShowUpgrade(true);
+            } else {
+              setShowAddPhoto(true);
+            }
+          }}
           className="fixed bottom-24 right-5 h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors z-40"
         >
           <Plus className="w-6 h-6" />
         </button>
       )}
+
+      <UpgradeModal
+        open={showUpgrade}
+        onOpenChange={setShowUpgrade}
+        reason={`Free accounts are limited to ${FREE_PHOTO_LIMIT} photos per gallery. Upgrade to Pro for unlimited photos.`}
+      />
 
       <AddPhotoDialog
         open={showAddPhoto}
