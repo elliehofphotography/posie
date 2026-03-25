@@ -160,6 +160,15 @@ export default function Home() {
 
   const renameMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.ShootTemplate.update(id, data),
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ['templates'] });
+      const previous = queryClient.getQueryData(['templates']);
+      queryClient.setQueryData(['templates'], (old = []) => old.map(t => t.id === id ? { ...t, ...data } : t));
+      return { previous };
+    },
+    onError: (_err, _vars, ctx) => {
+      queryClient.setQueryData(['templates'], ctx.previous);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['templates'] });
       setRenaming(null);
@@ -168,6 +177,15 @@ export default function Home() {
 
   const changeCoverMutation = useMutation({
     mutationFn: ({ id, cover_image }) => base44.entities.ShootTemplate.update(id, { cover_image }),
+    onMutate: async ({ id, cover_image }) => {
+      await queryClient.cancelQueries({ queryKey: ['templates'] });
+      const previous = queryClient.getQueryData(['templates']);
+      queryClient.setQueryData(['templates'], (old = []) => old.map(t => t.id === id ? { ...t, cover_image } : t));
+      return { previous };
+    },
+    onError: (_err, _vars, ctx) => {
+      queryClient.setQueryData(['templates'], ctx.previous);
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['templates'] }),
   });
 
@@ -216,11 +234,12 @@ export default function Home() {
                 </button>
               }
               <Link to="/Settings">
-                <button className="min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
+                <button aria-label="Settings" className="min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none">
                   <Settings className="w-4.5 h-4.5" />
                 </button>
               </Link>
               <button
+                aria-label="Create new template"
                 onClick={() => {
                   const galleryCount = templates.filter(t => t.template_type !== 'shot_list').length;
                   if (!canCreateGallery(user, galleryCount)) {

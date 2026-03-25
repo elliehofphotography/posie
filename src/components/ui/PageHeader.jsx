@@ -28,6 +28,7 @@ export default function PageHeader({ title, subtitle, onBack, backTo, right, cla
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <button
             onClick={handleBack}
+            aria-label="Go back"
             className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />

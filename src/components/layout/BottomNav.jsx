@@ -32,6 +32,8 @@ export default function BottomNav({ onTabPress }) {
              <button
                key={path}
                onClick={() => onTabPress(path)}
+               aria-label={label}
+               aria-current={isActive ? 'page' : undefined}
                className={`flex flex-col items-center justify-center gap-1 min-w-[56px] min-h-[56px] px-2 rounded-xl transition-all duration-200 select-none ${
                  isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                }`}
