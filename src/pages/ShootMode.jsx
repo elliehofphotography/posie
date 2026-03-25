@@ -71,13 +71,19 @@ export default function ShootMode() {
       
       if (isMulti) {
         sorted = sourcePhotos; // already shuffled
+      } else if (sortBy === 'color+category') {
+        sorted = [...sourcePhotos].sort((a, b) => {
+          const colorDiff = (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2);
+          if (colorDiff !== 0) return colorDiff;
+          return (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8);
+        });
       } else if (sortBy === 'color') {
         sorted = [...sourcePhotos].sort(
-          (a, b) => (PRIORITY_ORDER[a.color_priority] || 2) - (PRIORITY_ORDER[b.color_priority] || 2)
+          (a, b) => (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2)
         );
       } else if (sortBy === 'category') {
         sorted = [...sourcePhotos].sort(
-          (a, b) => (POSE_CATEGORY_ORDER[a.pose_category] || 8) - (POSE_CATEGORY_ORDER[b.pose_category] || 8)
+          (a, b) => (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8)
         );
       } else if (sortBy === 'natural') {
         // Natural order: most recently added first (reverse sort_order)

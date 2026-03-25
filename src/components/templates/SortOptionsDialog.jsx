@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Layers, Clock } from 'lucide-react';
+import { Sparkles, Layers, Clock, LayoutList } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { getUserPoseCategories } from '@/lib/poseCategories';
 
@@ -23,14 +23,20 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
 
   const options = [
     {
+      id: 'color+category',
+      label: 'Color + Category',
+      description: `Red wide shots → Red standing → … → Green wide → Green standing`,
+      icon: LayoutList,
+    },
+    {
       id: 'color',
-      label: 'Color Priority',
+      label: 'Color Priority Only',
       description: 'Red → Yellow → Green',
       icon: Sparkles,
     },
     {
       id: 'category',
-      label: 'Category Sort',
+      label: 'Category Sort Only',
       description: `${categoryOrder} (change order in settings)`,
       icon: Layers,
     },
