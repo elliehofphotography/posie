@@ -1,20 +1,19 @@
 /**
  * Subscription helpers — centralised limits & checks.
+ * Currently all features are free/unlimited.
  */
 
-export const FREE_GALLERY_LIMIT = 2;
-export const FREE_PHOTO_LIMIT = 15;
+export const FREE_GALLERY_LIMIT = Infinity;
+export const FREE_PHOTO_LIMIT = Infinity;
 
 export function isPro(user) {
-  return user?.subscription_status === 'active';
+  return true; // Everything free for now
 }
 
 export function canCreateGallery(user, galleryCount) {
-  if (isPro(user)) return true;
-  return galleryCount < FREE_GALLERY_LIMIT;
+  return true;
 }
 
 export function canAddPhoto(user, photoCount) {
-  if (isPro(user)) return true;
-  return photoCount < FREE_PHOTO_LIMIT;
+  return true;
 }
