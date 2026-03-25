@@ -3,7 +3,7 @@
  */
 
 export const FREE_GALLERY_LIMIT = 2;
-export const FREE_PHOTO_LIMIT = 30;
+export const FREE_PHOTO_LIMIT = 15;
 
 export function isPro(user) {
   return user?.subscription_status === 'active';
