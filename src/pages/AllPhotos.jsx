@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image as ImageIcon, X, Trash2 } from 'lucide-react';
+import { Image as ImageIcon, X, Trash2, Plus } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import PoseCategoryBar from '../components/ui/PoseCategoryBar';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import PhotoCard from '../components/photos/PhotoCard';
 import SaveToGalleryDialog from '../components/photos/SaveToGalleryDialog';
 import ImageLightbox from '../components/ui/ImageLightbox';
+import AddPhotoToGalleryFlow from '../components/photos/AddPhotoToGalleryFlow';
 import { haptic } from '@/lib/haptic';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
@@ -26,6 +27,7 @@ export default function AllPhotos() {
   const [selected, setSelected] = useState([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [user, setUser] = useState(null);
+  const [showAddPhotoFlow, setShowAddPhotoFlow] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -288,6 +290,19 @@ export default function AllPhotos() {
           isSaving={isSaving}
         />
       )}
+
+      {/* Add Photo FAB */}
+      {!selectMode && (
+        <button
+          onClick={() => setShowAddPhotoFlow(true)}
+          aria-label="Add photo"
+          className="fixed bottom-24 right-5 h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors z-40"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      )}
+
+      <AddPhotoToGalleryFlow open={showAddPhotoFlow} onOpenChange={setShowAddPhotoFlow} />
 
       {lightboxImage && (
         <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />

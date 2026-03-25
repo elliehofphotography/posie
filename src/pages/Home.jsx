@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Camera, Settings, Search, X, ShoppingBag, Shuffle, Images } from 'lucide-react';
+import { Plus, Camera, Settings, Search, X, ShoppingBag, Shuffle, Images, Image as ImageIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import TemplateCard from '../components/templates/TemplateCard';
@@ -10,6 +10,7 @@ import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 import MarketplaceCard from '../components/marketplace/MarketplaceCard';
 import PullToRefresh from '../components/layout/PullToRefresh';
 import UpgradeModal from '../components/subscription/UpgradeModal';
+import AddPhotoToGalleryFlow from '../components/photos/AddPhotoToGalleryFlow';
 import { isPro, canCreateGallery, FREE_GALLERY_LIMIT } from '../lib/subscription';
 
 function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, onChangeCover, selectMode, selected, onToggle }) {
@@ -60,6 +61,8 @@ export default function Home() {
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState([]);
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [showAddPhotoMenu, setShowAddPhotoMenu] = useState(false);
+  const [showAddPhotoFlow, setShowAddPhotoFlow] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -238,20 +241,49 @@ export default function Home() {
                   <Settings className="w-4.5 h-4.5" />
                 </button>
               </Link>
-              <button
-                aria-label="Create new template"
-                onClick={() => {
-                  const galleryCount = templates.filter(t => t.template_type !== 'shot_list').length;
-                  if (!canCreateGallery(user, galleryCount)) {
-                    setShowUpgrade(true);
-                  } else {
-                    setShowCreate(true);
-                  }
-                }}
-                className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none">
-                
-                <Plus className="w-5 h-5" />
-              </button>
+              <div className="relative">
+                <button
+                  aria-label="Add"
+                  onClick={() => setShowAddPhotoMenu(v => !v)}
+                  className="w-11 h-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors select-none">
+                  <Plus className="w-5 h-5" />
+                </button>
+                {showAddPhotoMenu && (
+                  <>
+                    {/* Backdrop */}
+                    <div className="fixed inset-0 z-40" onClick={() => setShowAddPhotoMenu(false)} />
+                    {/* Menu */}
+                    <div className="absolute right-0 top-12 z-50 bg-card border border-border rounded-2xl shadow-xl overflow-hidden w-52">
+                      <button
+                        onClick={() => {
+                          setShowAddPhotoMenu(false);
+                          setShowAddPhotoFlow(true);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted transition-colors text-left"
+                      >
+                        <ImageIcon className="w-4 h-4 text-primary shrink-0" />
+                        <span className="font-dm text-sm text-foreground">Add Photo</span>
+                      </button>
+                      <div className="h-px bg-border" />
+                      <button
+                        onClick={() => {
+                          setShowAddPhotoMenu(false);
+                          const galleryCount = templates.filter(t => t.template_type !== 'shot_list').length;
+                          if (!canCreateGallery(user, galleryCount)) {
+                            setShowUpgrade(true);
+                          } else {
+                            setShowCreate(true);
+                          }
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted transition-colors text-left"
+                      >
+                        <Plus className="w-4 h-4 text-primary shrink-0" />
+                        <span className="font-dm text-sm text-foreground">New Template</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
           }
@@ -341,6 +373,8 @@ export default function Home() {
           </div>
         </div>
         }
+
+      <AddPhotoToGalleryFlow open={showAddPhotoFlow} onOpenChange={setShowAddPhotoFlow} />
 
       <UpgradeModal
         open={showUpgrade}

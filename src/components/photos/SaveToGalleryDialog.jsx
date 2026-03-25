@@ -30,48 +30,78 @@ export default function SaveToGalleryDialog({ open, onOpenChange, photo, galleri
 
         {mode === 'pick' && (
           <div className="space-y-2">
-            {/* Create new option */}
-            <button
-              onClick={() => setMode('create')}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-muted transition-all text-left"
-            >
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <FolderPlus className="w-4 h-4 text-primary" />
-              </div>
-              <span className="font-dm text-sm text-foreground font-medium">Create new gallery</span>
-            </button>
-
-            {/* Existing galleries */}
-            {galleries.length > 0 && (
-              <>
-                <div className="flex items-center gap-3 py-1">
-                  <div className="h-px flex-1 bg-border" />
-                  <span className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground">or pick existing</span>
-                  <div className="h-px flex-1 bg-border" />
-                </div>
-                {galleries.map(g => (
-                  <button
-                    key={g.id}
-                    onClick={() => onSaveToExisting(g.id)}
-                    disabled={isSaving}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border border-border hover:border-primary/40 bg-card transition-all text-left"
-                  >
-                    {g.cover_image ? (
-                      <img src={g.cover_image} alt={g.name} className="w-10 h-10 rounded-xl object-cover shrink-0" />
-                    ) : (
-                      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                        <FolderPlus className="w-4 h-4 text-muted-foreground" />
+            {/* All Photos — always first */}
+            {(() => {
+              const allPhotosGallery = galleries.find(g => g.name === 'All Photos');
+              const otherGalleries = galleries.filter(g => g.name !== 'All Photos');
+              return (
+                <>
+                  {allPhotosGallery && (
+                    <button
+                      onClick={() => onSaveToExisting(allPhotosGallery.id)}
+                      disabled={isSaving}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-primary/30 hover:border-primary bg-primary/5 transition-all text-left"
+                    >
+                      {allPhotosGallery.cover_image ? (
+                        <img src={allPhotosGallery.cover_image} alt="All Photos" className="w-10 h-10 rounded-xl object-cover shrink-0" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                          <FolderPlus className="w-4 h-4 text-primary" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-dm text-sm font-semibold text-primary truncate">All Photos</p>
+                        <p className="font-dm text-[11px] text-muted-foreground">{allPhotosGallery.photo_count || 0} photos · suggested</p>
                       </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-dm text-sm font-medium text-foreground truncate">{g.name}</p>
-                      <p className="font-dm text-[11px] text-muted-foreground">{g.photo_count || 0} photos</p>
+                      {isSaving && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground shrink-0" />}
+                    </button>
+                  )}
+
+                  {/* Create new option */}
+                  <button
+                    onClick={() => setMode('create')}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-muted transition-all text-left"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <FolderPlus className="w-4 h-4 text-primary" />
                     </div>
-                    {isSaving && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground shrink-0" />}
+                    <span className="font-dm text-sm text-foreground font-medium">Create new gallery</span>
                   </button>
-                ))}
-              </>
-            )}
+
+                  {/* Other galleries */}
+                  {otherGalleries.length > 0 && (
+                    <>
+                      <div className="flex items-center gap-3 py-1">
+                        <div className="h-px flex-1 bg-border" />
+                        <span className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground">or pick existing</span>
+                        <div className="h-px flex-1 bg-border" />
+                      </div>
+                      {otherGalleries.map(g => (
+                        <button
+                          key={g.id}
+                          onClick={() => onSaveToExisting(g.id)}
+                          disabled={isSaving}
+                          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border border-border hover:border-primary/40 bg-card transition-all text-left"
+                        >
+                          {g.cover_image ? (
+                            <img src={g.cover_image} alt={g.name} className="w-10 h-10 rounded-xl object-cover shrink-0" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                              <FolderPlus className="w-4 h-4 text-muted-foreground" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-dm text-sm font-medium text-foreground truncate">{g.name}</p>
+                            <p className="font-dm text-[11px] text-muted-foreground">{g.photo_count || 0} photos</p>
+                          </div>
+                          {isSaving && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground shrink-0" />}
+                        </button>
+                      ))}
+                    </>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
