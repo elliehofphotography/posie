@@ -85,6 +85,8 @@ export default function ShootMode() {
         sorted = [...sourcePhotos].sort(
           (a, b) => (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8)
         );
+      } else if (sortBy === 'random') {
+        sorted = [...sourcePhotos].sort(() => Math.random() - 0.5);
       } else if (sortBy === 'natural') {
         // Natural order: most recently added first (reverse sort_order)
         sorted = [...sourcePhotos].sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));

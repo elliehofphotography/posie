@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Layers, Clock, Check } from 'lucide-react';
+import { Sparkles, Layers, Clock, Check, Shuffle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { getUserPoseCategories } from '@/lib/poseCategories';
 import { cn } from '@/lib/utils';
@@ -23,14 +23,17 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
     }
   }, [open]);
 
+  // Exclusive options that can't be combined with others
+  const EXCLUSIVE = new Set(['natural', 'random']);
+
   const toggleOption = (id) => {
     setSelected(prev => {
       const next = new Set(prev);
-      // 'natural' is exclusive — selecting it clears others; selecting others clears it
-      if (id === 'natural') {
-        return new Set(['natural']);
+      if (EXCLUSIVE.has(id)) {
+        return new Set([id]);
       }
-      next.delete('natural');
+      // Clear any exclusive selections
+      EXCLUSIVE.forEach(e => next.delete(e));
       if (next.has(id)) {
         next.delete(id);
         if (next.size === 0) next.add('natural'); // fallback
@@ -43,7 +46,9 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
 
   const handleStart = () => {
     let sortKey;
-    if (selected.has('color') && selected.has('category')) {
+    if (selected.has('random')) {
+      sortKey = 'random';
+    } else if (selected.has('color') && selected.has('category')) {
       sortKey = 'color+category';
     } else if (selected.has('color')) {
       sortKey = 'color';
@@ -68,6 +73,12 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
       label: 'Category Sort',
       description: `${categoryOrder || '...'} (change in settings)`,
       icon: Layers,
+    },
+    {
+      id: 'random',
+      label: 'Randomized',
+      description: 'All photos in a random order, no repeats',
+      icon: Shuffle,
     },
     {
       id: 'natural',
@@ -111,7 +122,7 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
                   <p className="font-dm text-sm font-medium text-foreground">{option.label}</p>
                   <p className="font-dm text-xs text-muted-foreground mt-0.5 leading-snug">{option.description}</p>
                 </div>
-                {isSelected && option.id !== 'natural' && (
+                {isSelected && !EXCLUSIVE.has(option.id) && (
                   <Check className="w-4 h-4 text-primary shrink-0 mt-3" />
                 )}
               </button>
