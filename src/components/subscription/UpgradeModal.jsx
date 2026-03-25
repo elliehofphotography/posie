@@ -47,9 +47,9 @@ export default function UpgradeModal({ open, onOpenChange, reason }) {
               Go Pro
             </DialogTitle>
           </div>
-          {reason && (
-            <p className="font-dm text-sm text-muted-foreground mt-1">{reason}</p>
-          )}
+          <p className="font-dm text-sm text-muted-foreground mt-1">
+            {reason || "You've reached your free limit! ✨ Upgrade to keep building your shoot boards, saving poses, and staying organized on every session."}
+          </p>
         </DialogHeader>
 
         {/* Perks */}
@@ -86,7 +86,7 @@ export default function UpgradeModal({ open, onOpenChange, reason }) {
         </div>
 
         <Button onClick={handleUpgrade} disabled={loading} className="w-full mt-2">
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Upgrade Now'}
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Upgrade to Posie Premium for $3.99/month'}
         </Button>
 
         <p className="font-dm text-[10px] text-muted-foreground text-center">

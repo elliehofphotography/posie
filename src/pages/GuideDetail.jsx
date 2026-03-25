@@ -185,7 +185,12 @@ export default function GuideDetail() {
           }
           <span className="font-dm text-sm font-semibold text-primary ml-auto">
             {listing.price && listing.price > 0
-              ? isPro(user) ? <span className="flex items-center gap-1"><Sparkles className="w-3.5 h-3.5" />Free with Pro</span> : `$${listing.price.toFixed(2)}`
+              ? isPro(user)
+                ? <span className="flex items-center gap-1">
+                    <span className="line-through text-muted-foreground font-normal">${listing.price.toFixed(2)}</span>
+                    <span className="text-primary">FREE</span>
+                  </span>
+                : `$${listing.price.toFixed(2)}`
               : 'Free'}
           </span>
         </div>
@@ -279,7 +284,7 @@ export default function GuideDetail() {
             className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-vina text-xl tracking-widest uppercase hover:bg-primary/90 transition-colors disabled:opacity-50 select-none flex items-center justify-center gap-3"
           >
             <Download className="w-5 h-5" />
-            {downloadMutation.isPending ? 'Downloading…' : 'Download'}
+            {downloadMutation.isPending ? 'Downloading…' : isPro(user) && listing?.price > 0 ? 'Download Free with Pro' : 'Download'}
           </button>
         )}
       </div>
