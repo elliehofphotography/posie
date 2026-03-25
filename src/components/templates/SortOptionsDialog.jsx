@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Layers, Clock, LayoutList } from 'lucide-react';
+import { Sparkles, Layers, Clock, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { getUserPoseCategories } from '@/lib/poseCategories';
+import { cn } from '@/lib/utils';
 
 export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
   const [categoryOrder, setCategoryOrder] = useState('');
+  const [selected, setSelected] = useState(new Set(['color']));
 
   useEffect(() => {
     if (open) {
@@ -21,23 +23,50 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
     }
   }, [open]);
 
+  const toggleOption = (id) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      // 'natural' is exclusive — selecting it clears others; selecting others clears it
+      if (id === 'natural') {
+        return new Set(['natural']);
+      }
+      next.delete('natural');
+      if (next.has(id)) {
+        next.delete(id);
+        if (next.size === 0) next.add('natural'); // fallback
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const handleStart = () => {
+    let sortKey;
+    if (selected.has('color') && selected.has('category')) {
+      sortKey = 'color+category';
+    } else if (selected.has('color')) {
+      sortKey = 'color';
+    } else if (selected.has('category')) {
+      sortKey = 'category';
+    } else {
+      sortKey = 'natural';
+    }
+    onSelect(sortKey);
+    onOpenChange(false);
+  };
+
   const options = [
     {
-      id: 'color+category',
-      label: 'Color + Category',
-      description: `Red wide shots → Red standing → … → Green wide → Green standing`,
-      icon: LayoutList,
-    },
-    {
       id: 'color',
-      label: 'Color Priority Only',
+      label: 'Color Priority',
       description: 'Red → Yellow → Green',
       icon: Sparkles,
     },
     {
       id: 'category',
-      label: 'Category Sort Only',
-      description: `${categoryOrder} (change order in settings)`,
+      label: 'Category Sort',
+      description: `${categoryOrder || '...'} (change in settings)`,
       icon: Layers,
     },
     {
@@ -60,26 +89,39 @@ export default function SortOptionsDialog({ open, onOpenChange, onSelect }) {
         <div className="space-y-2">
           {options.map((option) => {
             const Icon = option.icon;
+            const isSelected = selected.has(option.id);
             return (
               <button
                 key={option.id}
-                onClick={() => {
-                  onSelect(option.id);
-                  onOpenChange(false);
-                }}
-                className="w-full flex items-start gap-3 px-4 py-3 rounded-2xl border border-border bg-card hover:bg-muted transition-colors text-left"
+                onClick={() => toggleOption(option.id)}
+                className={cn(
+                  'w-full flex items-start gap-3 px-4 py-3 rounded-2xl border transition-colors text-left',
+                  isSelected
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-card hover:bg-muted'
+                )}
               >
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <Icon className="w-4 h-4 text-primary" />
+                <div className={cn(
+                  'w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5',
+                  isSelected ? 'bg-primary' : 'bg-primary/10'
+                )}>
+                  <Icon className={cn('w-4 h-4', isSelected ? 'text-primary-foreground' : 'text-primary')} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-dm text-sm font-medium text-foreground">{option.label}</p>
                   <p className="font-dm text-xs text-muted-foreground mt-0.5 leading-snug">{option.description}</p>
                 </div>
+                {isSelected && option.id !== 'natural' && (
+                  <Check className="w-4 h-4 text-primary shrink-0 mt-3" />
+                )}
               </button>
             );
           })}
         </div>
+
+        <Button onClick={handleStart} className="w-full mt-1">
+          Start Shoot
+        </Button>
       </DialogContent>
     </Dialog>
   );
