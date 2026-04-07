@@ -50,7 +50,7 @@ export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGa
 
       <MobileMenu
         trigger={
-          <button className="absolute top-2 right-2 h-9 w-9 bg-white/30 backdrop-blur-sm text-white hover:bg-white/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+          <button className="absolute top-2 right-2 h-9 w-9 bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 rounded-full flex items-center justify-center transition-opacity" onClick={(e) => e.stopPropagation()}>
             <MoreVertical className="w-4 h-4" />
           </button>
         }
