@@ -49,7 +49,7 @@ export default function AllPhotos() {
     enabled: !!user?.email,
   });
 
-  const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list');
+  const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list' && !t.listing_id);
 
   const saveToExistingMutation = useMutation({
     mutationFn: async ({ photo, templateId }) => {

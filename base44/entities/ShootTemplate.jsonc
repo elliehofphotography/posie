@@ -1,0 +1,51 @@
+{
+  "name": "ShootTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the shoot template"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the shoot concept"
+    },
+    "cover_image": {
+      "type": "string",
+      "description": "URL of the cover image"
+    },
+    "photo_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of photos in the template"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "gallery",
+        "shot_list"
+      ],
+      "default": "gallery",
+      "description": "Whether this template is a photo gallery or a typed shot list"
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the template is shared publicly"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    },
+    "listing_id": {
+      "type": "string",
+      "description": "If set, this template was downloaded from the marketplace and cannot be used as a save target"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

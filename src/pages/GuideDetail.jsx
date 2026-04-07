@@ -57,7 +57,8 @@ export default function GuideDetail() {
         template_type: 'gallery',
         is_public: false,
         tags: listing.category ? [listing.category] : [],
-        photo_count: guidePhotos.length
+        photo_count: guidePhotos.length,
+        listing_id: id,
       });
 
       // Find existing "All Photos" template

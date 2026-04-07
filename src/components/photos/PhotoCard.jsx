@@ -24,7 +24,7 @@ export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGa
 
   const menuItems = [];
   if (!hideEdit) menuItems.push({ label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => onEdit(photo) });
-  if (onSaveToGallery) menuItems.push({ label: 'Save to Gallery', icon: <FolderPlus className="w-4 h-4" />, onClick: () => onSaveToGallery(photo) });
+  if (onSaveToGallery) menuItems.push({ label: 'Save to Another Gallery', icon: <FolderPlus className="w-4 h-4" />, onClick: () => onSaveToGallery(photo) });
   if (!hideDelete) menuItems.push({ label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(photo), destructive: true });
 
   return (

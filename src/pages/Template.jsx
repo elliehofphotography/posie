@@ -52,7 +52,7 @@ export default function Template() {
     queryFn: () => base44.entities.ShootTemplate.list('-updated_date'),
   });
 
-  const otherGalleries = allTemplates.filter(t => t.template_type !== 'shot_list' && t.id !== templateId);
+  const otherGalleries = allTemplates.filter(t => t.template_type !== 'shot_list' && t.id !== templateId && !t.listing_id);
 
   const addPhotoMutation = useMutation({
     mutationFn: async (data) => {

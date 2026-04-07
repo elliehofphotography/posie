@@ -19,7 +19,7 @@ export default function SaveToGalleryDialog({ open, onOpenChange, photo, galleri
       <DialogContent className="bg-card border-border max-w-sm max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-vina text-2xl text-primary tracking-widest uppercase">
-            Save to Gallery
+            Save to Another Gallery
           </DialogTitle>
         </DialogHeader>
 
