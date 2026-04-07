@@ -154,26 +154,58 @@ export default function Template() {
     },
   });
 
-  const deletePhotoMutation = useMutation({
-    mutationFn: async (id) => {
-      await base44.entities.TemplatePhoto.delete(id);
+  // Remove from this gallery only
+  const removePhotoMutation = useMutation({
+    mutationFn: async (photo) => {
+      await base44.entities.TemplatePhoto.delete(photo.id);
       await base44.entities.ShootTemplate.update(templateId, {
         photo_count: Math.max(0, (template?.photo_count || 1) - 1),
       });
     },
-    onMutate: async (id) => {
+    onMutate: async (photo) => {
       await queryClient.cancelQueries({ queryKey: ['photos', templateId] });
       const previous = queryClient.getQueryData(['photos', templateId]);
-      queryClient.setQueryData(['photos', templateId], (old = []) => old.filter(p => p.id !== id));
+      queryClient.setQueryData(['photos', templateId], (old = []) => old.filter(p => p.id !== photo.id));
       return { previous };
     },
-    onError: (_err, _id, ctx) => {
+    onError: (_err, _photo, ctx) => {
       queryClient.setQueryData(['photos', templateId], ctx.previous);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photos', templateId] });
       queryClient.invalidateQueries({ queryKey: ['template', templateId] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
+    },
+  });
+
+  // Delete photo across ALL galleries that share the same image_url
+  const deletePhotoMutation = useMutation({
+    mutationFn: async (photo) => {
+      const allPhotos = await base44.entities.TemplatePhoto.filter({ image_url: photo.image_url });
+      await Promise.all(allPhotos.map(p => base44.entities.TemplatePhoto.delete(p.id)));
+      const affectedIds = [...new Set(allPhotos.map(p => p.template_id))];
+      await Promise.all(affectedIds.map(async (tid) => {
+        const remaining = await base44.entities.TemplatePhoto.filter({ template_id: tid });
+        await base44.entities.ShootTemplate.update(tid, {
+          photo_count: remaining.length,
+          cover_image: remaining.length > 0 ? remaining[0].image_url : '',
+        });
+      }));
+    },
+    onMutate: async (photo) => {
+      await queryClient.cancelQueries({ queryKey: ['photos', templateId] });
+      const previous = queryClient.getQueryData(['photos', templateId]);
+      queryClient.setQueryData(['photos', templateId], (old = []) => old.filter(p => p.id !== photo.id));
+      return { previous };
+    },
+    onError: (_err, _photo, ctx) => {
+      queryClient.setQueryData(['photos', templateId], ctx.previous);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['photos', templateId] });
+      queryClient.invalidateQueries({ queryKey: ['template', templateId] });
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
     },
   });
 
@@ -246,7 +278,8 @@ export default function Template() {
                 <PhotoCard
                   photo={p}
                   onEdit={(photo) => setEditingPhoto(photo)}
-                  onDelete={(photo) => deletePhotoMutation.mutate(photo.id)}
+                  onRemove={(photo) => removePhotoMutation.mutate(photo)}
+                  onDelete={(photo) => deletePhotoMutation.mutate(photo)}
                   onClick={() => setLightboxPhoto(p)}
                   onSaveToGallery={(photo) => setSavingPhoto(photo)}
                 />

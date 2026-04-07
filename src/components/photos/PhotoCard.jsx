@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { MoreVertical, Trash2, Pencil, FolderPlus } from 'lucide-react';
+import { MoreVertical, Trash2, Pencil, FolderPlus, FolderMinus } from 'lucide-react';
 import MobileMenu from '@/components/ui/mobile-menu';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const priorityDots = {
   red: 'bg-red-500',
@@ -19,13 +24,29 @@ const categoryLabels = {
   other: 'Other',
 };
 
-export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGallery, hideEdit, hideDelete }) {
+/**
+ * onRemove  — if provided, "Delete" opens a two-option sheet (Remove from gallery / Delete photo).
+ *             Used inside a single gallery (Template page).
+ * onDelete  — direct delete. Used on AllPhotos page where there's no "remove from gallery" concept.
+ */
+export default function PhotoCard({ photo, onEdit, onDelete, onRemove, onClick, onSaveToGallery, hideEdit, hideDelete }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showDeleteSheet, setShowDeleteSheet] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
+  const handleDeletePress = () => {
+    if (onRemove) {
+      // Gallery context — show two-option sheet
+      setShowDeleteSheet(true);
+    } else {
+      onDelete(photo);
+    }
+  };
 
   const menuItems = [];
   if (!hideEdit) menuItems.push({ label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => onEdit(photo) });
   if (onSaveToGallery) menuItems.push({ label: 'Save to Another Gallery', icon: <FolderPlus className="w-4 h-4" />, onClick: () => onSaveToGallery(photo) });
-  if (!hideDelete) menuItems.push({ label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(photo), destructive: true });
+  if (!hideDelete) menuItems.push({ label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: handleDeletePress, destructive: true });
 
   return (
     <div className="group relative cursor-pointer" onClick={onClick}>
@@ -62,6 +83,54 @@ export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGa
         onOpenChange={setMenuOpen}
         title="Photo Options"
       />
+
+      {/* Two-option delete sheet (gallery context only) */}
+      <AlertDialog open={showDeleteSheet} onOpenChange={setShowDeleteSheet}>
+        <AlertDialogContent className="bg-card border-border" onClick={(e) => e.stopPropagation()}>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-playfair text-foreground">Remove or delete?</AlertDialogTitle>
+            <AlertDialogDescription className="font-dm text-muted-foreground">
+              Choose whether to remove this photo from this gallery only, or delete it entirely.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+            <button
+              onClick={() => { setShowDeleteSheet(false); onRemove(photo); }}
+              className="w-full min-h-[44px] rounded-xl border-2 border-blue-500 text-blue-600 font-dm font-semibold text-sm hover:bg-blue-50 transition-colors px-4 py-2.5"
+            >
+              Remove from this gallery
+            </button>
+            <button
+              onClick={() => { setShowDeleteSheet(false); setShowConfirmDelete(true); }}
+              className="w-full min-h-[44px] rounded-xl border-2 border-destructive text-destructive font-dm font-semibold text-sm hover:bg-destructive/5 transition-colors px-4 py-2.5"
+            >
+              Delete photo
+            </button>
+            <AlertDialogCancel className="w-full font-dm">Cancel</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Confirm full delete dialog */}
+      <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
+        <AlertDialogContent className="bg-card border-border" onClick={(e) => e.stopPropagation()}>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-playfair text-foreground">Delete this photo?</AlertDialogTitle>
+            <AlertDialogDescription className="font-dm text-muted-foreground">
+              Are you sure you want to delete this photo? Doing so will remove the photo from all affiliated galleries.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="font-dm">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { setShowConfirmDelete(false); onDelete(photo); }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 font-dm"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
