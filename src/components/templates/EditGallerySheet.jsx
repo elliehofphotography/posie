@@ -50,16 +50,14 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[90vh] flex flex-col bg-card border-border rounded-t-3xl">
         <SheetHeader className="border-b border-border pb-3">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="font-playfair text-foreground">Edit {template?.name}</SheetTitle>
-            <button
-              onClick={() => setShowCoverPicker(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors"
-            >
-              <ImagePlus className="w-3.5 h-3.5" />
-              Change Cover
-            </button>
-          </div>
+          <SheetTitle className="font-playfair text-foreground">Edit {template?.name}</SheetTitle>
+          <button
+            onClick={() => setShowCoverPicker(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors w-fit"
+          >
+            <ImagePlus className="w-3.5 h-3.5" />
+            Change Cover
+          </button>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto">
