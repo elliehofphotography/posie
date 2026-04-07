@@ -13,7 +13,7 @@ import UpgradeModal from '../components/subscription/UpgradeModal';
 import AddPhotoToGalleryFlow from '../components/photos/AddPhotoToGalleryFlow';
 import { isPro, canCreateGallery, FREE_GALLERY_LIMIT } from '../lib/subscription';
 
-function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, onChangeCover, selectMode, selected, onToggle }) {
+function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, onChangeCover, onDuplicate, selectMode, selected, onToggle }) {
   const filtered = templates.filter((t) =>
   t.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -47,7 +47,7 @@ function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, on
         onRename={onRename} /> :
 
 
-      <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} onChangeCover={onChangeCover} />
+      <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} onChangeCover={onChangeCover} onDuplicate={onDuplicate} />
       )}
     </div>);
 
@@ -189,6 +189,27 @@ export default function Home() {
       queryClient.invalidateQueries({ queryKey: ['templates'] });
       setRenaming(null);
     }
+  });
+
+  const duplicateMutation = useMutation({
+    mutationFn: async (template) => {
+      const newTemplate = await base44.entities.ShootTemplate.create({
+        name: `${template.name} (Copy)`,
+        description: template.description || '',
+        template_type: template.template_type,
+        cover_image: template.cover_image || '',
+        photo_count: 0,
+        tags: template.tags || [],
+      });
+      const photos = await base44.entities.TemplatePhoto.filter({ template_id: template.id }, 'sort_order');
+      if (photos.length > 0) {
+        await base44.entities.TemplatePhoto.bulkCreate(
+          photos.map(p => ({ ...p, id: undefined, template_id: newTemplate.id }))
+        );
+        await base44.entities.ShootTemplate.update(newTemplate.id, { photo_count: photos.length });
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['templates'] }),
   });
 
   const changeCoverMutation = useMutation({
@@ -362,6 +383,7 @@ export default function Home() {
             onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
             onRename={(tmpl) => setRenaming(tmpl)}
             onChangeCover={(tmpl, imageUrl) => changeCoverMutation.mutate({ id: tmpl.id, cover_image: imageUrl })}
+            onDuplicate={(tmpl) => duplicateMutation.mutate(tmpl)}
             selectMode={selectMode}
             selected={selected}
             onToggle={toggleSelect} />
