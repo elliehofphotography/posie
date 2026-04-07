@@ -53,7 +53,7 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
           <SheetTitle className="font-playfair text-foreground">Edit {template?.name}</SheetTitle>
           <button
             onClick={() => setShowCoverPicker(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors w-fit"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors mx-auto"
           >
             <ImagePlus className="w-3.5 h-3.5" />
             Change Cover
