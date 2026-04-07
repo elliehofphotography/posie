@@ -48,12 +48,15 @@ export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGa
         )}
       </div>
 
+      <button
+        className="absolute top-2 right-2 h-9 w-9 bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 rounded-full flex items-center justify-center"
+        onClick={(e) => { e.stopPropagation(); setMenuOpen(true); }}
+      >
+        <MoreVertical className="w-4 h-4" />
+      </button>
+
       <MobileMenu
-        trigger={
-          <button className="absolute top-2 right-2 h-9 w-9 bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 rounded-full flex items-center justify-center transition-opacity" onClick={(e) => e.stopPropagation()}>
-            <MoreVertical className="w-4 h-4" />
-          </button>
-        }
+        trigger={null}
         items={menuItems}
         open={menuOpen}
         onOpenChange={setMenuOpen}
