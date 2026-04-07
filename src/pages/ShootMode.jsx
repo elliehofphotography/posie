@@ -117,6 +117,17 @@ export default function ShootMode() {
   const currentPhoto = filteredQueue[currentIndex];
   const availableCategories = [...new Set(queue.map(p => p.pose_category).filter(Boolean))];
 
+  // Auto-advance to next category when current category is exhausted
+  useEffect(() => {
+    if (activeCategory === 'all' || availableCategories.length === 0) return;
+    if (filteredQueue.length === 0 && queue.length > 0) {
+      const currentIdx = availableCategories.indexOf(activeCategory);
+      const nextCategory = availableCategories[currentIdx + 1] || 'all';
+      setActiveCategory(nextCategory);
+      setCurrentIndex(0);
+    }
+  }, [filteredQueue.length, queue.length, activeCategory, availableCategories.join(',')]);
+
   const handleDone = useCallback(() => {
     if (!currentPhoto) return;
     setCompleted(prev => [...prev, currentPhoto.id]);
