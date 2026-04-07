@@ -55,7 +55,7 @@ export default function Discover() {
     queryFn: () => base44.entities.ShootTemplate.list('-created_date'),
   });
 
-  const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list');
+  const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list' && !t.listing_id);
   const favoritedPostIds = new Set(favorites.map(f => f.post_id));
 
   const createMutation = useMutation({

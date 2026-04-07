@@ -19,7 +19,7 @@ export default function AddPhotoToGalleryFlow({ open, onOpenChange }) {
     enabled: open,
   });
 
-  const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list');
+  const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list' && !t.listing_id);
 
   const saveToExistingMutation = useMutation({
     mutationFn: async ({ photo, templateId }) => {
