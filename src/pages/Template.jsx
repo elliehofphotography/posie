@@ -11,6 +11,7 @@ import AddPhotoDialog from '../components/photos/AddPhotoDialog';
 import PhotoDetailLightbox from '../components/ui/PhotoDetailLightbox';
 import SortOptionsDialog from '../components/templates/SortOptionsDialog';
 import UpgradeModal from '../components/subscription/UpgradeModal';
+import SaveToGalleryDialog from '../components/photos/SaveToGalleryDialog';
 import { canAddPhoto, FREE_PHOTO_LIMIT } from '../lib/subscription';
 
 export default function Template() {
@@ -26,6 +27,8 @@ export default function Template() {
   const [showSortDialog, setShowSortDialog] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [user, setUser] = useState(null);
+  const [savingPhoto, setSavingPhoto] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -43,6 +46,13 @@ export default function Template() {
     queryFn: () => base44.entities.TemplatePhoto.filter({ template_id: templateId }, 'sort_order'),
     enabled: !!templateId,
   });
+
+  const { data: allTemplates = [] } = useQuery({
+    queryKey: ['templates'],
+    queryFn: () => base44.entities.ShootTemplate.list('-updated_date'),
+  });
+
+  const otherGalleries = allTemplates.filter(t => t.template_type !== 'shot_list' && t.id !== templateId);
 
   const addPhotoMutation = useMutation({
     mutationFn: async (data) => {
@@ -85,6 +95,62 @@ export default function Template() {
       queryClient.invalidateQueries({ queryKey: ['photos', templateId] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
       setEditingPhoto(null);
+    },
+  });
+
+  const saveToGalleryMutation = useMutation({
+    mutationFn: async ({ photo, targetTemplateId }) => {
+      const target = allTemplates.find(t => t.id === targetTemplateId);
+      const existing = await base44.entities.TemplatePhoto.filter({ template_id: targetTemplateId }, 'sort_order');
+      await base44.entities.TemplatePhoto.create({
+        template_id: targetTemplateId,
+        image_url: photo.image_url,
+        description: photo.description || '',
+        pose_category: photo.pose_category || '',
+        color_priority: photo.color_priority || 'green',
+        lens_suggestion: photo.lens_suggestion || '',
+        aperture_suggestion: photo.aperture_suggestion || '',
+        lighting_notes: photo.lighting_notes || '',
+        camera_angle: photo.camera_angle || '',
+        sort_order: existing.length,
+      });
+      await base44.entities.ShootTemplate.update(targetTemplateId, {
+        photo_count: existing.length + 1,
+        cover_image: existing.length === 0 ? photo.image_url : target?.cover_image,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      setSavingPhoto(null);
+      setIsSaving(false);
+    },
+  });
+
+  const createAndSaveMutation = useMutation({
+    mutationFn: async ({ photo, name }) => {
+      const newTemplate = await base44.entities.ShootTemplate.create({
+        name,
+        template_type: 'gallery',
+        photo_count: 1,
+        cover_image: photo.image_url,
+      });
+      await base44.entities.TemplatePhoto.create({
+        template_id: newTemplate.id,
+        image_url: photo.image_url,
+        description: photo.description || '',
+        pose_category: photo.pose_category || '',
+        color_priority: photo.color_priority || 'green',
+        lens_suggestion: photo.lens_suggestion || '',
+        aperture_suggestion: photo.aperture_suggestion || '',
+        lighting_notes: photo.lighting_notes || '',
+        camera_angle: photo.camera_angle || '',
+        sort_order: 0,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      setSavingPhoto(null);
+      setIsSaving(false);
     },
   });
 
@@ -182,6 +248,7 @@ export default function Template() {
                   onEdit={(photo) => setEditingPhoto(photo)}
                   onDelete={(photo) => deletePhotoMutation.mutate(photo.id)}
                   onClick={() => setLightboxPhoto(p)}
+                  onSaveToGallery={(photo) => setSavingPhoto(photo)}
                 />
               </div>
             ))}
@@ -227,6 +294,18 @@ export default function Template() {
           onOpenChange={() => setEditingPhoto(null)}
           editPhoto={editingPhoto}
           onSubmit={(data) => editPhotoMutation.mutate({ id: editingPhoto.id, data })}
+        />
+      )}
+
+      {savingPhoto && (
+        <SaveToGalleryDialog
+          open={true}
+          onOpenChange={(v) => { if (!v) { setSavingPhoto(null); setIsSaving(false); } }}
+          photo={savingPhoto}
+          galleries={otherGalleries}
+          onSaveToExisting={(targetTemplateId) => { setIsSaving(true); saveToGalleryMutation.mutate({ photo: savingPhoto, targetTemplateId }); }}
+          onCreateNew={(name) => { setIsSaving(true); createAndSaveMutation.mutate({ photo: savingPhoto, name }); }}
+          isSaving={isSaving}
         />
       )}
 
