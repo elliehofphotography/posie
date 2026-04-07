@@ -7,7 +7,8 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import PhotoCard from '../components/photos/PhotoCard';
 import SaveToGalleryDialog from '../components/photos/SaveToGalleryDialog';
-import ImageLightbox from '../components/ui/ImageLightbox';
+import PhotoDetailLightbox from '../components/ui/PhotoDetailLightbox';
+import AddPhotoDialog from '../components/photos/AddPhotoDialog';
 import AddPhotoToGalleryFlow from '../components/photos/AddPhotoToGalleryFlow';
 import { haptic } from '@/lib/haptic';
 import {
@@ -20,7 +21,8 @@ export default function AllPhotos() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [savingPhoto, setSavingPhoto] = useState(null);
-  const [lightboxImage, setLightboxImage] = useState(null);
+  const [lightboxPhoto, setLightboxPhoto] = useState(null);
+  const [editingPhoto, setEditingPhoto] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const [selectMode, setSelectMode] = useState(false);
@@ -87,8 +89,37 @@ export default function AllPhotos() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['templates'] }); setSavingPhoto(null); setIsSaving(false); },
   });
 
-  // Delete selected photos only from current user's galleries
+  const editPhotoMutation = useMutation({
+    mutationFn: async ({ id, data }) => base44.entities.TemplatePhoto.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
+      setEditingPhoto(null);
+    },
+  });
 
+  const deletePhotoMutation = useMutation({
+    mutationFn: async (photo) => {
+      await base44.entities.TemplatePhoto.delete(photo.id);
+      const remaining = await base44.entities.TemplatePhoto.filter({ template_id: photo.template_id });
+      await base44.entities.ShootTemplate.update(photo.template_id, {
+        photo_count: remaining.length,
+        cover_image: remaining.length > 0 ? remaining[0].image_url : '',
+      });
+    },
+    onMutate: async (photo) => {
+      await queryClient.cancelQueries({ queryKey: ['all_photos'] });
+      const previous = queryClient.getQueryData(['all_photos']);
+      queryClient.setQueryData(['all_photos'], (old = []) => old.filter(p => p.id !== photo.id));
+      return { previous };
+    },
+    onError: (_err, _photo, ctx) => queryClient.setQueryData(['all_photos'], ctx.previous),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+    },
+  });
+
+  // Delete selected photos only from current user's galleries
 
   const deleteSelectedMutation = useMutation({
     mutationFn: async (selectedIds) => {
@@ -239,9 +270,9 @@ export default function AllPhotos() {
               <div key={photo.id} className="break-inside-avoid mb-3">
                 <PhotoCard
                   photo={photo}
-                  hideEdit
-                  hideDelete
-                  onClick={() => setLightboxImage(photo.image_url)}
+                  onClick={() => setLightboxPhoto(photo)}
+                  onEdit={(p) => setEditingPhoto(p)}
+                  onDelete={(p) => deletePhotoMutation.mutate(p)}
                   onSaveToGallery={(p) => setSavingPhoto(p)}
                 />
               </div>
@@ -310,8 +341,17 @@ export default function AllPhotos() {
 
       <AddPhotoToGalleryFlow open={showAddPhotoFlow} onOpenChange={setShowAddPhotoFlow} />
 
-      {lightboxImage && (
-        <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
+      {lightboxPhoto && (
+        <PhotoDetailLightbox photo={lightboxPhoto} onClose={() => setLightboxPhoto(null)} />
+      )}
+
+      {editingPhoto && (
+        <AddPhotoDialog
+          open={true}
+          onOpenChange={() => setEditingPhoto(null)}
+          editPhoto={editingPhoto}
+          onSubmit={(data) => editPhotoMutation.mutate({ id: editingPhoto.id, data })}
+        />
       )}
     </div>
   );
