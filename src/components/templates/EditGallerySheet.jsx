@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Trash2, X } from 'lucide-react';
+import { Trash2, X, ImagePlus } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import PoseCategoryBar from '../ui/PoseCategoryBar';
+import ChangeCoverDialog from './ChangeCoverDialog';
 
 export default function EditGallerySheet({ open, onOpenChange, template }) {
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
+  const [showCoverPicker, setShowCoverPicker] = useState(false);
 
   const { data: photos = [], isLoading } = useQuery({
     queryKey: ['photos', template?.id],
@@ -47,8 +49,17 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[90vh] flex flex-col bg-card border-border rounded-t-3xl">
-        <SheetHeader className="border-b border-border">
-          <SheetTitle className="font-playfair text-foreground">Edit {template?.name}</SheetTitle>
+        <SheetHeader className="border-b border-border pb-3">
+          <div className="flex items-center justify-between">
+            <SheetTitle className="font-playfair text-foreground">Edit {template?.name}</SheetTitle>
+            <button
+              onClick={() => setShowCoverPicker(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors"
+            >
+              <ImagePlus className="w-3.5 h-3.5" />
+              Change Cover
+            </button>
+          </div>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto">
@@ -111,6 +122,19 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
           </div>
         )}
       </SheetContent>
+
+      {showCoverPicker && (
+        <ChangeCoverDialog
+          open={showCoverPicker}
+          onOpenChange={setShowCoverPicker}
+          template={template}
+          onSelect={(imageUrl) => {
+            base44.entities.ShootTemplate.update(template.id, { cover_image: imageUrl });
+            queryClient.invalidateQueries({ queryKey: ['templates'] });
+            setShowCoverPicker(false);
+          }}
+        />
+      )}
     </Sheet>
   );
 }

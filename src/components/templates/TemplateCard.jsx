@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MoreVertical, Trash2, Pencil, List, Images, ImagePlus, Settings, Copy } from 'lucide-react';
+import { Camera, MoreVertical, Trash2, Pencil, List, Images, Settings, Copy } from 'lucide-react';
 import MobileMenu from '@/components/ui/mobile-menu';
-import ChangeCoverDialog from './ChangeCoverDialog';
 import EditGallerySheet from './EditGallerySheet';
 
 export default function TemplateCard({ template, onDelete, onRename, onChangeCover, onDuplicate }) {
@@ -11,7 +10,6 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
     ? `/ShotList?id=${template.id}`
     : `/Template?id=${template.id}`;
 
-  const [showCoverPicker, setShowCoverPicker] = useState(false);
   const [showEditGallery, setShowEditGallery] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -64,7 +62,6 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
           { label: 'Rename', icon: <Pencil className="w-4 h-4" />, onClick: () => onRename(template) },
           ...(isShotList ? [] : [
             { label: 'Edit', icon: <Settings className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
-            { label: 'Change Cover', icon: <ImagePlus className="w-4 h-4" />, onClick: () => setShowCoverPicker(true) },
             { label: 'Duplicate Gallery', icon: <Copy className="w-4 h-4" />, onClick: () => onDuplicate && onDuplicate(template) },
           ]),
           { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(template), destructive: true },
@@ -73,15 +70,6 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
         onOpenChange={setMenuOpen}
         title="Template Options"
       />
-
-      {showCoverPicker && (
-        <ChangeCoverDialog
-          open={showCoverPicker}
-          onOpenChange={setShowCoverPicker}
-          template={template}
-          onSelect={(imageUrl) => onChangeCover(template, imageUrl)}
-        />
-      )}
 
       <EditGallerySheet
         open={showEditGallery}
