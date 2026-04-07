@@ -39,7 +39,8 @@ export default function PhotoCard({ photo, onEdit, onDelete, onRemove, onClick, 
       // Gallery context — show two-option sheet
       setShowDeleteSheet(true);
     } else {
-      onDelete(photo);
+      // All Photos context — show confirm dialog directly
+      setShowConfirmDelete(true);
     }
   };
 
