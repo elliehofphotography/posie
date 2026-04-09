@@ -34,7 +34,17 @@ export default function PhotoCard({ photo, onEdit, onDelete, onRemove, onClick, 
   if (!hideEdit) menuItems.push({ label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => onEdit(photo) });
   if (onSaveToGallery) menuItems.push({ label: 'Save to Another Gallery', icon: <FolderPlus className="w-4 h-4" />, onClick: () => onSaveToGallery(photo) });
   const hasDeleteOptions = onRemove || !hideDelete;
-  if (hasDeleteOptions) menuItems.push({ label: 'Delete Photo', icon: <Trash2 className="w-4 h-4" />, onClick: () => setTimeout(() => setShowDeleteChoice(true), 300), destructive: true });
+  if (hasDeleteOptions) menuItems.push({
+    label: 'Delete Photo',
+    icon: <Trash2 className="w-4 h-4" />,
+    onClick: () => setTimeout(() => {
+      // If both remove and delete are available, show the choice dialog
+      // If only delete (no remove), go straight to confirmation
+      if (onRemove && !hideDelete) setShowDeleteChoice(true);
+      else setShowConfirmDelete(true);
+    }, 300),
+    destructive: true,
+  });
 
   return (
     <div className="group relative cursor-pointer" onClick={onClick}>
