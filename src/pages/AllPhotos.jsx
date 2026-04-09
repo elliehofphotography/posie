@@ -127,7 +127,6 @@ export default function AllPhotos() {
     },
     onError: (_err, _photo, ctx) => queryClient.setQueryData(['all_photos', user?.email], ctx.previous),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all_photos', user?.email] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
     },
   });
@@ -170,7 +169,6 @@ export default function AllPhotos() {
       queryClient.setQueryData(['all_photos', user?.email], ctx.previous);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all_photos', user?.email] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
       setSelected([]);
       setSelectMode(false);
