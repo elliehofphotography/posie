@@ -80,18 +80,22 @@ export default function AllPhotos() {
   // Bulk delete
   const bulkDeleteMutation = useMutation({
     mutationFn: async (imageUrls) => {
-      for (const url of imageUrls) {
-        const matches = await base44.entities.TemplatePhoto.filter({ image_url: url });
-        await Promise.all(matches.map(p => base44.entities.TemplatePhoto.delete(p.id)));
-        const affectedIds = [...new Set(matches.map(p => p.template_id))];
-        await Promise.all(affectedIds.map(async (tid) => {
-          const remaining = await base44.entities.TemplatePhoto.filter({ template_id: tid });
-          await base44.entities.ShootTemplate.update(tid, {
-            photo_count: remaining.length,
-            cover_image: remaining.length > 0 ? remaining[0].image_url : '',
-          });
-        }));
-      }
+      // Fetch all matching records for every selected URL in parallel
+      const allMatchArrays = await Promise.all(
+        imageUrls.map(url => base44.entities.TemplatePhoto.filter({ image_url: url }))
+      );
+      const allMatches = allMatchArrays.flat();
+      // Delete every matched record in parallel
+      await Promise.all(allMatches.map(p => base44.entities.TemplatePhoto.delete(p.id)));
+      // Update affected template metadata
+      const affectedIds = [...new Set(allMatches.map(p => p.template_id))];
+      await Promise.all(affectedIds.map(async (tid) => {
+        const remaining = await base44.entities.TemplatePhoto.filter({ template_id: tid });
+        await base44.entities.ShootTemplate.update(tid, {
+          photo_count: remaining.length,
+          cover_image: remaining.length > 0 ? remaining[0].image_url : '',
+        });
+      }));
     },
     onMutate: async (imageUrls) => {
       await queryClient.cancelQueries({ queryKey: ['all_photos'] });
