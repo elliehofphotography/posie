@@ -24,24 +24,12 @@ const categoryLabels = {
   other: 'Other',
 };
 
-/**
- * onRemove  — if provided, "Delete" opens a two-option sheet (Remove from gallery / Delete photo).
- *             Used inside a single gallery (Template page).
- * onDelete  — direct delete. Used on AllPhotos page where there's no "remove from gallery" concept.
- */
-export default function PhotoCard({ photo, onEdit, onDelete, onRemove, onClick, onSaveToGallery, hideEdit, hideDelete }) {
+export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGallery, hideEdit, hideDelete }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showDeleteSheet, setShowDeleteSheet] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const handleDeletePress = () => {
-    if (onRemove) {
-      // Gallery context — show two-option sheet
-      setTimeout(() => setShowDeleteSheet(true), 300);
-    } else {
-      // All Photos context — show confirm dialog directly
-      setTimeout(() => setShowConfirmDelete(true), 300);
-    }
+    setTimeout(() => setShowConfirmDelete(true), 300);
   };
 
   const menuItems = [];
@@ -84,33 +72,6 @@ export default function PhotoCard({ photo, onEdit, onDelete, onRemove, onClick, 
         onOpenChange={setMenuOpen}
         title="Photo Options"
       />
-
-      {/* Two-option delete sheet (gallery context only) */}
-      <AlertDialog open={showDeleteSheet} onOpenChange={setShowDeleteSheet}>
-        <AlertDialogContent className="bg-card border-border" onClick={(e) => e.stopPropagation()}>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="font-playfair text-foreground">Remove or delete?</AlertDialogTitle>
-            <AlertDialogDescription className="font-dm text-muted-foreground">
-              Choose whether to remove this photo from this gallery only, or delete it entirely.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
-            <button
-              onClick={() => { setShowDeleteSheet(false); onRemove(photo); }}
-              className="w-full min-h-[44px] rounded-xl border-2 border-blue-500 text-blue-600 font-dm font-semibold text-sm hover:bg-blue-50 transition-colors px-4 py-2.5"
-            >
-              Remove from this gallery
-            </button>
-            <button
-              onClick={() => { setShowDeleteSheet(false); setShowConfirmDelete(true); }}
-              className="w-full min-h-[44px] rounded-xl border-2 border-destructive text-destructive font-dm font-semibold text-sm hover:bg-destructive/5 transition-colors px-4 py-2.5"
-            >
-              Delete photo
-            </button>
-            <AlertDialogCancel className="w-full font-dm">Cancel</AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* Confirm full delete dialog */}
       <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
