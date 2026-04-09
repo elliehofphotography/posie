@@ -74,7 +74,7 @@ export default function AllPhotos() {
       return { previous };
     },
     onError: (_e, _p, ctx) => queryClient.setQueryData(['all_photos'], ctx.previous),
-    onSuccess: invalidateAll,
+    onSuccess: () => window.location.reload(),
   });
 
   // Bulk delete
@@ -104,11 +104,7 @@ export default function AllPhotos() {
       return { previous };
     },
     onError: (_e, _p, ctx) => queryClient.setQueryData(['all_photos'], ctx.previous),
-    onSuccess: () => {
-      invalidateAll();
-      setSelected([]);
-      setSelectMode(false);
-    },
+    onSuccess: () => window.location.reload(),
   });
 
   // Save to existing gallery
