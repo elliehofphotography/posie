@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Camera, MoreVertical, Trash2, Pencil, List, Images, Settings, Copy } from 'lucide-react';
 import MobileMenu from '@/components/ui/mobile-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import EditGallerySheet from './EditGallerySheet';
 
 export default function TemplateCard({ template, onDelete, onRename, onChangeCover, onDuplicate }) {
@@ -12,6 +13,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
 
   const [showEditGallery, setShowEditGallery] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   return (
     <div className="group relative">
@@ -64,7 +66,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
             { label: 'Edit', icon: <Settings className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
             { label: 'Duplicate Gallery', icon: <Copy className="w-4 h-4" />, onClick: () => onDuplicate && onDuplicate(template) },
           ]),
-          { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => onDelete(template), destructive: true },
+          { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => setShowDeleteConfirm(true), destructive: true },
         ]}
         open={menuOpen}
         onOpenChange={setMenuOpen}
@@ -76,6 +78,26 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
         onOpenChange={setShowEditGallery}
         template={template}
       />
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-playfair text-foreground">Delete this {isShotList ? 'shot list' : 'gallery'}?</AlertDialogTitle>
+            <AlertDialogDescription className="font-dm text-muted-foreground">
+              Are you sure you want to delete &ldquo;{template.name}&rdquo;? This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="font-dm">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { setShowDeleteConfirm(false); onDelete(template); }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 font-dm"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
