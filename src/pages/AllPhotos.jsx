@@ -78,21 +78,30 @@ export default function AllPhotos() {
   // Delete a single photo across ALL galleries
   const deletePhotoMutation = useMutation({
     mutationFn: async (photo) => {
-      const matches = await base44.entities.TemplatePhoto.filter({ image_url: photo.image_url });
-      await Promise.all(matches.map(p => base44.entities.TemplatePhoto.delete(p.id)));
-      const affectedIds = [...new Set(matches.map(p => p.template_id))];
-      await Promise.all(affectedIds.map(async (tid) => {
-        const remaining = await base44.entities.TemplatePhoto.filter({ template_id: tid });
-        await base44.entities.ShootTemplate.update(tid, {
-          photo_count: remaining.length,
-          cover_image: remaining.length > 0 ? remaining[0].image_url : '',
-        });
-      }));
+      if (photo.id?.startsWith('discover-')) {
+        // It's a Discover post — delete the DiscoverPost record
+        const discoverPostId = photo.id.replace('discover-', '');
+        await base44.entities.DiscoverPost.delete(discoverPostId);
+      } else {
+        // It's a TemplatePhoto — delete from all galleries
+        const matches = await base44.entities.TemplatePhoto.filter({ image_url: photo.image_url });
+        await Promise.all(matches.map(p => base44.entities.TemplatePhoto.delete(p.id)));
+        const affectedIds = [...new Set(matches.map(p => p.template_id))];
+        await Promise.all(affectedIds.map(async (tid) => {
+          const remaining = await base44.entities.TemplatePhoto.filter({ template_id: tid });
+          await base44.entities.ShootTemplate.update(tid, {
+            photo_count: remaining.length,
+            cover_image: remaining.length > 0 ? remaining[0].image_url : '',
+          });
+        }));
+      }
     },
     onMutate: async (photo) => {
       await queryClient.cancelQueries({ queryKey: ['all_photos'] });
+      await queryClient.cancelQueries({ queryKey: ['discover_posts'] });
       const previous = queryClient.getQueryData(['all_photos']);
       queryClient.setQueryData(['all_photos'], (old = []) => old.filter(p => p.image_url !== photo.image_url));
+      queryClient.setQueryData(['discover_posts'], (old = []) => (old || []).filter(p => p.image_url !== photo.image_url));
       return { previous };
     },
     onError: (_e, _p, ctx) => queryClient.setQueryData(['all_photos'], ctx.previous),
