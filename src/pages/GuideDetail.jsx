@@ -74,11 +74,19 @@ export default function GuideDetail() {
 
       for (const photo of guidePhotos) {
         // Add to new template
-        await base44.entities.TemplatePhoto.create({
-          template_id: newTemplate.id,
+        const photoData = {
           image_url: photo.image_url,
           description: photo.description || '',
           pose_category: photo.pose_category || '',
+          lens_suggestion: photo.lens_suggestion || '',
+          aperture_suggestion: photo.aperture_suggestion || '',
+          lighting_notes: photo.lighting_notes || '',
+          camera_angle: photo.camera_angle || '',
+          color_priority: photo.color_priority || 'green',
+        };
+        await base44.entities.TemplatePhoto.create({
+          ...photoData,
+          template_id: newTemplate.id,
           sort_order: newTemplatePhotoCount
         });
         newTemplatePhotoCount++;
@@ -86,10 +94,8 @@ export default function GuideDetail() {
         // Add to All Photos if it exists
         if (allPhotosTemplate) {
           await base44.entities.TemplatePhoto.create({
+            ...photoData,
             template_id: allPhotosTemplate.id,
-            image_url: photo.image_url,
-            description: photo.description || '',
-            pose_category: photo.pose_category || '',
             sort_order: allPhotosPhotoCount
           });
           allPhotosPhotoCount++;

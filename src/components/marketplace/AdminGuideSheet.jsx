@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload, X } from 'lucide-react';
+import GuidePhotoEditor from './GuidePhotoEditor';
 import { base44 } from '@/api/base44Client';
 
 const CATEGORIES = ['Wedding', 'Bridal', 'Engagement', 'Portrait', 'Family', 'Fashion', 'Graduation', 'Newborn', 'Boudoir', 'Other'];
@@ -183,6 +184,17 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
               );
             })}
           </div>
+
+          {/* Guide Photos — only shown when editing an existing guide */}
+          {isEditing && (
+            <div className="border-t border-border pt-4">
+              <div className="mb-3 px-3 py-2 rounded-xl bg-primary/5 border border-primary/20">
+                <p className="font-dm text-xs text-primary font-medium">Admin Only — Full Guide Content</p>
+                <p className="font-dm text-[11px] text-muted-foreground mt-0.5">These photos are delivered to buyers when they download. Not shown publicly.</p>
+              </div>
+              <GuidePhotoEditor listingId={listing.id} />
+            </div>
+          )}
 
           <DrawerFooter className="px-0 pt-2">
             <button
