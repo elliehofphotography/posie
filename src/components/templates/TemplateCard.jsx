@@ -19,7 +19,11 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
   const handleShare = () => {
     const url = `${window.location.origin}/SharedGallery?id=${template.id}`;
     if (navigator.share) {
-      navigator.share({ title: template.name, url });
+      navigator.share({ title: template.name, url }).catch(() => {
+        navigator.clipboard.writeText(url);
+        setShowShareToast(true);
+        setTimeout(() => setShowShareToast(false), 2500);
+      });
     } else {
       navigator.clipboard.writeText(url);
       setShowShareToast(true);
