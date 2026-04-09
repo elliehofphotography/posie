@@ -138,15 +138,50 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <ImageUploadField label="Pose Preview 1" value={form.preview_image_1} onChange={v => update('preview_image_1', v)} />
-              <Textarea value={form.preview_image_1_direction} onChange={e => update('preview_image_1_direction', e.target.value)} placeholder="Posing direction for photo 1…" className="bg-muted border-border h-16 resize-none font-dm text-xs" />
-            </div>
-            <div className="space-y-2">
-              <ImageUploadField label="Pose Preview 2" value={form.preview_image_2} onChange={v => update('preview_image_2', v)} />
-              <Textarea value={form.preview_image_2_direction} onChange={e => update('preview_image_2_direction', e.target.value)} placeholder="Posing direction for photo 2…" className="bg-muted border-border h-16 resize-none font-dm text-xs" />
-            </div>
+          <div className="space-y-3">
+            <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider block">Sample Poses</Label>
+            {[1, 2].map(n => {
+              const imgKey = `preview_image_${n}`;
+              const dirKey = `preview_image_${n}_direction`;
+              return (
+                <div key={n} className="space-y-2">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
+                    {form[imgKey] ? (
+                      <>
+                        <img src={form[imgKey]} alt="" className="w-full h-full object-cover" />
+                        {form[dirKey] && (
+                          <div className="absolute inset-0 flex items-end">
+                            <div className="w-full bg-gradient-to-t from-black/70 to-transparent px-3 py-3">
+                              <p className="font-dm text-white text-xs leading-snug">{form[dirKey]}</p>
+                            </div>
+                          </div>
+                        )}
+                        <button type="button" onClick={() => update(imgKey, '')} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
+                          <X className="w-3 h-3 text-white" />
+                        </button>
+                      </>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer hover:border-primary/40 transition-colors">
+                        <Upload className="w-5 h-5 text-muted-foreground mb-1" />
+                        <span className="font-dm text-xs text-muted-foreground">Upload pose {n}</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                          update(imgKey, file_url);
+                        }} />
+                      </label>
+                    )}
+                  </div>
+                  <Textarea
+                    value={form[dirKey]}
+                    onChange={e => update(dirKey, e.target.value)}
+                    placeholder={`Posing direction for photo ${n} (shown as overlay)…`}
+                    className="bg-muted border-border h-14 resize-none font-dm text-xs"
+                  />
+                </div>
+              );
+            })}
           </div>
 
           <DrawerFooter className="px-0 pt-2">

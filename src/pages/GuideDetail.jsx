@@ -215,22 +215,30 @@ export default function GuideDetail() {
           <div className="grid grid-cols-2 gap-4">
             {listing.preview_image_1 &&
           <div>
-                <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-muted mb-2">
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
                   <img src={listing.preview_image_1} alt="Sample pose 1" className="w-full h-full object-cover" />
+                  {listing.preview_image_1_direction && (
+                    <div className="absolute inset-0 flex items-end">
+                      <div className="w-full bg-gradient-to-t from-black/70 to-transparent px-3 py-3">
+                        <p className="font-dm text-white text-xs leading-snug">{listing.preview_image_1_direction}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {listing.preview_image_1_direction &&
-            <p className="font-dm text-xs text-foreground leading-snug">{listing.preview_image_1_direction}</p>
-            }
               </div>
           }
             {listing.preview_image_2 &&
           <div>
-                <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-muted mb-2">
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
                   <img src={listing.preview_image_2} alt="Sample pose 2" className="w-full h-full object-cover" />
+                  {listing.preview_image_2_direction && (
+                    <div className="absolute inset-0 flex items-end">
+                      <div className="w-full bg-gradient-to-t from-black/70 to-transparent px-3 py-3">
+                        <p className="font-dm text-white text-xs leading-snug">{listing.preview_image_2_direction}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {listing.preview_image_2_direction &&
-            <p className="font-dm text-xs text-foreground leading-snug">{listing.preview_image_2_direction}</p>
-            }
               </div>
           }
           </div>
