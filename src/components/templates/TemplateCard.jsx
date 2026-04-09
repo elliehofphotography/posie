@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MoreVertical, Trash2, Pencil, List, Images, Settings, Copy } from 'lucide-react';
+import { Camera, MoreVertical, Trash2, Pencil, List, Images, Settings, Copy, Share2 } from 'lucide-react';
 import MobileMenu from '@/components/ui/mobile-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import EditGallerySheet from './EditGallerySheet';
@@ -14,6 +14,18 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
   const [showEditGallery, setShowEditGallery] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showShareToast, setShowShareToast] = useState(false);
+
+  const handleShare = () => {
+    const url = `${window.location.origin}/SharedGallery?id=${template.id}`;
+    if (navigator.share) {
+      navigator.share({ title: template.name, url });
+    } else {
+      navigator.clipboard.writeText(url);
+      setShowShareToast(true);
+      setTimeout(() => setShowShareToast(false), 2500);
+    }
+  };
 
   return (
     <div className="group relative">
@@ -66,6 +78,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
             { label: 'Edit', icon: <Settings className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
             { label: 'Duplicate Gallery', icon: <Copy className="w-4 h-4" />, onClick: () => onDuplicate && onDuplicate(template) },
           ]),
+          { label: isShotList ? 'Share Shot List' : 'Share Gallery', icon: <Share2 className="w-4 h-4" />, onClick: handleShare },
           { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => setTimeout(() => setShowDeleteConfirm(true), 300), destructive: true },
         ]}
         open={menuOpen}
@@ -78,6 +91,13 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
         onOpenChange={setShowEditGallery}
         template={template}
       />
+
+      {/* Share toast */}
+      {showShareToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full bg-foreground text-background font-dm text-sm shadow-lg whitespace-nowrap">
+          Link copied to clipboard!
+        </div>
+      )}
 
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <AlertDialogContent className="bg-card border-border">
