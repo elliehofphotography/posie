@@ -66,7 +66,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
             { label: 'Edit', icon: <Settings className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
             { label: 'Duplicate Gallery', icon: <Copy className="w-4 h-4" />, onClick: () => onDuplicate && onDuplicate(template) },
           ]),
-          { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => setShowDeleteConfirm(true), destructive: true },
+          { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => setTimeout(() => setShowDeleteConfirm(true), 300), destructive: true },
         ]}
         open={menuOpen}
         onOpenChange={setMenuOpen}
