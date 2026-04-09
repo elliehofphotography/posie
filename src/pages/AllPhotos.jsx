@@ -36,8 +36,9 @@ export default function AllPhotos() {
   }, []);
 
   const { data: photos = [], isLoading } = useQuery({
-    queryKey: ['all_photos'],
-    queryFn: () => base44.entities.TemplatePhoto.list('-created_date'),
+    queryKey: ['all_photos', user?.email],
+    queryFn: () => base44.entities.TemplatePhoto.filter({ created_by: user.email }, '-created_date'),
+    enabled: !!user?.email,
   });
 
   const { data: templates = [] } = useQuery({
@@ -119,14 +120,14 @@ export default function AllPhotos() {
       }));
     },
     onMutate: async (photo) => {
-      await queryClient.cancelQueries({ queryKey: ['all_photos'] });
-      const previous = queryClient.getQueryData(['all_photos']);
-      queryClient.setQueryData(['all_photos'], (old = []) => old.filter(p => p.image_url !== photo.image_url));
+      await queryClient.cancelQueries({ queryKey: ['all_photos', user?.email] });
+      const previous = queryClient.getQueryData(['all_photos', user?.email]);
+      queryClient.setQueryData(['all_photos', user?.email], (old = []) => old.filter(p => p.image_url !== photo.image_url));
       return { previous };
     },
-    onError: (_err, _photo, ctx) => queryClient.setQueryData(['all_photos'], ctx.previous),
+    onError: (_err, _photo, ctx) => queryClient.setQueryData(['all_photos', user?.email], ctx.previous),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
+      queryClient.invalidateQueries({ queryKey: ['all_photos', user?.email] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
     },
   });
@@ -160,16 +161,16 @@ export default function AllPhotos() {
       }));
     },
     onMutate: async (selectedIds) => {
-      await queryClient.cancelQueries({ queryKey: ['all_photos'] });
-      const previous = queryClient.getQueryData(['all_photos']);
-      queryClient.setQueryData(['all_photos'], (old = []) => old.filter(p => !selectedIds.includes(p.id)));
+      await queryClient.cancelQueries({ queryKey: ['all_photos', user?.email] });
+      const previous = queryClient.getQueryData(['all_photos', user?.email]);
+      queryClient.setQueryData(['all_photos', user?.email], (old = []) => old.filter(p => !selectedIds.includes(p.id)));
       return { previous };
     },
     onError: (_err, _ids, ctx) => {
-      queryClient.setQueryData(['all_photos'], ctx.previous);
+      queryClient.setQueryData(['all_photos', user?.email], ctx.previous);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
+      queryClient.invalidateQueries({ queryKey: ['all_photos', user?.email] });
       queryClient.invalidateQueries({ queryKey: ['templates'] });
       setSelected([]);
       setSelectMode(false);
