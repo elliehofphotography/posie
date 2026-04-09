@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Trash2, X, ImagePlus } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -12,6 +13,16 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
   const [selected, setSelected] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [showCoverPicker, setShowCoverPicker] = useState(false);
+  const [name, setName] = useState(template?.name || '');
+
+  useEffect(() => {
+    if (open) setName(template?.name || '');
+  }, [open, template?.name]);
+
+  const renameMutation = useMutation({
+    mutationFn: (newName) => base44.entities.ShootTemplate.update(template.id, { name: newName }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['templates'] }),
+  });
 
   const { data: photos = [], isLoading } = useQuery({
     queryKey: ['photos', template?.id],
@@ -49,15 +60,24 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[90vh] flex flex-col bg-card border-border rounded-t-3xl">
-        <SheetHeader className="border-b border-border pb-3">
-          <SheetTitle className="font-playfair text-foreground">Edit {template?.name}</SheetTitle>
-          <button
-            onClick={() => setShowCoverPicker(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors mx-auto"
-          >
-            <ImagePlus className="w-3.5 h-3.5" />
-            Change Cover
-          </button>
+        <SheetHeader className="border-b border-border pb-3 gap-2">
+          <SheetTitle className="font-playfair text-foreground">Edit Gallery</SheetTitle>
+          <div className="flex gap-2">
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => { if (name.trim() && name.trim() !== template?.name) renameMutation.mutate(name.trim()); }}
+              placeholder="Gallery name"
+              className="bg-muted border-border font-dm text-sm flex-1"
+            />
+            <button
+              onClick={() => setShowCoverPicker(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors shrink-0"
+            >
+              <ImagePlus className="w-3.5 h-3.5" />
+              Cover
+            </button>
+          </div>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto">

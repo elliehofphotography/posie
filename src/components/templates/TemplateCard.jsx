@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MoreVertical, Trash2, Pencil, List, Images, Settings, Copy, Share2 } from 'lucide-react';
+import { Camera, MoreVertical, Trash2, Pencil, List, Images, Copy, Share2 } from 'lucide-react';
 import MobileMenu from '@/components/ui/mobile-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import EditGallerySheet from './EditGallerySheet';
@@ -77,9 +77,10 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
           </button>
         }
         items={[
-          { label: 'Rename', icon: <Pencil className="w-4 h-4" />, onClick: () => onRename(template) },
-          ...(isShotList ? [] : [
-            { label: 'Edit', icon: <Settings className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
+          ...(isShotList ? [
+            { label: 'Rename', icon: <Pencil className="w-4 h-4" />, onClick: () => onRename(template) },
+          ] : [
+            { label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
             { label: 'Duplicate Gallery', icon: <Copy className="w-4 h-4" />, onClick: () => onDuplicate && onDuplicate(template) },
           ]),
           { label: isShotList ? 'Share Shot List' : 'Share Gallery', icon: <Share2 className="w-4 h-4" />, onClick: handleShare },
