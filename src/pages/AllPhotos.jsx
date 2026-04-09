@@ -99,17 +99,27 @@ export default function AllPhotos() {
 
   const deletePhotoMutation = useMutation({
     mutationFn: async (photo) => {
-      await base44.entities.TemplatePhoto.delete(photo.id);
-      const remaining = await base44.entities.TemplatePhoto.filter({ template_id: photo.template_id });
-      await base44.entities.ShootTemplate.update(photo.template_id, {
-        photo_count: remaining.length,
-        cover_image: remaining.length > 0 ? remaining[0].image_url : '',
-      });
+      // Delete ALL copies of this image across user's templates
+      const userTemplates = templates.filter(t => t.created_by === user?.email);
+      const userTemplateIds = userTemplates.map(t => t.id);
+      const allPhotos = await base44.entities.TemplatePhoto.list();
+      const toDelete = allPhotos.filter(p =>
+        userTemplateIds.includes(p.template_id) && p.image_url === photo.image_url
+      );
+      await Promise.all(toDelete.map(p => base44.entities.TemplatePhoto.delete(p.id)));
+      const affectedTemplateIds = [...new Set(toDelete.map(p => p.template_id))];
+      await Promise.all(affectedTemplateIds.map(async (templateId) => {
+        const remaining = await base44.entities.TemplatePhoto.filter({ template_id: templateId });
+        await base44.entities.ShootTemplate.update(templateId, {
+          photo_count: remaining.length,
+          cover_image: remaining.length > 0 ? remaining[0].image_url : '',
+        });
+      }));
     },
     onMutate: async (photo) => {
       await queryClient.cancelQueries({ queryKey: ['all_photos'] });
       const previous = queryClient.getQueryData(['all_photos']);
-      queryClient.setQueryData(['all_photos'], (old = []) => old.filter(p => p.id !== photo.id));
+      queryClient.setQueryData(['all_photos'], (old = []) => old.filter(p => p.image_url !== photo.image_url));
       return { previous };
     },
     onError: (_err, _photo, ctx) => queryClient.setQueryData(['all_photos'], ctx.previous),
