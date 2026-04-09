@@ -342,7 +342,7 @@ export default function Home() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-dm text-sm font-semibold text-foreground">All Photos</p>
-              <p className="font-dm text-xs text-muted-foreground">Every photo you've uploaded</p>
+              <p className="font-dm text-xs text-muted-foreground">Every photo you've saved</p>
             </div>
             <svg className="w-4 h-4 text-muted-foreground shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
           </div>

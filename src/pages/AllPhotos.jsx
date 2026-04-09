@@ -28,14 +28,36 @@ export default function AllPhotos() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const { data: allPhotosRaw = [], isLoading } = useQuery({
+  const { data: allPhotosRaw = [], isLoading: loadingPhotos } = useQuery({
     queryKey: ['all_photos'],
     queryFn: () => base44.entities.TemplatePhoto.list('-created_date'),
   });
 
+  const { data: discoverPosts = [], isLoading: loadingDiscover } = useQuery({
+    queryKey: ['discover_posts'],
+    queryFn: () => base44.entities.DiscoverPost.filter({ created_by: user?.email }, '-created_date'),
+    enabled: !!user?.email,
+  });
+
+  const isLoading = loadingPhotos || loadingDiscover;
+
+  // Merge TemplatePhotos + DiscoverPosts (adapt discover posts to same shape)
+  const discoverAsPhotos = discoverPosts.map(p => ({
+    id: `discover-${p.id}`,
+    image_url: p.image_url,
+    description: p.description || '',
+    pose_category: p.pose_category || '',
+    color_priority: 'green',
+    lens_suggestion: p.lens || '',
+    aperture_suggestion: p.aperture || '',
+    lighting_notes: p.lighting_notes || '',
+    created_date: p.created_date,
+  }));
+
+  const combined = [...allPhotosRaw, ...discoverAsPhotos];
   // Deduplicate by image_url — show one card per unique photo
   const seen = new Set();
-  const photos = allPhotosRaw.filter(p => {
+  const photos = combined.filter(p => {
     if (seen.has(p.image_url)) return false;
     seen.add(p.image_url);
     return true;
