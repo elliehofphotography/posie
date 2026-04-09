@@ -99,11 +99,13 @@ export default function AllPhotos() {
 
   const deletePhotoMutation = useMutation({
     mutationFn: async (photo) => {
-      // Delete ALL copies of this image across user's templates
-      const userTemplates = templates.filter(t => t.created_by === user?.email);
-      const userTemplateIds = userTemplates.map(t => t.id);
-      const allPhotos = await base44.entities.TemplatePhoto.list();
-      const toDelete = allPhotos.filter(p =>
+      // Fetch fresh templates so we don't rely on stale state
+      const allTemplates = await base44.entities.ShootTemplate.list();
+      const userTemplateIds = allTemplates
+        .filter(t => t.created_by === user?.email)
+        .map(t => t.id);
+      const allTemplatePhotos = await base44.entities.TemplatePhoto.list();
+      const toDelete = allTemplatePhotos.filter(p =>
         userTemplateIds.includes(p.template_id) && p.image_url === photo.image_url
       );
       await Promise.all(toDelete.map(p => base44.entities.TemplatePhoto.delete(p.id)));
