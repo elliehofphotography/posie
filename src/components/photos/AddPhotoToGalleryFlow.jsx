@@ -44,7 +44,6 @@ export default function AddPhotoToGalleryFlow({ open, onOpenChange }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['templates'] });
-      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
       setPendingPhoto(null);
       setIsSaving(false);
       onOpenChange(false);
@@ -74,7 +73,6 @@ export default function AddPhotoToGalleryFlow({ open, onOpenChange }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['templates'] });
-      queryClient.invalidateQueries({ queryKey: ['all_photos'] });
       setPendingPhoto(null);
       setIsSaving(false);
       onOpenChange(false);

@@ -14,7 +14,7 @@ import ChecklistOverview from './pages/ChecklistOverview';
 import ShotList from './pages/ShotList';
 import Discover from './pages/Discover';
 import Marketplace from './pages/Marketplace';
-import AllPhotos from './pages/AllPhotos';
+
 import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import GuideDetail from './pages/GuideDetail';
@@ -56,7 +56,7 @@ const AuthenticatedApp = () => {
         <Route path="/ShotList" element={<ShotList />} />
         <Route path="/Discover" element={<Discover />} />
         <Route path="/Marketplace" element={<Marketplace />} />
-        <Route path="/AllPhotos" element={<AllPhotos />} />
+
         <Route path="/Settings" element={<Settings />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/GuideDetail" element={<GuideDetail />} />

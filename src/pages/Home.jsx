@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Camera, Settings, Search, X, ShoppingBag, Shuffle, Images, Image as ImageIcon, List } from 'lucide-react';
+import { Plus, Camera, Settings, Search, X, ShoppingBag, Shuffle, Image as ImageIcon, List } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import TemplateCard from '../components/templates/TemplateCard';
@@ -25,17 +25,6 @@ function GalleryGrid({ templates, search, onClearSearch, onDelete, onRename, onC
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      {/* All Photos — permanent first card */}
-      {!search && (
-        <Link to="/AllPhotos">
-          <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-primary/10 border-2 border-primary/20 flex flex-col items-center justify-center gap-2 hover:bg-primary/15 transition-colors">
-            <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center mb-1">
-              <Images className="w-6 h-6 text-primary" />
-            </div>
-            <span className="font-dm text-sm font-semibold text-primary">All Photos</span>
-          </div>
-        </Link>
-      )}
       {filtered.map((t) => selectMode ?
         <SelectableTemplateCard key={t.id} template={t} selected={selected.includes(t.id)} onToggle={onToggle} onDelete={onDelete} onRename={onRename} /> :
         <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} onChangeCover={onChangeCover} onDuplicate={onDuplicate} />

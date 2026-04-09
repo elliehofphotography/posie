@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FolderPlus, Loader2, X, Images } from 'lucide-react';
+import { FolderPlus, Loader2, X } from 'lucide-react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 
 export default function SaveToGalleryDialog({ open, onOpenChange, photo, galleries, onSaveToExisting, onCreateNew, isSaving }) {
@@ -14,8 +14,7 @@ export default function SaveToGalleryDialog({ open, onOpenChange, photo, galleri
     onOpenChange(v);
   };
 
-  const allPhotosGallery = galleries.find(g => g.name === 'All Photos');
-  const otherGalleries = galleries.filter(g => g.name !== 'All Photos');
+  const otherGalleries = galleries;
 
   return (
     <Drawer open={open} onOpenChange={handleClose}>
@@ -44,32 +43,7 @@ export default function SaveToGalleryDialog({ open, onOpenChange, photo, galleri
         <div className="flex-1 overflow-y-auto px-4 py-4" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
           {mode === 'pick' && (
             <div className="space-y-2">
-              {/* All Photos — always first */}
-              <button
-                onClick={() => onSaveToExisting(allPhotosGallery?.id || '__all_photos__')}
-                disabled={isSaving || !allPhotosGallery}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-primary/30 hover:border-primary bg-primary/5 transition-all text-left"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Images className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-dm text-sm font-semibold text-primary">All Photos</p>
-                  <p className="font-dm text-[11px] text-muted-foreground">{allPhotosGallery?.photo_count || 0} photos</p>
-                </div>
-                {isSaving && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground shrink-0" />}
-              </button>
-
               {/* Create new option */}
-              <button
-                onClick={() => setMode('create')}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border-2 border-dashed border-border hover:border-primary/50 bg-muted transition-all text-left"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <FolderPlus className="w-4 h-4 text-primary" />
-                </div>
-                <span className="font-dm text-sm text-foreground font-medium">Create new gallery</span>
-              </button>
 
               {/* Other galleries */}
               {otherGalleries.length > 0 && (
