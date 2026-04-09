@@ -48,7 +48,8 @@ function ImageUploadField({ label, value, onChange }) {
 }
 
 export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing = null }) {
-  const isEditing = !!listing;
+  const [activeListing, setActiveListing] = useState(listing);
+  const isEditing = !!activeListing;
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: '', description: '', author: '', category: '',
@@ -56,8 +57,8 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
     preview_image_2: '', preview_image_2_direction: '',
   });
 
-  // Populate form when editing
   useEffect(() => {
+    setActiveListing(listing);
     if (listing) {
       setForm({
         name: listing.name || '',
@@ -84,13 +85,17 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
     setSubmitting(true);
     const data = { ...form, price: parseFloat(form.price) || 0, is_published: true };
     if (isEditing) {
-      await base44.entities.MarketplaceListing.update(listing.id, data);
+      await base44.entities.MarketplaceListing.update(activeListing.id, data);
+      setSubmitting(false);
+      onOpenChange(false);
+      onSaved();
     } else {
-      await base44.entities.MarketplaceListing.create(data);
+      const created = await base44.entities.MarketplaceListing.create(data);
+      setActiveListing(created);
+      setSubmitting(false);
+      onSaved();
+      // Stay open so admin can add guide photos
     }
-    setSubmitting(false);
-    onOpenChange(false);
-    onSaved();
   };
 
   return (
@@ -185,14 +190,20 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
             })}
           </div>
 
-          {/* Guide Photos — only shown when editing an existing guide */}
-          {isEditing && (
+          {/* Guide Photos — shown after guide is created/saved */}
+          {isEditing ? (
             <div className="border-t border-border pt-4">
               <div className="mb-3 px-3 py-2 rounded-xl bg-primary/5 border border-primary/20">
                 <p className="font-dm text-xs text-primary font-medium">Admin Only — Full Guide Content</p>
                 <p className="font-dm text-[11px] text-muted-foreground mt-0.5">These photos are delivered to buyers when they download. Not shown publicly.</p>
               </div>
-              <GuidePhotoEditor listingId={listing.id} />
+              <GuidePhotoEditor listingId={activeListing.id} />
+            </div>
+          ) : (
+            <div className="border-t border-border pt-4">
+              <div className="px-3 py-3 rounded-xl bg-muted/60">
+                <p className="font-dm text-xs text-muted-foreground text-center">Publish the guide first, then you'll be able to add guide photos.</p>
+              </div>
             </div>
           )}
 
