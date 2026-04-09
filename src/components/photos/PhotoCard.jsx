@@ -24,18 +24,24 @@ const categoryLabels = {
   other: 'Other',
 };
 
-export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGallery, hideEdit, hideDelete }) {
+export default function PhotoCard({ photo, onEdit, onDelete, onRemove, onClick, onSaveToGallery, hideEdit, hideDelete }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showConfirmRemove, setShowConfirmRemove] = useState(false);
 
   const handleDeletePress = () => {
     setTimeout(() => setShowConfirmDelete(true), 300);
   };
 
+  const handleRemovePress = () => {
+    setTimeout(() => setShowConfirmRemove(true), 300);
+  };
+
   const menuItems = [];
   if (!hideEdit) menuItems.push({ label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => onEdit(photo) });
   if (onSaveToGallery) menuItems.push({ label: 'Save to Another Gallery', icon: <FolderPlus className="w-4 h-4" />, onClick: () => onSaveToGallery(photo) });
-  if (!hideDelete) menuItems.push({ label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: handleDeletePress, destructive: true });
+  if (onRemove) menuItems.push({ label: 'Remove from Gallery', icon: <FolderMinus className="w-4 h-4" />, onClick: handleRemovePress, destructive: true });
+  if (!hideDelete) menuItems.push({ label: 'Delete Photo', icon: <Trash2 className="w-4 h-4" />, onClick: handleDeletePress, destructive: true });
 
   return (
     <div className="group relative cursor-pointer" onClick={onClick}>
@@ -72,6 +78,27 @@ export default function PhotoCard({ photo, onEdit, onDelete, onClick, onSaveToGa
         onOpenChange={setMenuOpen}
         title="Photo Options"
       />
+
+      {/* Confirm remove from gallery dialog */}
+      <AlertDialog open={showConfirmRemove} onOpenChange={setShowConfirmRemove}>
+        <AlertDialogContent className="bg-card border-border" onClick={(e) => e.stopPropagation()}>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-playfair text-foreground">Remove from this gallery?</AlertDialogTitle>
+            <AlertDialogDescription className="font-dm text-muted-foreground">
+              This photo will be removed from this gallery only. It will remain in any other galleries it belongs to.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="font-dm">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { setShowConfirmRemove(false); onRemove(photo); }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 font-dm"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Confirm full delete dialog */}
       <AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>

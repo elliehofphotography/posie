@@ -278,6 +278,7 @@ export default function Template() {
                 <PhotoCard
                   photo={p}
                   onEdit={(photo) => setEditingPhoto(photo)}
+                  onRemove={(photo) => removePhotoMutation.mutate(photo)}
                   onDelete={(photo) => deletePhotoMutation.mutate(photo)}
                   onClick={() => setLightboxPhoto(p)}
                   onSaveToGallery={(photo) => setSavingPhoto(photo)}
