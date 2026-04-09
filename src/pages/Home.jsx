@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Camera, Settings, Search, X, ShoppingBag, Shuffle, Images, Image as ImageIcon } from 'lucide-react';
+import { Plus, Camera, Settings, Search, X, ShoppingBag, Shuffle, Images, Image as ImageIcon, List } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import TemplateCard from '../components/templates/TemplateCard';
@@ -13,13 +13,13 @@ import UpgradeModal from '../components/subscription/UpgradeModal';
 import AddPhotoToGalleryFlow from '../components/photos/AddPhotoToGalleryFlow';
 import { isPro, canCreateGallery, FREE_GALLERY_LIMIT } from '../lib/subscription';
 
-function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, onChangeCover, onDuplicate, selectMode, selected, onToggle }) {
-  const filtered = templates.filter((t) =>
-  t.name.toLowerCase().includes(search.toLowerCase())
-  );
-  if (filtered.length === 0) return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <p className="font-dm text-muted-foreground text-sm">No templates match &ldquo;{search}&rdquo;</p>
+function GalleryGrid({ templates, search, onClearSearch, onDelete, onRename, onChangeCover, onDuplicate, selectMode, selected, onToggle }) {
+  const galleries = templates.filter(t => t.template_type !== 'shot_list');
+  const filtered = galleries.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
+
+  if (search && filtered.length === 0) return (
+    <div className="flex flex-col items-center justify-center py-8 text-center">
+      <p className="font-dm text-muted-foreground text-sm">No galleries match &ldquo;{search}&rdquo;</p>
       <button onClick={onClearSearch} className="mt-3 font-dm text-xs text-primary hover:underline">Clear search</button>
     </div>);
 
@@ -33,24 +33,27 @@ function TemplateGrid({ templates, search, onClearSearch, onDelete, onRename, on
               <Images className="w-6 h-6 text-primary" />
             </div>
             <span className="font-dm text-sm font-semibold text-primary">All Photos</span>
-
           </div>
         </Link>
       )}
       {filtered.map((t) => selectMode ?
-      <SelectableTemplateCard
-        key={t.id}
-        template={t}
-        selected={selected.includes(t.id)}
-        onToggle={onToggle}
-        onDelete={onDelete}
-        onRename={onRename} /> :
-
-
-      <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} onChangeCover={onChangeCover} onDuplicate={onDuplicate} />
+        <SelectableTemplateCard key={t.id} template={t} selected={selected.includes(t.id)} onToggle={onToggle} onDelete={onDelete} onRename={onRename} /> :
+        <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} onChangeCover={onChangeCover} onDuplicate={onDuplicate} />
       )}
     </div>);
+}
 
+function ShotListGrid({ templates, search, onDelete, onRename, selectMode, selected, onToggle }) {
+  const shotLists = templates.filter(t => t.template_type === 'shot_list');
+  const filtered = shotLists.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
+  if (filtered.length === 0) return null;
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {filtered.map((t) => selectMode ?
+        <SelectableTemplateCard key={t.id} template={t} selected={selected.includes(t.id)} onToggle={onToggle} onDelete={onDelete} onRename={onRename} /> :
+        <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} />
+      )}
+    </div>);
 }
 
 export default function Home() {
@@ -376,17 +379,40 @@ export default function Home() {
             </button>
           </div> :
 
-          <TemplateGrid
-            templates={templates}
-            search={search}
-            onClearSearch={() => setSearch('')}
-            onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
-            onRename={(tmpl) => setRenaming(tmpl)}
-            onChangeCover={(tmpl, imageUrl) => changeCoverMutation.mutate({ id: tmpl.id, cover_image: imageUrl })}
-            onDuplicate={(tmpl) => duplicateMutation.mutate(tmpl)}
-            selectMode={selectMode}
-            selected={selected}
-            onToggle={toggleSelect} />
+          <>
+            <GalleryGrid
+              templates={templates}
+              search={search}
+              onClearSearch={() => setSearch('')}
+              onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
+              onRename={(tmpl) => setRenaming(tmpl)}
+              onChangeCover={(tmpl, imageUrl) => changeCoverMutation.mutate({ id: tmpl.id, cover_image: imageUrl })}
+              onDuplicate={(tmpl) => duplicateMutation.mutate(tmpl)}
+              selectMode={selectMode}
+              selected={selected}
+              onToggle={toggleSelect}
+            />
+            {templates.some(t => t.template_type === 'shot_list') && (
+              <div className="mt-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-1.5">
+                    <List className="w-3 h-3" /> Shot Lists
+                  </span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <ShotListGrid
+                  templates={templates}
+                  search={search}
+                  onDelete={(tmpl) => deleteMutation.mutate(tmpl.id)}
+                  onRename={(tmpl) => setRenaming(tmpl)}
+                  selectMode={selectMode}
+                  selected={selected}
+                  onToggle={toggleSelect}
+                />
+              </div>
+            )}
+          </>
 
           }
       </div>
