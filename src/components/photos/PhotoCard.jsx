@@ -37,10 +37,10 @@ export default function PhotoCard({ photo, onEdit, onDelete, onRemove, onClick, 
   const handleDeletePress = () => {
     if (onRemove) {
       // Gallery context — show two-option sheet
-      setShowDeleteSheet(true);
+      setTimeout(() => setShowDeleteSheet(true), 300);
     } else {
       // All Photos context — show confirm dialog directly
-      setShowConfirmDelete(true);
+      setTimeout(() => setShowConfirmDelete(true), 300);
     }
   };
 
