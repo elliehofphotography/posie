@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Check } from 'lucide-react';
+import { Plus, Trash2, Check, GripVertical } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import PageHeader from '../components/ui/PageHeader';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { motion, AnimatePresence } from 'framer-motion';
+
 
 export default function ShotList() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -47,6 +48,25 @@ export default function ShotList() {
     mutationFn: ({ id, text }) => base44.entities.ShotListItem.update(id, { text }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shotlist', templateId] }),
   });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (reordered) => {
+      await Promise.all(reordered.map((item, index) =>
+        base44.entities.ShotListItem.update(item.id, { sort_order: index })
+      ));
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shotlist', templateId] }),
+  });
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const reordered = Array.from(items);
+    const [moved] = reordered.splice(result.source.index, 1);
+    reordered.splice(result.destination.index, 0, moved);
+    // Optimistic update
+    queryClient.setQueryData(['shotlist', templateId], reordered);
+    reorderMutation.mutate(reordered);
+  };
 
   const startEditing = (item) => {
     setEditingId(item.id);
@@ -95,58 +115,70 @@ export default function ShotList() {
 
       {/* List */}
       <div className="p-5 space-y-2.5">
-        <AnimatePresence>
-          {items.map((item) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, x: -80 }}
-              className={`flex items-center gap-3.5 p-4 rounded-2xl border transition-all ${
-                item.is_completed
-                  ? 'bg-primary/5 border-primary/20'
-                  : 'bg-card border-border'
-              }`}
-            >
-              <Checkbox
-                checked={item.is_completed}
-                onCheckedChange={(checked) => toggleMutation.mutate({ id: item.id, completed: checked })}
-                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary shrink-0"
-              />
-              {editingId === item.id ? (
-                <input
-                  ref={editInputRef}
-                  value={editingText}
-                  onChange={(e) => setEditingText(e.target.value)}
-                  onBlur={commitEdit}
-                  onKeyDown={(e) => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') setEditingId(null); }}
-                  className="flex-1 bg-transparent border-none outline-none font-dm text-sm text-foreground"
-                />
-              ) : (
-                <span
-                  className={`flex-1 font-dm text-sm leading-snug cursor-text ${
-                    item.is_completed ? 'line-through text-muted-foreground' : 'text-foreground'
-                  }`}
-                  onDoubleClick={() => !item.is_completed && startEditing(item)}
-                >
-                  {item.text}
-                </span>
-              )}
-              {editingId === item.id ? (
-                <button className="text-primary p-1" onClick={commitEdit}>
-                  <Check className="w-3.5 h-3.5" />
-                </button>
-              ) : (
-                <button
-                  className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                  onClick={() => deleteMutation.mutate(item.id)}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="shotlist">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2.5">
+                {items.map((item, index) => (
+                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(drag) => (
+                      <div
+                        ref={drag.innerRef}
+                        {...drag.draggableProps}
+                        className={`flex items-center gap-3.5 p-4 rounded-2xl border transition-all ${
+                          item.is_completed
+                            ? 'bg-primary/5 border-primary/20'
+                            : 'bg-card border-border'
+                        }`}
+                      >
+                        <span {...drag.dragHandleProps} className="text-muted-foreground/50 shrink-0 cursor-grab active:cursor-grabbing">
+                          <GripVertical className="w-4 h-4" />
+                        </span>
+                        <Checkbox
+                          checked={item.is_completed}
+                          onCheckedChange={(checked) => toggleMutation.mutate({ id: item.id, completed: checked })}
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary shrink-0"
+                        />
+                        {editingId === item.id ? (
+                          <input
+                            ref={editInputRef}
+                            value={editingText}
+                            onChange={(e) => setEditingText(e.target.value)}
+                            onBlur={commitEdit}
+                            onKeyDown={(e) => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') setEditingId(null); }}
+                            className="flex-1 bg-transparent border-none outline-none font-dm text-sm text-foreground"
+                          />
+                        ) : (
+                          <span
+                            className={`flex-1 font-dm text-sm leading-snug cursor-text ${
+                              item.is_completed ? 'line-through text-muted-foreground' : 'text-foreground'
+                            }`}
+                            onDoubleClick={() => !item.is_completed && startEditing(item)}
+                          >
+                            {item.text}
+                          </span>
+                        )}
+                        {editingId === item.id ? (
+                          <button className="text-primary p-1" onClick={commitEdit}>
+                            <Check className="w-3.5 h-3.5" />
+                          </button>
+                        ) : (
+                          <button
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                            onClick={() => deleteMutation.mutate(item.id)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
 
         {items.length === 0 && (
           <div className="text-center py-16">
