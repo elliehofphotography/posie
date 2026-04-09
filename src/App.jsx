@@ -20,6 +20,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import GuideDetail from './pages/GuideDetail';
 import DiscoverFavorites from './pages/DiscoverFavorites.jsx';
 import DownloadedGuides from './pages/DownloadedGuides';
+import AllPhotos from './pages/AllPhotos';
 import Support from './pages/Support';
 
 const AuthenticatedApp = () => {
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
         <Route path="/GuideDetail" element={<GuideDetail />} />
         <Route path="/DiscoverFavorites" element={<DiscoverFavorites />} />
         <Route path="/DownloadedGuides" element={<DownloadedGuides />} />
+        <Route path="/AllPhotos" element={<AllPhotos />} />
         <Route path="/Support" element={<Support />} />
       </Route>
       <Route path="/ShootMode" element={<ShootMode />} />

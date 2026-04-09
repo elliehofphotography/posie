@@ -333,6 +333,22 @@ export default function Home() {
         </div>
       </div>
 
+      {/* All Photos permanent card */}
+      <div className="px-5 mb-5">
+        <Link to="/AllPhotos">
+          <div className="flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-card border border-border hover:border-primary/40 transition-colors">
+            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <ImageIcon className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-dm text-sm font-semibold text-foreground">All Photos</p>
+              <p className="font-dm text-xs text-muted-foreground">Every photo you've uploaded</p>
+            </div>
+            <svg className="w-4 h-4 text-muted-foreground shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          </div>
+        </Link>
+      </div>
+
       {/* Divider */}
       <div className="mx-5 h-px bg-border mb-6" />
 
