@@ -192,11 +192,6 @@ export default function Discover() {
                className="w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-card border border-border flex items-center justify-center hover:bg-muted transition-colors select-none relative"
              >
               <Heart className="w-5 h-5 text-red-500" />
-              {favorites.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white font-dm text-[9px] flex items-center justify-center">
-                  {favorites.length > 9 ? '9+' : favorites.length}
-                </span>
-              )}
             </button>
             <button
                onClick={() => setShowAdd(true)}
