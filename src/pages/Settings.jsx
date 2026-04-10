@@ -87,7 +87,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      <PageHeader title="Settings" />
+      <PageHeader title="Settings" backTo="/Home" />
 
       <div className="p-5 space-y-6">
 
