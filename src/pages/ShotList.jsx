@@ -19,11 +19,17 @@ export default function ShotList() {
   const [editingText, setEditingText] = useState('');
   const editInputRef = useRef(null);
 
-  const { data: items = [] } = useQuery({
+  const { data: rawItems = [] } = useQuery({
     queryKey: ['shotlist', templateId],
     queryFn: () => base44.entities.ShotListItem.filter({ template_id: templateId }, 'sort_order'),
     enabled: !!templateId,
   });
+
+  // Completed items always at bottom
+  const items = [
+    ...rawItems.filter(i => !i.is_completed),
+    ...rawItems.filter(i => i.is_completed),
+  ];
 
   const addMutation = useMutation({
     mutationFn: (text) => base44.entities.ShotListItem.create({
