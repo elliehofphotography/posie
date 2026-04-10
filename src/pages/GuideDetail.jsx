@@ -312,7 +312,7 @@ export default function GuideDetail() {
             className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-vina text-xl tracking-widest uppercase hover:bg-primary/90 transition-colors disabled:opacity-50 select-none flex items-center justify-center gap-3"
           >
             <Download className="w-5 h-5" />
-            {downloadMutation.isPending ? 'Downloading…' : isPro(user) && listing?.price > 0 ? 'Download Free with Pro' : 'Download'}
+            {downloadMutation.isPending ? 'Downloading…' : isPro(user) && listing?.price > 0 ? 'Download Free with Pro' : 'Download Guide'}
           </button>
         )}
       </div>
