@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
-import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClientInstance } from '@/lib/query-client'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { queryClientInstance, localPersister } from '@/lib/query-client'
+import OfflineBanner from './components/ui/OfflineBanner'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -76,17 +77,17 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-
   return (
     <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
+      <PersistQueryClientProvider client={queryClientInstance} persistOptions={{ persister: localPersister }}>
         <Router>
           <AuthenticatedApp />
         </Router>
+        <OfflineBanner />
         <Toaster />
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </AuthProvider>
-  )
+  );
 }
 
 export default App
