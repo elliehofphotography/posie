@@ -7,7 +7,9 @@ export const FREE_GALLERY_LIMIT = Infinity;
 export const FREE_PHOTO_LIMIT = Infinity;
 
 export function isPro(user) {
-  return true; // Everything free for now
+  if (!user) return false;
+  if (user.role === 'admin') return true;
+  return user.subscription_status === 'active';
 }
 
 export function canCreateGallery(user, galleryCount) {
