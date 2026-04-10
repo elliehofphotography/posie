@@ -159,6 +159,16 @@ export default function ShootMode() {
     setActiveCategory('all');
   };
 
+  // Keyboard arrow key support for desktop
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight') handleDone();
+      else if (e.key === 'ArrowLeft') handleLater();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [handleDone, handleLater]);
+
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-12, 12]);
   const doneOpacity = useTransform(x, [-80, -20], [1, 0]);
