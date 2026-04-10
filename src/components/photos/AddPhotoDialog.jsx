@@ -160,7 +160,7 @@ export default function AddPhotoDialog({ open, onOpenChange, onSubmit, editPhoto
               <Input value={form.lens_suggestion} onChange={(e) => update('lens_suggestion', e.target.value)} placeholder="e.g. 85mm" className="bg-muted border-border font-dm text-sm" />
             </div>
             <div className="space-y-1.5">
-              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Aperture</Label>
+              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Camera Settings (ISO, F/, SS)</Label>
               <Input value={form.aperture_suggestion} onChange={(e) => update('aperture_suggestion', e.target.value)} placeholder="e.g. f/1.8" className="bg-muted border-border font-dm text-sm" />
             </div>
           </div>
