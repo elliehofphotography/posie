@@ -24,6 +24,7 @@ import DownloadedGuides from './pages/DownloadedGuides';
 import AllPhotos from './pages/AllPhotos';
 import Support from './pages/Support';
 import SharedGallery from './pages/SharedGallery';
+import AdminDiscover from './pages/AdminDiscover';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
         <Route path="/Support" element={<Support />} />
       </Route>
       <Route path="/SharedGallery" element={<SharedGallery />} />
+      <Route path="/AdminDiscover" element={<AdminDiscover />} />
       <Route path="/ShootMode" element={<ShootMode />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>

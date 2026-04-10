@@ -1,0 +1,95 @@
+{
+  "name": "DiscoverPost",
+  "type": "object",
+  "properties": {
+    "image_url": {
+      "type": "string",
+      "description": "URL of the uploaded photo"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Wedding",
+        "Bridal",
+        "Couples",
+        "Portrait",
+        "Graduation",
+        "Maternity",
+        "Newborn",
+        "Family",
+        "Fashion",
+        "Boudoir",
+        "Engagement",
+        "Other"
+      ],
+      "description": "Photo category"
+    },
+    "pose_category": {
+      "type": "string",
+      "enum": [
+        "standing",
+        "sitting",
+        "walking",
+        "close_up",
+        "wide_shot",
+        "detail",
+        "interaction",
+        "candid",
+        "other"
+      ],
+      "description": "Type of shot / pose"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short title or caption"
+    },
+    "description": {
+      "type": "string",
+      "description": "Details about the shot \u2014 pose, lighting, location, etc."
+    },
+    "photographer_name": {
+      "type": "string",
+      "description": "Photographer's display name"
+    },
+    "instagram_handle": {
+      "type": "string",
+      "description": "Photographer's Instagram handle (e.g. @janedoe)"
+    },
+    "lens": {
+      "type": "string",
+      "description": "Lens used"
+    },
+    "aperture": {
+      "type": "string",
+      "description": "Aperture setting"
+    },
+    "lighting_notes": {
+      "type": "string",
+      "description": "Lighting setup notes"
+    },
+    "owns_copyright": {
+      "type": "boolean",
+      "default": false,
+      "description": "User confirms they own the intellectual property rights to this photo"
+    },
+    "likes": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Moderation status \u2014 only approved posts appear in Discover"
+    }
+  },
+  "required": [
+    "image_url",
+    "category",
+    "owns_copyright"
+  ]
+}

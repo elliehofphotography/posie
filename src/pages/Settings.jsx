@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Trash2, LogOut, User, Mail, Shield,
   Bell, ChevronRight, Copy, Check,
-  Pencil, MessageCircle, FileText, Layers, Sparkles, Crown
+  Pencil, MessageCircle, FileText, Layers, Sparkles, Crown, Eye
 } from 'lucide-react';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { isPro } from '@/lib/subscription';
@@ -191,6 +191,26 @@ export default function Settings() {
             />
           </div>
         </div>
+
+        {/* Admin Tools */}
+        {user?.role === 'admin' && (
+          <div>
+            <SectionLabel>Admin</SectionLabel>
+            <Link
+              to="/AdminDiscover"
+              className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-card border border-border hover:bg-muted transition-colors select-none"
+            >
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <Eye className="w-4 h-4 text-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="font-dm text-sm font-medium text-foreground">Review Discover Submissions</p>
+                <p className="font-dm text-xs text-muted-foreground mt-0.5">Approve or reject photos before they go live</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+            </Link>
+          </div>
+        )}
 
         {/* Help & Support */}
         <div>

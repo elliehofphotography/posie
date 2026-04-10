@@ -41,7 +41,7 @@ export default function Discover() {
 
   const { data: userPosts = [] } = useQuery({
     queryKey: ['discover_posts'],
-    queryFn: () => base44.entities.DiscoverPost.list('-created_date'),
+    queryFn: () => base44.entities.DiscoverPost.filter({ status: 'approved' }, '-created_date'),
   });
 
   const { data: favorites = [] } = useQuery({
@@ -59,7 +59,7 @@ export default function Discover() {
   const favoritedPostIds = new Set(favorites.map(f => f.post_id));
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.DiscoverPost.create(data),
+    mutationFn: (data) => base44.entities.DiscoverPost.create({ ...data, status: 'pending' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['discover_posts'] });
       setShowAdd(false);

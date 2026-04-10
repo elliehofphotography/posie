@@ -21,6 +21,7 @@ const EMPTY = {
   title: '',
   description: '',
   photographer_name: '',
+  instagram_handle: '',
   lens: '',
   aperture: '',
   lighting_notes: '',
@@ -78,7 +79,7 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
     onOpenChange(val);
   };
 
-  const canSubmit = form.image_url && form.category && (form.owns_copyright || !!editPost) && !uploading;
+  const canSubmit = form.image_url && form.category && form.photographer_name && (form.owns_copyright || !!editPost) && !uploading;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -154,15 +155,24 @@ export default function AddDiscoverPostDialog({ open, onOpenChange, onSubmit, ed
             
           </div>
 
-          {/* Photographer name */}
-          <div className="space-y-1.5">
-            <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Your Name / Handle</Label>
-            <Input
-              value={form.photographer_name}
-              onChange={(e) => set('photographer_name', e.target.value)}
-              placeholder="e.g. @janedoe"
-              className="bg-muted border-border font-dm" />
-            
+          {/* Photographer name + Instagram */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Your Name *</Label>
+              <Input
+                value={form.photographer_name}
+                onChange={(e) => set('photographer_name', e.target.value)}
+                placeholder="Jane Doe"
+                className="bg-muted border-border font-dm" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Instagram</Label>
+              <Input
+                value={form.instagram_handle}
+                onChange={(e) => set('instagram_handle', e.target.value)}
+                placeholder="@janedoe"
+                className="bg-muted border-border font-dm" />
+            </div>
           </div>
 
           {/* Technical details */}
