@@ -28,7 +28,8 @@ export default function GuideDetail() {
     queryKey: ['listing', id],
     queryFn: () => base44.entities.MarketplaceListing.filter({ id }),
     select: (data) => data[0],
-    enabled: !!id
+    enabled: !!id,
+    staleTime: 0,
   });
 
   const { data: downloads = [] } = useQuery({
