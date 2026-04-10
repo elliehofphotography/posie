@@ -21,7 +21,9 @@ export default function MarketplaceCard({ listing, isAdmin, onEdit }) {
               {listing.category && (
                 <span className="font-dm text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground mr-2">{listing.category}</span>
               )}
-              <span className="font-dm text-xs font-semibold ml-auto text-accent-foreground">Free</span>
+              <span className="font-dm text-xs font-semibold ml-auto text-accent-foreground">
+                {listing.price && listing.price > 0 ? `$${listing.price.toFixed(2)}` : 'Free'}
+              </span>
             </div>
           </div>
         </div>
