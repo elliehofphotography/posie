@@ -19,6 +19,7 @@ export default function GuideDetail() {
 
   const [user, setUser] = useState(null);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
+  const purchased = params.get('purchased') === 'true';
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
@@ -37,6 +38,21 @@ export default function GuideDetail() {
   });
 
   const alreadyDownloaded = downloads.length > 0;
+
+  const { data: purchases = [] } = useQuery({
+    queryKey: ['purchases', id, user?.email],
+    queryFn: () => base44.entities.Purchase.filter({ listing_id: id, user_email: user.email }),
+    enabled: !!id && !!user?.email
+  });
+
+  const hasPurchased = purchases.length > 0;
+
+  // Auto-download after successful Stripe payment
+  useEffect(() => {
+    if (purchased && hasPurchased && !alreadyDownloaded && user && listing && !downloadMutation.isPending) {
+      downloadMutation.mutate();
+    }
+  }, [purchased, hasPurchased, alreadyDownloaded, user, listing]);
 
   const { data: guidePhotos = [] } = useQuery({
     queryKey: ['guide_photos', id],
@@ -272,13 +288,9 @@ export default function GuideDetail() {
             <Trash2 className="w-4 h-4" />
             Remove from Downloaded Guides
           </button>
-        ) : listing?.price > 0 && !isPro(user) ? (
+        ) : listing?.price > 0 && !isPro(user) && !hasPurchased ? (
           <button
             onClick={async () => {
-              if (window.self !== window.top) {
-                alert('Checkout only works from the published app.');
-                return;
-              }
               const res = await base44.functions.invoke('createCheckoutSession', {
                 listing_id: id,
                 success_url: `${window.location.origin}/GuideDetail?id=${id}`,
