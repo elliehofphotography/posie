@@ -1,0 +1,29 @@
+{
+  "name": "WeddingFolder",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Client / wedding name"
+    },
+    "date": {
+      "type": "string",
+      "description": "Wedding date (ISO date string)"
+    },
+    "cover_image": {
+      "type": "string",
+      "description": "Cover image URL"
+    },
+    "description": {
+      "type": "string",
+      "description": "Notes about this project"
+    },
+    "order_index": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

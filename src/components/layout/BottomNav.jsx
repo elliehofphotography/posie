@@ -1,18 +1,18 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Compass, Store } from 'lucide-react';
+import { Home, Compass, Store, FolderHeart } from 'lucide-react';
 
 export const TAB_ROOTS = [
   { path: '/Home', icon: Home, label: 'Home' },
+  { path: '/Weddings', icon: FolderHeart, label: 'Weddings' },
   { path: '/Discover', icon: Compass, label: 'Discover' },
   { path: '/Marketplace', icon: Store, label: 'Market' },
 ];
 
 export function getActiveTab(pathname) {
-  // Find which tab root this path belongs to
   if (pathname.startsWith('/Discover')) return '/Discover';
   if (pathname.startsWith('/Marketplace') || pathname.startsWith('/GuideDetail')) return '/Marketplace';
-  // Default: Home tab (covers /Home, /Template, /ShotList, /ChecklistOverview, /AllPhotos, /Settings, etc.)
+  if (pathname.startsWith('/Weddings') || pathname.startsWith('/WeddingFolder') || pathname.startsWith('/WeddingGalleryView')) return '/Weddings';
   return '/Home';
 }
 

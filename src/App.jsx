@@ -25,6 +25,9 @@ import AllPhotos from './pages/AllPhotos';
 import Support from './pages/Support';
 import SharedGallery from './pages/SharedGallery';
 import AdminDiscover from './pages/AdminDiscover';
+import Weddings from './pages/Weddings';
+import WeddingFolder from './pages/WeddingFolder';
+import WeddingGalleryView from './pages/WeddingGalleryView';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -68,6 +71,9 @@ const AuthenticatedApp = () => {
         <Route path="/DownloadedGuides" element={<DownloadedGuides />} />
         <Route path="/AllPhotos" element={<AllPhotos />} />
         <Route path="/Support" element={<Support />} />
+        <Route path="/Weddings" element={<Weddings />} />
+        <Route path="/WeddingFolder" element={<WeddingFolder />} />
+        <Route path="/WeddingGalleryView" element={<WeddingGalleryView />} />
       </Route>
       <Route path="/SharedGallery" element={<SharedGallery />} />
       <Route path="/AdminDiscover" element={<AdminDiscover />} />

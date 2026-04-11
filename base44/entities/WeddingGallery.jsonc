@@ -1,0 +1,44 @@
+{
+  "name": "WeddingGallery",
+  "type": "object",
+  "properties": {
+    "folder_id": {
+      "type": "string",
+      "description": "ID of the parent WeddingFolder"
+    },
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "engagement",
+        "bridals",
+        "wedding_day",
+        "reception",
+        "details",
+        "custom"
+      ],
+      "default": "custom"
+    },
+    "template_id": {
+      "type": "string",
+      "description": "Optional link to an existing ShootTemplate"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_visible_to_client": {
+      "type": "boolean",
+      "default": false
+    },
+    "order_index": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "folder_id",
+    "title"
+  ]
+}
