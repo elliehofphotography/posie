@@ -172,7 +172,14 @@ export default function Discover() {
   const filtered = userPosts.filter(img => {
     if (activeCategory && img.category !== activeCategory) return false;
     if (activePoseCategory && img.pose_category && img.pose_category !== activePoseCategory) return false;
-    if (search && !(img.category || '').toLowerCase().includes(search.toLowerCase())) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      const matches = [
+        img.category, img.title, img.description,
+        img.photographer_name, img.pose_category, img.lighting_notes,
+      ].some(field => field?.toLowerCase().includes(q));
+      if (!matches) return false;
+    }
     return true;
   });
 
