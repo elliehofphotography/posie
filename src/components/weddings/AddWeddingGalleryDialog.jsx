@@ -4,25 +4,40 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import BottomSheetSelect from '@/components/ui/BottomSheetSelect';
 import { useQuery } from '@tanstack/react-query';
 
-const TYPES = [
+const BASE_TYPES = [
   { value: 'engagement', label: 'Engagement' },
   { value: 'bridals', label: 'Bridals' },
   { value: 'wedding_day', label: 'Wedding Day' },
   { value: 'reception', label: 'Reception' },
   { value: 'details', label: 'Details' },
-  { value: 'custom', label: 'Custom' },
 ];
+
+const CUSTOM_TYPES_KEY = 'wedding_gallery_custom_types';
+
+function loadCustomTypes() {
+  try { return JSON.parse(localStorage.getItem(CUSTOM_TYPES_KEY) || '[]'); } catch { return []; }
+}
+
+function saveCustomType(label) {
+  const existing = loadCustomTypes();
+  if (!existing.includes(label)) {
+    localStorage.setItem(CUSTOM_TYPES_KEY, JSON.stringify([...existing, label]));
+  }
+}
 
 const EMPTY = { title: '', type: 'custom', notes: '', template_id: '', is_visible_to_client: false };
 
 export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, editGallery, onSuccess }) {
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [customTypes, setCustomTypes] = useState(loadCustomTypes);
+  const [addingCustom, setAddingCustom] = useState(false);
+  const [customInput, setCustomInput] = useState('');
 
   const { data: templates = [] } = useQuery({
     queryKey: ['templates'],
@@ -32,6 +47,9 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   const galleryTemplates = templates.filter(t => t.template_type !== 'shot_list');
 
   useEffect(() => {
+    setCustomTypes(loadCustomTypes());
+    setAddingCustom(false);
+    setCustomInput('');
     if (editGallery) {
       setForm({
         title: editGallery.title || '',
@@ -44,6 +62,17 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
       setForm(EMPTY);
     }
   }, [editGallery, open]);
+
+  const handleAddCustomType = () => {
+    const label = customInput.trim();
+    if (!label) return;
+    saveCustomType(label);
+    const updated = loadCustomTypes();
+    setCustomTypes(updated);
+    set('type', label);
+    setAddingCustom(false);
+    setCustomInput('');
+  };
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -86,10 +115,35 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
             <BottomSheetSelect
               label="Type"
               value={form.type}
-              onChange={(v) => set('type', v)}
-              options={TYPES}
+              onChange={(v) => {
+                if (v === '__add_custom__') {
+                  setAddingCustom(true);
+                } else {
+                  set('type', v);
+                }
+              }}
+              options={[
+                ...BASE_TYPES,
+                ...customTypes.map(t => ({ value: t, label: t })),
+                { value: '__add_custom__', label: '+ Add Custom Type...' },
+              ]}
               placeholder="Select type"
             />
+            {addingCustom && (
+              <div className="flex gap-2 mt-2">
+                <Input
+                  autoFocus
+                  value={customInput}
+                  onChange={e => setCustomInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomType(); } if (e.key === 'Escape') setAddingCustom(false); }}
+                  placeholder="e.g. Cake Cutting"
+                  className="bg-muted border-border font-dm flex-1"
+                />
+                <Button type="button" size="icon" onClick={handleAddCustomType} disabled={!customInput.trim()} className="shrink-0">
+                  <Check className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="space-y-1.5">
