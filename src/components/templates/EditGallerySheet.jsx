@@ -43,7 +43,7 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
           <div className="p-8 space-y-6">
             {/* Title */}
             <h2 className="text-center font-vina text-2xl uppercase tracking-widest text-primary">
-              Name Your Template
+              Edit Gallery
             </h2>
 
             {/* Cover selector */}
