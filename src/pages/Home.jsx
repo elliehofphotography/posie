@@ -65,7 +65,8 @@ export default function Home() {
   const { data: downloads = [] } = useQuery({
     queryKey: ['my_downloads', user?.email],
     queryFn: () => base44.entities.Download.filter({ user_email: user.email }),
-    enabled: !!user?.email
+    enabled: !!user?.email,
+    staleTime: 0,
   });
 
   const downloadedListingIds = downloads.map((d) => d.listing_id);
