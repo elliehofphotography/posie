@@ -105,6 +105,11 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
     } else {
       await base44.entities.WeddingGallery.create(payload);
     }
+    // Keep template name in sync with gallery title
+    if (form.template_id) {
+      await base44.entities.ShootTemplate.update(form.template_id, { name: form.title.trim() });
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+    }
     setSaving(false);
     onSuccess?.();
   };
