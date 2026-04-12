@@ -423,24 +423,22 @@ export default function Home() {
       </div>
 
       {/* Downloaded Guides */}
-      {downloadedListings.length > 0 && (
-        <div className="bg-card border-t border-border pt-4 pb-4">
-          <div className="px-5 mb-3">
+      {downloadedListings.length > 0 &&
+        <div className="px-5 pb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px flex-1 bg-border" />
             <span className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-1.5">
               <ShoppingBag className="w-3 h-3" /> Downloaded Guides
             </span>
+            <div className="h-px flex-1 bg-border" />
           </div>
-          <div className="overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-            <div className="flex gap-3 px-5 min-w-min">
-              {downloadedListings.map((listing) => (
-                <div key={listing.id} className="shrink-0 w-48">
-                  <MarketplaceCard listing={listing} />
-                </div>
-              ))}
-            </div>
+          <div className="space-y-3">
+            {downloadedListings.map((listing) =>
+            <MarketplaceCard key={listing.id} listing={listing} />
+            )}
           </div>
         </div>
-      )}
+        }
 
       <AddPhotoToGalleryFlow open={showAddPhotoFlow} onOpenChange={setShowAddPhotoFlow} />
 
