@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2, X, ImagePlus } from 'lucide-react';
+import { Trash2, X, ImagePlus, Check } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import PoseCategoryBar from '../ui/PoseCategoryBar';
@@ -14,6 +14,7 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const [showCoverPicker, setShowCoverPicker] = useState(false);
   const [name, setName] = useState(template?.name || '');
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (open) setName(template?.name || '');
@@ -49,6 +50,17 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
     deletePhotosMutation.mutate(selected);
   };
 
+  const handleSave = async () => {
+    if (name.trim() && name.trim() !== template?.name) {
+      setIsSaving(true);
+      await renameMutation.mutateAsync(name.trim());
+      setIsSaving(false);
+      onOpenChange(false);
+    } else {
+      onOpenChange(false);
+    }
+  };
+
   const filteredPhotos = activeCategory 
     ? photos.filter(p => p.pose_category === activeCategory)
     : photos;
@@ -61,12 +73,30 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[90vh] flex flex-col bg-card border-border rounded-t-3xl">
         <SheetHeader className="border-b border-border pb-3 gap-2">
-          <SheetTitle className="font-playfair text-foreground">Edit Gallery</SheetTitle>
+          <div className="flex items-center justify-between">
+            <SheetTitle className="font-playfair text-foreground">Edit Gallery</SheetTitle>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onOpenChange(false)}
+                className="h-8 w-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving || !name.trim()}
+                className="h-8 px-3 rounded-full flex items-center justify-center gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 font-dm text-xs font-medium"
+              >
+                <Check className="w-3.5 h-3.5" />
+                Save
+              </button>
+            </div>
+          </div>
           <div className="flex gap-2">
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              onBlur={() => { if (name.trim() && name.trim() !== template?.name) renameMutation.mutate(name.trim()); }}
               placeholder="Gallery name"
               className="bg-muted border-border font-dm text-sm flex-1"
             />
