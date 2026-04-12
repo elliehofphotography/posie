@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Clock, ChevronRight, Pencil, Trash2, Link } from 'lucide-react';
+import { Plus, Clock, ChevronRight, Pencil, Trash2, Link, CheckCircle2, Circle, ChevronDown } from 'lucide-react';
 import AddTimelineEventDialog from './AddTimelineEventDialog';
 
 function formatTime(t) {
@@ -12,10 +12,88 @@ function formatTime(t) {
   return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
+function EventRow({ event, galleries, onToggle, onEdit, onDelete, onGalleryOpen, weddingDayMode }) {
+  const linkedGallery = galleries.find(g => g.id === event.related_gallery_id);
+
+  if (weddingDayMode) {
+    return (
+      <div className={`rounded-2xl border p-4 transition-all ${event.is_completed ? 'bg-muted/50 border-border/50 opacity-60' : 'bg-card border-border'}`}>
+        <div className="flex items-start gap-3">
+          <button
+            onClick={() => onToggle(event)}
+            className="mt-0.5 shrink-0 text-primary"
+            aria-label={event.is_completed ? 'Mark incomplete' : 'Mark complete'}
+          >
+            {event.is_completed
+              ? <CheckCircle2 className="w-6 h-6 text-primary" />
+              : <Circle className="w-6 h-6 text-muted-foreground/50" />}
+          </button>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Clock className="w-3.5 h-3.5 text-primary/70 shrink-0" />
+              <span className="font-dm text-xs font-semibold text-primary">
+                {formatTime(event.start_time)}{event.end_time ? ` – ${formatTime(event.end_time)}` : ''}
+              </span>
+            </div>
+            <p className={`font-vina text-xl uppercase tracking-wider ${event.is_completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{event.title}</p>
+            {event.description && <p className="font-dm text-sm text-muted-foreground mt-1 leading-snug">{event.description}</p>}
+            {linkedGallery && (
+              <button onClick={() => onGalleryOpen(linkedGallery.id)} className="flex items-center gap-1.5 mt-2">
+                <Link className="w-3 h-3 text-primary" />
+                <span className="font-dm text-xs text-primary font-medium">{linkedGallery.title}</span>
+                <ChevronRight className="w-3 h-3 text-primary" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${event.is_completed ? 'bg-muted/40 border-border/50 opacity-70' : 'bg-card border-border'}`}>
+      <button onClick={() => onToggle(event)} className="mt-0.5 shrink-0 text-primary" aria-label="Toggle complete">
+        {event.is_completed
+          ? <CheckCircle2 className="w-5 h-5 text-primary" />
+          : <Circle className="w-5 h-5 text-muted-foreground/40" />}
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="font-dm text-xs text-muted-foreground">
+            {formatTime(event.start_time)}{event.end_time ? ` – ${formatTime(event.end_time)}` : ''}
+          </span>
+          {linkedGallery && (
+            <button onClick={() => onGalleryOpen(linkedGallery.id)} className="flex items-center gap-1 text-primary">
+              <Link className="w-3 h-3" />
+              <span className="font-dm text-[10px] font-medium">{linkedGallery.title}</span>
+            </button>
+          )}
+        </div>
+        <p className={`font-dm text-sm font-medium ${event.is_completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{event.title}</p>
+        {event.description && <p className="font-dm text-xs text-muted-foreground mt-0.5">{event.description}</p>}
+      </div>
+      <div className="flex items-center gap-1 shrink-0">
+        <button onClick={() => onEdit(event)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+          <Pencil className="w-3.5 h-3.5" />
+        </button>
+        <button onClick={() => onDelete(event.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function WeddingTimeline({ folderId, events, galleries, weddingDayMode, onGalleryOpen }) {
   const queryClient = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [showCompleted, setShowCompleted] = useState(false);
+
+  const toggleMutation = useMutation({
+    mutationFn: (event) => base44.entities.TimelineEvent.update(event.id, { is_completed: !event.is_completed }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['timeline_events', folderId] }),
+  });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.TimelineEvent.delete(id),
@@ -23,106 +101,65 @@ export default function WeddingTimeline({ folderId, events, galleries, weddingDa
   });
 
   const sorted = [...events].sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
+  const pending = sorted.filter(e => !e.is_completed);
+  const completed = sorted.filter(e => e.is_completed);
 
-  if (weddingDayMode) {
-    return (
-      <div className="px-5 pt-6 pb-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-vina text-2xl text-primary uppercase tracking-widest">Timeline</h2>
-        </div>
-        <div className="space-y-3">
-          {sorted.length === 0 && (
-            <p className="font-dm text-sm text-muted-foreground text-center py-8">No events added yet.</p>
-          )}
-          {sorted.map((event) => {
-            const linkedGallery = galleries.find(g => g.id === event.related_gallery_id);
-            return (
-              <button
-                key={event.id}
-                className="w-full text-left rounded-2xl border border-border bg-card p-5 active:scale-[0.98] transition-transform"
-                onClick={() => linkedGallery && onGalleryOpen(linkedGallery.id)}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Clock className="w-4 h-4 text-primary shrink-0" />
-                      <span className="font-dm text-sm font-semibold text-primary">
-                        {formatTime(event.start_time)}{event.end_time ? ` – ${formatTime(event.end_time)}` : ''}
-                      </span>
-                    </div>
-                    <p className="font-vina text-xl text-foreground uppercase tracking-wider">{event.title}</p>
-                    {event.description && <p className="font-dm text-sm text-muted-foreground mt-1 leading-snug">{event.description}</p>}
-                    {linkedGallery && (
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <Link className="w-3 h-3 text-primary" />
-                        <span className="font-dm text-xs text-primary font-medium">{linkedGallery.title}</span>
-                      </div>
-                    )}
-                  </div>
-                  {linkedGallery && <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 mt-1" />}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
+  const commonProps = {
+    galleries,
+    onToggle: (e) => toggleMutation.mutate(e),
+    onEdit: (e) => setEditingEvent(e),
+    onDelete: (id) => deleteMutation.mutate(id),
+    onGalleryOpen,
+    weddingDayMode,
+  };
 
   return (
     <div className="px-5">
+      {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-vina text-xl text-primary uppercase tracking-widest">Timeline</h2>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          Add Event
-        </button>
+        {!weddingDayMode && (
+          <button
+            onClick={() => setShowAdd(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Add Event
+          </button>
+        )}
       </div>
 
+      {/* Pending events */}
       <div className="space-y-2">
-        {sorted.length === 0 && (
-          <p className="font-dm text-xs text-muted-foreground py-4 text-center">No events yet. Tap "Add Event" to start building the timeline.</p>
+        {pending.length === 0 && completed.length === 0 && (
+          <p className="font-dm text-xs text-muted-foreground py-4 text-center">
+            {weddingDayMode ? 'No events added yet.' : 'No events yet. Tap "Add Event" to start building the timeline.'}
+          </p>
         )}
-        {sorted.map((event) => {
-          const linkedGallery = galleries.find(g => g.id === event.related_gallery_id);
-          return (
-            <div key={event.id} className="flex items-start gap-3 p-3 rounded-xl bg-card border border-border">
-              <div className="shrink-0 pt-0.5">
-                <div className="w-2 h-2 rounded-full bg-primary mt-1.5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-dm text-xs text-muted-foreground">
-                    {formatTime(event.start_time)}{event.end_time ? ` – ${formatTime(event.end_time)}` : ''}
-                  </span>
-                  {linkedGallery && (
-                    <button
-                      onClick={() => onGalleryOpen(linkedGallery.id)}
-                      className="flex items-center gap-1 text-primary"
-                    >
-                      <Link className="w-3 h-3" />
-                      <span className="font-dm text-[10px] font-medium">{linkedGallery.title}</span>
-                    </button>
-                  )}
-                </div>
-                <p className="font-dm text-sm font-medium text-foreground">{event.title}</p>
-                {event.description && <p className="font-dm text-xs text-muted-foreground mt-0.5">{event.description}</p>}
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => setEditingEvent(event)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                  <Pencil className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => deleteMutation.mutate(event.id)} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          );
-        })}
+        {pending.length === 0 && completed.length > 0 && (
+          <p className="font-dm text-xs text-muted-foreground py-2 text-center">All events completed! 🎉</p>
+        )}
+        {pending.map(event => <EventRow key={event.id} event={event} {...commonProps} />)}
       </div>
+
+      {/* Completed section */}
+      {completed.length > 0 && (
+        <div className="mt-4">
+          <button
+            onClick={() => setShowCompleted(v => !v)}
+            className="flex items-center gap-2 mb-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <CheckCircle2 className="w-4 h-4 text-primary" />
+            <span className="font-dm text-xs font-medium uppercase tracking-wider">Completed ({completed.length})</span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${showCompleted ? 'rotate-180' : ''}`} />
+          </button>
+          {showCompleted && (
+            <div className="space-y-2">
+              {completed.map(event => <EventRow key={event.id} event={event} {...commonProps} />)}
+            </div>
+          )}
+        </div>
+      )}
 
       <AddTimelineEventDialog
         open={showAdd || !!editingEvent}

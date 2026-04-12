@@ -24,6 +24,11 @@
       "type": "string",
       "description": "Optional WeddingGallery ID"
     },
+    "is_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this event has been completed"
+    },
     "order_index": {
       "type": "number",
       "default": 0
