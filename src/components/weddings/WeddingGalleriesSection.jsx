@@ -26,7 +26,7 @@ export default function WeddingGalleriesSection({ folderId, galleries, onGallery
   return (
     <div className="px-5">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-vina text-xl text-primary uppercase tracking-widest">Galleries</h2>
+        <h2 className="font-dm text-sm font-medium text-foreground">Galleries</h2>
         <button
           onClick={() => setShowAdd(true)}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors"
