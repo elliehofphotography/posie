@@ -244,7 +244,7 @@ export default function AllPhotos() {
             onClick={() => setShowBulkSave(true)}
             className="flex-1 py-2.5 rounded-full bg-primary/15 text-primary font-dm text-sm font-medium hover:bg-primary/25 transition-colors disabled:opacity-30 select-none whitespace-nowrap"
           >
-            Add to Gallery{selected.length > 0 ? ` (${selected.length})` : ''}
+            Add to{selected.length > 0 ? ` (${selected.length})` : ''}
           </button>
           <button
             disabled={selected.length === 0}
