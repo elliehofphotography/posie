@@ -182,7 +182,7 @@ export default function GuideDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-52">
+    <div className="min-h-screen bg-background pb-20">
       <PageHeader title={listing?.name || ''} backTo="/Marketplace" />
 
       {/* Cover Image */}
