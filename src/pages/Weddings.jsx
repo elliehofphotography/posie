@@ -4,17 +4,17 @@ import { Plus, FolderHeart, ChevronRight, Pencil, Trash2, Search } from 'lucide-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import PullToRefresh from '../components/layout/PullToRefresh';
-import MobileMenu from '../components/ui/mobile-menu';
 import CreateFolderDialog from '../components/weddings/CreateFolderDialog';
 import { format } from 'date-fns';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 export default function Weddings() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [editingFolder, setEditingFolder] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(null);
   const [search, setSearch] = useState('');
+  const [deletingFolderId, setDeletingFolderId] = useState(null);
 
   const { data: folders = [] } = useQuery({
     queryKey: ['wedding_folders'],
@@ -105,42 +105,21 @@ export default function Weddings() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setMenuOpen(menuOpen === folder.id ? null : folder.id);
+                      setEditingFolder(folder);
                     }}
                     className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
-                  {menuOpen === folder.id && (
-                    <div className="absolute right-4 top-full mt-1 bg-card border border-border rounded-xl shadow-lg z-40">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingFolder(folder);
-                          setMenuOpen(null);
-                        }}
-                        className="w-full text-left px-4 py-2.5 text-sm font-dm text-foreground hover:bg-muted transition-colors first:rounded-t-lg"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Pencil className="w-4 h-4" />
-                          Edit
-                        </div>
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteMutation.mutate(folder.id);
-                          setMenuOpen(null);
-                        }}
-                        className="w-full text-left px-4 py-2.5 text-sm font-dm text-destructive hover:bg-destructive/10 transition-colors last:rounded-b-lg"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Trash2 className="w-4 h-4" />
-                          Delete
-                        </div>
-                      </button>
-                    </div>
-                  )}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeletingFolderId(folder.id);
+                    }}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                   <ChevronRight className="w-4 h-4 text-muted-foreground" />
                 </div>
               </div>
@@ -163,6 +142,30 @@ export default function Weddings() {
             setEditingFolder(null);
           }}
         />
+
+        <AlertDialog open={!!deletingFolderId} onOpenChange={(v) => { if (!v) setDeletingFolderId(null); }}>
+          <AlertDialogContent className="bg-card border-border">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="font-playfair text-foreground">Delete this wedding?</AlertDialogTitle>
+              <AlertDialogDescription className="font-dm text-muted-foreground">
+                Are you sure you want to delete this wedding? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="font-dm">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  deleteMutation.mutate(deletingFolderId);
+                  setDeletingFolderId(null);
+                }}
+                disabled={deleteMutation.isPending}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 font-dm"
+              >
+                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </PullToRefresh>
   );
