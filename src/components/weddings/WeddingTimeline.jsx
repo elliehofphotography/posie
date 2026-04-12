@@ -12,43 +12,8 @@ function formatTime(t) {
   return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
-function EventRow({ event, galleries, onToggle, onEdit, onDelete, onGalleryOpen, weddingDayMode }) {
+function EventRow({ event, galleries, onToggle, onEdit, onDelete, onGalleryOpen }) {
   const linkedGallery = galleries.find(g => g.id === event.related_gallery_id);
-
-  if (weddingDayMode) {
-    return (
-      <div className={`rounded-2xl border p-4 transition-all ${event.is_completed ? 'bg-muted/50 border-border/50 opacity-60' : 'bg-card border-border'}`}>
-        <div className="flex items-start gap-3">
-          <button
-            onClick={() => onToggle(event)}
-            className="mt-0.5 shrink-0 text-primary"
-            aria-label={event.is_completed ? 'Mark incomplete' : 'Mark complete'}
-          >
-            {event.is_completed
-              ? <CheckCircle2 className="w-6 h-6 text-primary" />
-              : <Circle className="w-6 h-6 text-muted-foreground/50" />}
-          </button>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <Clock className="w-3.5 h-3.5 text-primary/70 shrink-0" />
-              <span className="font-dm text-xs font-semibold text-primary">
-                {formatTime(event.start_time)}{event.end_time ? ` – ${formatTime(event.end_time)}` : ''}
-              </span>
-            </div>
-            <p className={`font-vina text-xl uppercase tracking-wider ${event.is_completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{event.title}</p>
-            {event.description && <p className="font-dm text-sm text-muted-foreground mt-1 leading-snug">{event.description}</p>}
-            {linkedGallery && (
-              <button onClick={() => onGalleryOpen(linkedGallery.id)} className="flex items-center gap-1.5 mt-2">
-                <Link className="w-3 h-3 text-primary" />
-                <span className="font-dm text-xs text-primary font-medium">{linkedGallery.title}</span>
-                <ChevronRight className="w-3 h-3 text-primary" />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${event.is_completed ? 'bg-muted/40 border-border/50 opacity-70' : 'bg-card border-border'}`}>
@@ -84,7 +49,7 @@ function EventRow({ event, galleries, onToggle, onEdit, onDelete, onGalleryOpen,
   );
 }
 
-export default function WeddingTimeline({ folderId, events, galleries, weddingDayMode, onGalleryOpen }) {
+export default function WeddingTimeline({ folderId, events, galleries, onGalleryOpen }) {
   const queryClient = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
@@ -110,7 +75,6 @@ export default function WeddingTimeline({ folderId, events, galleries, weddingDa
     onEdit: (e) => setEditingEvent(e),
     onDelete: (id) => deleteMutation.mutate(id),
     onGalleryOpen,
-    weddingDayMode,
   };
 
   return (
@@ -118,22 +82,20 @@ export default function WeddingTimeline({ folderId, events, galleries, weddingDa
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-vina text-xl text-primary uppercase tracking-widest">Timeline</h2>
-        {!weddingDayMode && (
-          <button
-            onClick={() => setShowAdd(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            Add Event
-          </button>
-        )}
+        <button
+          onClick={() => setShowAdd(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Add Event
+        </button>
       </div>
 
       {/* Pending events */}
       <div className="space-y-2">
         {pending.length === 0 && completed.length === 0 && (
           <p className="font-dm text-xs text-muted-foreground py-4 text-center">
-            {weddingDayMode ? 'No events added yet.' : 'No events yet. Tap "Add Event" to start building the timeline.'}
+            {'No events yet. Tap "Add Event" to start building the timeline.'}
           </p>
         )}
         {pending.length === 0 && completed.length > 0 && (
