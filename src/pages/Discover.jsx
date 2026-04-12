@@ -17,7 +17,7 @@ import { haptic } from '@/lib/haptic';
 
 const SAMPLE_CATEGORIES = [
   'Wedding', 'Bridal', 'Couples', 'Portrait', 'Graduation', 'Maternity',
-  'Newborn', 'Family', 'Fashion', 'Boudoir', 'Engagement',
+  'Newborn', 'Family', 'Fashion', 'Boudoir',
 ];
 
 export default function Discover() {
