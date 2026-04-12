@@ -39,17 +39,8 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md bg-background border-border rounded-lg p-0 gap-0 max-h-[90vh] overflow-y-auto">
         <div className="relative">
-          {/* Close button */}
-          <button
-            onClick={() => onOpenChange(false)}
-            className="absolute top-6 right-6 h-8 w-8 rounded-full flex items-center justify-center text-foreground hover:bg-muted transition-colors z-10"
-            aria-label="Close"
-          >
-            <X className="w-5 h-5" />
-          </button>
-
           {/* Content */}
-          <div className="p-8 pt-12 space-y-6">
+          <div className="p-8 space-y-6">
             {/* Title */}
             <h2 className="text-center font-vina text-2xl uppercase tracking-widest text-primary">
               Name Your Template
