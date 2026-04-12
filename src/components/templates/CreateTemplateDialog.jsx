@@ -10,7 +10,7 @@ const TYPES = [
   {
     value: 'gallery',
     icon: Images,
-    label: 'Photo Gallery',
+    label: 'Cover Image',
     desc: 'Upload inspiration photos with pose notes, lens & lighting info.',
   },
   {
@@ -102,7 +102,7 @@ export default function CreateTemplateDialog({
                   ? <Images className="w-3.5 h-3.5 text-primary" />
                   : <List className="w-3.5 h-3.5 text-primary" />}
                 <span className="font-dm text-xs text-muted-foreground">
-                  {type === 'gallery' ? 'Photo Gallery' : 'Shot List'}
+                  {type === 'gallery' ? 'Cover Image' : 'Shot List'}
                 </span>
                 <button
                   type="button"
