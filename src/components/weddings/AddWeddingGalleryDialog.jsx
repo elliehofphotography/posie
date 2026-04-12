@@ -113,7 +113,7 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   ];
 
   return (
-    <>
+    <React.Fragment>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="bg-card border-border max-w-sm max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -200,6 +200,6 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
         onOpenChange={setShowCreateTemplate}
         onSubmit={handleCreateTemplate}
       />
-    </>
+    </React.Fragment>
   );
 }
