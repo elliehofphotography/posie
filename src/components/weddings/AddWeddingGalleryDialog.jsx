@@ -98,31 +98,13 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
     e.preventDefault();
     if (!form.title.trim()) return;
     setSaving(true);
-
-    let templateId = form.template_id;
-
-    // If no template linked, auto-create one named after the gallery
-    if (!templateId) {
-      const newT = await base44.entities.ShootTemplate.create({
-        name: form.title.trim(),
-        template_type: 'gallery',
-        photo_count: 0,
-      });
-      templateId = newT.id;
-      queryClient.invalidateQueries({ queryKey: ['templates'] });
-    } else {
-      // Keep existing template name in sync with gallery title
-      await base44.entities.ShootTemplate.update(templateId, { name: form.title.trim() });
-      queryClient.invalidateQueries({ queryKey: ['templates'] });
-    }
-
-    const payload = { ...form, folder_id: folderId, template_id: templateId };
+    const payload = { ...form, folder_id: folderId };
+    if (!payload.template_id) delete payload.template_id;
     if (editGallery) {
       await base44.entities.WeddingGallery.update(editGallery.id, payload);
     } else {
       await base44.entities.WeddingGallery.create(payload);
     }
-
     setSaving(false);
     onSuccess?.();
   };
@@ -239,7 +221,7 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
                 const src = galleryTemplates.find(t => t.id === pendingTemplateId);
                 const srcPhotos = await base44.entities.TemplatePhoto.filter({ template_id: pendingTemplateId }, 'sort_order');
                 const newT = await base44.entities.ShootTemplate.create({
-                  name: form.title || src?.name || 'Gallery',
+                  name: src?.name || 'Gallery',
                   description: src?.description || '',
                   template_type: 'gallery',
                   photo_count: 0,
