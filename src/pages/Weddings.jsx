@@ -102,23 +102,45 @@ export default function Weddings() {
                   )}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <MobileMenu
-                    trigger={
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMenuOpen(menuOpen === folder.id ? null : folder.id);
+                    }}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  {menuOpen === folder.id && (
+                    <div className="absolute right-4 top-full mt-1 bg-card border border-border rounded-xl shadow-lg z-40">
                       <button
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingFolder(folder);
+                          setMenuOpen(null);
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-sm font-dm text-foreground hover:bg-muted transition-colors first:rounded-t-lg"
                       >
-                        <Pencil className="w-4 h-4" />
+                        <div className="flex items-center gap-2">
+                          <Pencil className="w-4 h-4" />
+                          Edit
+                        </div>
                       </button>
-                    }
-                    items={[
-                      { label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => setEditingFolder(folder) },
-                      { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, destructive: true, onClick: (e) => { e?.stopPropagation?.(); deleteMutation.mutate(folder.id); } },
-                    ]}
-                    open={menuOpen === folder.id}
-                    onOpenChange={(v) => setMenuOpen(v ? folder.id : null)}
-                    title="Folder Options"
-                  />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteMutation.mutate(folder.id);
+                          setMenuOpen(null);
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-sm font-dm text-destructive hover:bg-destructive/10 transition-colors last:rounded-b-lg"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </div>
+                      </button>
+                    </div>
+                  )}
                   <ChevronRight className="w-4 h-4 text-muted-foreground" />
                 </div>
               </div>
