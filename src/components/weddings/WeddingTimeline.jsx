@@ -81,7 +81,7 @@ export default function WeddingTimeline({ folderId, events, galleries, onGallery
     <div className="px-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-dm text-lg font-bold text-foreground">Timeline</h2>
+        <h2 className="font-dm text-xl font-bold text-foreground">Timeline</h2>
         <button
           onClick={() => setShowAdd(true)}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors"
