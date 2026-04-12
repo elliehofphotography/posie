@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, FolderHeart, ChevronRight, Pencil, Trash2 } from 'lucide-react';
+import { Plus, FolderHeart, ChevronRight, Pencil, Trash2, Search } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import PullToRefresh from '../components/layout/PullToRefresh';
@@ -14,6 +14,7 @@ export default function Weddings() {
   const [showCreate, setShowCreate] = useState(false);
   const [editingFolder, setEditingFolder] = useState(null);
   const [menuOpen, setMenuOpen] = useState(null);
+  const [search, setSearch] = useState('');
 
   const { data: folders = [] } = useQuery({
     queryKey: ['wedding_folders'],
@@ -25,11 +26,21 @@ export default function Weddings() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['wedding_folders'] }),
   });
 
+  const filtered = folders.filter(f => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return (
+      f.title?.toLowerCase().includes(q) ||
+      f.description?.toLowerCase().includes(q) ||
+      (f.date && f.date.includes(q))
+    );
+  });
+
   return (
     <PullToRefresh onRefresh={() => queryClient.invalidateQueries({ queryKey: ['wedding_folders'] })}>
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <div className="px-5 pb-4 flex items-center justify-between" style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
+        <div className="px-5 pb-3 flex items-center justify-between" style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>
           <h1 className="font-vina text-4xl uppercase tracking-widest text-primary">Weddings</h1>
           <button
             onClick={() => setShowCreate(true)}
@@ -37,6 +48,19 @@ export default function Weddings() {
           >
             <Plus className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* Search */}
+        <div className="px-5 pb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by name, date, or keyword…"
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-muted border border-border font-dm text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+          </div>
         </div>
 
         {/* Folder List */}
@@ -47,7 +71,13 @@ export default function Weddings() {
               <p className="font-dm text-muted-foreground text-sm">No weddings yet.<br />Tap + to create your first folder.</p>
             </div>
           )}
-          {folders.map((folder) => (
+          {folders.length > 0 && filtered.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-center gap-2">
+              <Search className="w-8 h-8 text-muted-foreground/40" />
+              <p className="font-dm text-muted-foreground text-sm">No results for "{search}"</p>
+            </div>
+          )}
+          {filtered.map((folder) => (
             <div
               key={folder.id}
               className="relative rounded-2xl overflow-hidden bg-card border border-border cursor-pointer active:scale-[0.98] transition-transform"
