@@ -43,8 +43,19 @@ export default function ShootMode() {
   const [showMeta, setShowMeta] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
   const [initialPhotos, setInitialPhotos] = useState([]);
-  const [showResumeDialog, setShowResumeDialog] = useState(false);
-  const [savedProgress, setSavedProgress] = useState(null);
+  // Check for saved progress immediately on mount
+  const initialSaved = (() => {
+    try {
+      const raw = localStorage.getItem(getStorageKey(singleId || multiIds || 'unknown'));
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.initialPhotos?.length > 0 && parsed.queue && parsed.completed) return parsed;
+      }
+    } catch {}
+    return null;
+  })();
+  const [showResumeDialog, setShowResumeDialog] = useState(!!initialSaved);
+  const [savedProgress, setSavedProgress] = useState(initialSaved);
 
   // For single template, fetch normally
   const { data: photos = [] } = useQuery({
@@ -89,25 +100,11 @@ export default function ShootMode() {
   };
 
   useEffect(() => {
-    if (sourcePhotos.length === 0 || initialPhotos.length > 0) return;
-
-    // Check for saved progress
-    const saved = localStorage.getItem(storageKey);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.initialPhotos && parsed.initialPhotos.length > 0 && parsed.queue && parsed.completed) {
-          setSavedProgress(parsed);
-          setShowResumeDialog(true);
-          return;
-        }
-      } catch {}
-    }
-
+    if (sourcePhotos.length === 0 || initialPhotos.length > 0 || showResumeDialog) return;
     const sorted = buildSortedQueue(sourcePhotos);
     setQueue(sorted);
     setInitialPhotos(sorted);
-  }, [sourcePhotos, sortBy]);
+  }, [sourcePhotos, sortBy, showResumeDialog]);
 
   // Save progress whenever state changes
   useEffect(() => {
