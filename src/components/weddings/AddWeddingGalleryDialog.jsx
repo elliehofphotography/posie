@@ -40,7 +40,6 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   const [addingCustom, setAddingCustom] = useState(false);
   const [customInput, setCustomInput] = useState('');
   const [showCreateTemplate, setShowCreateTemplate] = useState(false);
-  const [templateMode, setTemplateMode] = useState('link'); // 'link' | 'duplicate'
   const queryClient = useQueryClient();
 
   const { data: templates = [], refetch: refetchTemplates } = useQuery({
@@ -54,7 +53,6 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
     setCustomTypes(loadCustomTypes());
     setAddingCustom(false);
     setCustomInput('');
-    setTemplateMode('link');
     if (editGallery) {
       setForm({
         title: editGallery.title || '',
@@ -97,39 +95,7 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
     e.preventDefault();
     if (!form.title.trim()) return;
     setSaving(true);
-    let resolvedTemplateId = form.template_id;
-
-    // Duplicate template if requested
-    if (form.template_id && templateMode === 'duplicate') {
-      const source = galleryTemplates.find(t => t.id === form.template_id);
-      const newTemplate = await base44.entities.ShootTemplate.create({
-        name: `${source?.name || 'Template'} (Copy)`,
-        description: source?.description || '',
-        template_type: source?.template_type || 'gallery',
-        cover_image: source?.cover_image || '',
-        photo_count: source?.photo_count || 0,
-        tags: source?.tags || [],
-      });
-      const sourcePhotos = await base44.entities.TemplatePhoto.filter({ template_id: form.template_id }, 'sort_order');
-      await Promise.all(sourcePhotos.map(p =>
-        base44.entities.TemplatePhoto.create({
-          template_id: newTemplate.id,
-          image_url: p.image_url,
-          description: p.description || '',
-          pose_category: p.pose_category || '',
-          color_priority: p.color_priority || 'green',
-          lens_suggestion: p.lens_suggestion || '',
-          aperture_suggestion: p.aperture_suggestion || '',
-          lighting_notes: p.lighting_notes || '',
-          camera_angle: p.camera_angle || '',
-          sort_order: p.sort_order || 0,
-        })
-      ));
-      queryClient.invalidateQueries({ queryKey: ['templates'] });
-      resolvedTemplateId = newTemplate.id;
-    }
-
-    const payload = { ...form, folder_id: folderId, template_id: resolvedTemplateId };
+    const payload = { ...form, folder_id: folderId };
     if (!payload.template_id) delete payload.template_id;
     if (editGallery) {
       await base44.entities.WeddingGallery.update(editGallery.id, payload);
@@ -141,6 +107,7 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   };
 
   const templateOptions = [
+    { value: '', label: 'None (standalone)' },
     ...galleryTemplates.map(t => ({ value: t.id, label: t.name })),
     { value: '__create_new__', label: '+ Create new Gallery Template' },
   ];
@@ -206,53 +173,11 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
                     setShowCreateTemplate(true);
                   } else {
                     set('template_id', v);
-                    setTemplateMode('link');
                   }
                 }}
                 options={templateOptions}
                 placeholder="None"
               />
-              {form.template_id && form.template_id !== '__create_new__' && (
-                <div className="mt-2 rounded-xl border border-border bg-muted/50 p-3 space-y-2">
-                  <p className="font-dm text-xs text-muted-foreground leading-snug">How would you like to use this template?</p>
-                  <div className="flex flex-col gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => setTemplateMode('link')}
-                      className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border text-left transition-colors ${
-                        templateMode === 'link' ? 'border-primary bg-primary/10' : 'border-border bg-card'
-                      }`}
-                    >
-                      <div className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 shrink-0 flex items-center justify-center ${
-                        templateMode === 'link' ? 'border-primary' : 'border-muted-foreground'
-                      }`}>
-                        {templateMode === 'link' && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
-                      </div>
-                      <div>
-                        <p className="font-dm text-sm font-medium text-foreground">Add this gallery</p>
-                        <p className="font-dm text-[11px] text-muted-foreground">Links directly — edits affect all uses of this template</p>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setTemplateMode('duplicate')}
-                      className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border text-left transition-colors ${
-                        templateMode === 'duplicate' ? 'border-primary bg-primary/10' : 'border-border bg-card'
-                      }`}
-                    >
-                      <div className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 shrink-0 flex items-center justify-center ${
-                        templateMode === 'duplicate' ? 'border-primary' : 'border-muted-foreground'
-                      }`}>
-                        {templateMode === 'duplicate' && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
-                      </div>
-                      <div>
-                        <p className="font-dm text-sm font-medium text-foreground">Create editable duplicate</p>
-                        <p className="font-dm text-[11px] text-muted-foreground">Copies all photos into a new standalone template</p>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className="space-y-1.5">
