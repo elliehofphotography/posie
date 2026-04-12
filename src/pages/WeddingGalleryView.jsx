@@ -6,10 +6,10 @@ import PageHeader from '../components/ui/PageHeader';
 import PhotoDetailLightbox from '../components/ui/PhotoDetailLightbox';
 import PhotoCard from '../components/photos/PhotoCard';
 import AddPhotoDialog from '../components/photos/AddPhotoDialog';
-import BatchUploader from '../components/photos/BatchUploader';
+
 import SaveToGalleryDialog from '../components/photos/SaveToGalleryDialog';
 import PoseCategoryBar from '../components/ui/PoseCategoryBar';
-import { Play, Plus, Upload } from 'lucide-react';
+import { Play, Plus } from 'lucide-react';
 
 export default function WeddingGalleryView() {
   const params = new URLSearchParams(window.location.search);
@@ -21,7 +21,7 @@ export default function WeddingGalleryView() {
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [showAddPhoto, setShowAddPhoto] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState(null);
-  const [showBatchUploader, setShowBatchUploader] = useState(false);
+
   const [savingPhoto, setSavingPhoto] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
@@ -201,51 +201,26 @@ export default function WeddingGalleryView() {
         }
       />
 
-      {gallery.notes && (
-        <div className="px-5 pt-4 pb-2">
-          <p className="font-dm text-sm text-muted-foreground leading-relaxed">{gallery.notes}</p>
-        </div>
-      )}
 
       {templateId ? (
-        <div className="px-4 pt-4">
-          <div className="flex gap-2 mb-4">
-            <button
-              onClick={() => setShowAddPhoto(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-dm font-medium hover:bg-primary/90 transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Add Photo
-            </button>
-            <button
-              onClick={() => setShowBatchUploader(v => !v)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-muted text-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              Batch Upload
-            </button>
-          </div>
-
-          {showBatchUploader && (
-            <BatchUploader
-              galleries={allTemplates.filter(t => t.template_type !== 'shot_list')}
-              onDone={() => {
-                setShowBatchUploader(false);
-                queryClient.invalidateQueries({ queryKey: ['template_photos', templateId] });
-              }}
-            />
-          )}
-
+        <div className="p-4">
           {photos.length > 0 && (
             <PoseCategoryBar activeCategory={activeCategory} onChange={setActiveCategory} />
           )}
 
           {photos.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <p className="font-dm text-muted-foreground text-sm">No photos yet. Add your first photo above.</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <p className="font-dm text-muted-foreground text-sm mb-6">No photos yet. Tap + to add your first.</p>
+              <button
+                onClick={() => setShowAddPhoto(true)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Photo
+              </button>
             </div>
           ) : (
-            <div className="columns-2 gap-3 mt-3">
+            <div className="columns-2 gap-3">
               {filteredPhotos.map((photo) => (
                 <div key={photo.id} className="break-inside-avoid mb-3">
                   <PhotoCard
