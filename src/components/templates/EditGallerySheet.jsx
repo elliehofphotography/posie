@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { X, ImagePlus, Check } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { X, ImagePlus } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import ChangeCoverDialog from './ChangeCoverDialog';
@@ -10,68 +11,103 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
   const queryClient = useQueryClient();
   const [showCoverPicker, setShowCoverPicker] = useState(false);
   const [name, setName] = useState(template?.name || '');
+  const [description, setDescription] = useState(template?.description || '');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (open) setName(template?.name || '');
-  }, [open, template?.name]);
+    if (open && template) {
+      setName(template.name || '');
+      setDescription(template.description || '');
+    }
+  }, [open, template]);
 
   const renameMutation = useMutation({
-    mutationFn: (newName) => base44.entities.ShootTemplate.update(template.id, { name: newName }),
+    mutationFn: (data) => base44.entities.ShootTemplate.update(template.id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['templates'] }),
   });
 
   const handleSave = async () => {
-    if (name.trim() && name.trim() !== template?.name) {
+    if (name.trim()) {
       setIsSaving(true);
-      await renameMutation.mutateAsync(name.trim());
+      await renameMutation.mutateAsync({ name: name.trim(), description });
       setIsSaving(false);
-      onOpenChange(false);
-    } else {
       onOpenChange(false);
     }
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-auto flex flex-col bg-card border-border rounded-t-3xl p-5">
-        <SheetHeader className="border-b border-border pb-4 gap-3">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="font-playfair text-foreground">Edit Gallery</SheetTitle>
-            <button
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Gallery name"
-              className="bg-muted border-border font-dm text-sm flex-1"
-            />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md bg-background border-border rounded-lg p-0 gap-0 max-h-[90vh] overflow-y-auto">
+        <div className="relative">
+          {/* Close button */}
+          <button
+            onClick={() => onOpenChange(false)}
+            className="absolute top-6 right-6 h-8 w-8 rounded-full flex items-center justify-center text-foreground hover:bg-muted transition-colors z-10"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Content */}
+          <div className="p-8 pt-12 space-y-6">
+            {/* Title */}
+            <h2 className="text-center font-vina text-2xl uppercase tracking-widest text-primary">
+              Name Your Template
+            </h2>
+
+            {/* Cover selector */}
             <button
               onClick={() => setShowCoverPicker(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-xs font-medium transition-colors shrink-0"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-full bg-muted hover:bg-secondary text-foreground font-dm text-sm transition-colors"
             >
-              <ImagePlus className="w-3.5 h-3.5" />
-              Cover
+              <ImagePlus className="w-5 h-5" />
+              <span>Photo Gallery</span>
+              <span className="ml-auto font-semibold">Change</span>
+            </button>
+
+            {/* Template Name */}
+            <div className="space-y-2">
+              <label className="font-dm text-xs uppercase tracking-wider text-primary font-semibold">
+                Template Name
+              </label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Couples Sunset Shoot"
+                className="bg-muted border-muted text-foreground placeholder:text-muted-foreground font-dm rounded-2xl h-12 px-4"
+              />
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <label className="font-dm text-xs uppercase tracking-wider text-primary font-semibold">
+                Description (Optional)
+              </label>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Brief concept description…"
+                className="bg-muted border-muted text-foreground placeholder:text-muted-foreground font-dm rounded-2xl p-4 resize-none h-24"
+              />
+            </div>
+
+            {/* Save Button */}
+            <button
+              onClick={handleSave}
+              disabled={isSaving || !name.trim()}
+              className="w-full py-3 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 font-dm font-semibold text-sm"
+            >
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+
+            {/* Back Button */}
+            <button
+              onClick={() => onOpenChange(false)}
+              className="w-full py-2 text-center text-foreground font-dm text-sm hover:opacity-70 transition-opacity"
+            >
+              Back
             </button>
           </div>
-        </SheetHeader>
-
-        <div className="border-t border-border mt-4 pt-4">
-          <button
-            onClick={handleSave}
-            disabled={isSaving || !name.trim()}
-            className="w-full py-3 rounded-full flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 font-dm font-medium"
-          >
-            <Check className="w-4 h-4" />
-            Save
-          </button>
         </div>
 
         {showCoverPicker && (
@@ -86,7 +122,7 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
             }}
           />
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
