@@ -141,7 +141,6 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   };
 
   const templateOptions = [
-    { value: '', label: 'None (standalone)' },
     ...galleryTemplates.map(t => ({ value: t.id, label: t.name })),
     { value: '__create_new__', label: '+ Create new Gallery Template' },
   ];
