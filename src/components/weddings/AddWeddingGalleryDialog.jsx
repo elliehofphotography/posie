@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -40,6 +41,8 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   const [addingCustom, setAddingCustom] = useState(false);
   const [customInput, setCustomInput] = useState('');
   const [showCreateTemplate, setShowCreateTemplate] = useState(false);
+  const [pendingTemplateId, setPendingTemplateId] = useState(null);
+  const [duplicating, setDuplicating] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: templates = [], refetch: refetchTemplates } = useQuery({
@@ -171,6 +174,8 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
                 onChange={(v) => {
                   if (v === '__create_new__') {
                     setShowCreateTemplate(true);
+                  } else if (v && v !== '') {
+                    setPendingTemplateId(v);
                   } else {
                     set('template_id', v);
                   }
@@ -200,6 +205,56 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
         onOpenChange={setShowCreateTemplate}
         onSubmit={handleCreateTemplate}
       />
+
+      <AlertDialog open={!!pendingTemplateId} onOpenChange={(v) => { if (!v) setPendingTemplateId(null); }}>
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-playfair text-foreground text-lg">Use this template?</AlertDialogTitle>
+            <AlertDialogDescription className="font-dm text-muted-foreground text-sm">
+              Would you like to link to this gallery, or create an editable duplicate of it?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+            <Button
+              disabled={duplicating}
+              onClick={async () => {
+                setDuplicating(true);
+                const src = galleryTemplates.find(t => t.id === pendingTemplateId);
+                const srcPhotos = await base44.entities.TemplatePhoto.filter({ template_id: pendingTemplateId }, 'sort_order');
+                const newT = await base44.entities.ShootTemplate.create({
+                  name: `${src?.name || 'Gallery'} (Copy)`,
+                  description: src?.description || '',
+                  template_type: 'gallery',
+                  photo_count: 0,
+                  cover_image: src?.cover_image || '',
+                });
+                for (const p of srcPhotos) {
+                  await base44.entities.TemplatePhoto.create({ ...p, id: undefined, template_id: newT.id });
+                }
+                await base44.entities.ShootTemplate.update(newT.id, { photo_count: srcPhotos.length });
+                await refetchTemplates();
+                queryClient.invalidateQueries({ queryKey: ['templates'] });
+                set('template_id', newT.id);
+                setDuplicating(false);
+                setPendingTemplateId(null);
+              }}
+              className="w-full bg-primary text-primary-foreground font-dm rounded-full"
+            >
+              {duplicating ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Editable Duplicate'}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => { set('template_id', pendingTemplateId); setPendingTemplateId(null); }}
+              className="w-full font-dm rounded-full"
+            >
+              Link to This Gallery
+            </Button>
+            <Button variant="ghost" onClick={() => setPendingTemplateId(null)} className="w-full font-dm text-muted-foreground">
+              Cancel
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </React.Fragment>
   );
 }
