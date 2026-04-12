@@ -7,6 +7,7 @@ import PageHeader from '../components/ui/PageHeader';
 import PhotoCard from '../components/photos/PhotoCard';
 import PhotoDetailLightbox from '../components/ui/PhotoDetailLightbox';
 import SaveToGalleryDialog from '../components/photos/SaveToGalleryDialog';
+import BulkSaveToGalleryDialog from '../components/photos/BulkSaveToGalleryDialog';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription,
@@ -24,6 +25,7 @@ export default function AllPhotos() {
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState([]);
   const [showBulkConfirm, setShowBulkConfirm] = useState(false);
+  const [showBulkSave, setShowBulkSave] = useState(false);
   const [showUploader, setShowUploader] = useState(false);
 
   useEffect(() => {
@@ -239,8 +241,15 @@ export default function AllPhotos() {
           </button>
           <button
             disabled={selected.length === 0}
+            onClick={() => setShowBulkSave(true)}
+            className="flex-1 py-2.5 rounded-full bg-primary/15 text-primary font-dm text-sm font-medium hover:bg-primary/25 transition-colors disabled:opacity-30 select-none whitespace-nowrap"
+          >
+            Add to Gallery{selected.length > 0 ? ` (${selected.length})` : ''}
+          </button>
+          <button
+            disabled={selected.length === 0}
             onClick={() => setShowBulkConfirm(true)}
-            className="flex-1 py-2.5 rounded-full bg-destructive/15 text-destructive font-dm text-sm font-medium hover:bg-destructive/25 transition-colors disabled:opacity-30 select-none"
+            className="flex-1 py-2.5 rounded-full bg-destructive/15 text-destructive font-dm text-sm font-medium hover:bg-destructive/25 transition-colors disabled:opacity-30 select-none whitespace-nowrap"
           >
             Delete{selected.length > 0 ? ` (${selected.length})` : ''}
           </button>
@@ -319,6 +328,15 @@ export default function AllPhotos() {
           isSaving={isSaving}
         />
       )}
+
+      <BulkSaveToGalleryDialog
+        open={showBulkSave}
+        onOpenChange={setShowBulkSave}
+        imageUrls={selected}
+        photos={photos}
+        galleries={galleries}
+        onDone={exitSelectMode}
+      />
 
       <AlertDialog open={showBulkConfirm} onOpenChange={setShowBulkConfirm}>
         <AlertDialogContent className="bg-card border-border">
