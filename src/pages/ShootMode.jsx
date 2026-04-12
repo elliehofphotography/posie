@@ -11,18 +11,23 @@ import MetadataPanel from '../components/shoot/MetadataPanel';
 const PRIORITY_ORDER = { red: 0, yellow: 1, green: 2 };
 
 const POSE_CATEGORY_ORDER = {
-  'standing': 0,
-  'close_up': 1,
-  'walking': 2,
-  'wide_shot': 3,
-  'sitting': 4,
-  'interaction': 5,
-  'detail': 6,
-  'candid': 7,
-  'other': 8,
+  'standing': 0, 'close_up': 1, 'walking': 2, 'wide_shot': 3,
+  'sitting': 4, 'interaction': 5, 'detail': 6, 'candid': 7, 'other': 8,
 };
 
-const getStorageKey = (id) => `shoot_progress_${id}`;
+function getStorageKey(id) {
+  return `shoot_progress_${id}`;
+}
+
+function loadSavedProgress(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed.initialPhotos?.length > 0 && parsed.queue && parsed.completed) return parsed;
+  } catch {}
+  return null;
+}
 
 export default function ShootMode() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -34,7 +39,13 @@ export default function ShootMode() {
   const galleryIds = multiIds ? multiIds.split(',') : (singleId ? [singleId] : []);
   const isMulti = !!multiIds;
   const navigate = useNavigate();
+
   const storageKey = getStorageKey(singleId || multiIds || 'unknown');
+
+  // Resolve saved progress synchronously before first render
+  const [savedProgress] = useState(() => loadSavedProgress(storageKey));
+  const [showResumeDialog, setShowResumeDialog] = useState(!!savedProgress);
+  const [startOverPending, setStartOverPending] = useState(false);
 
   const [queue, setQueue] = useState([]);
   const [completed, setCompleted] = useState([]);
@@ -43,21 +54,7 @@ export default function ShootMode() {
   const [showMeta, setShowMeta] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
   const [initialPhotos, setInitialPhotos] = useState([]);
-  // Check for saved progress immediately on mount
-  const initialSaved = (() => {
-    try {
-      const raw = localStorage.getItem(getStorageKey(singleId || multiIds || 'unknown'));
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.initialPhotos?.length > 0 && parsed.queue && parsed.completed) return parsed;
-      }
-    } catch {}
-    return null;
-  })();
-  const [showResumeDialog, setShowResumeDialog] = useState(!!initialSaved);
-  const [savedProgress, setSavedProgress] = useState(initialSaved);
 
-  // For single template, fetch normally
   const { data: photos = [] } = useQuery({
     queryKey: ['shoot-photos', singleId],
     queryFn: () => base44.entities.TemplatePhoto.filter({ template_id: singleId }, 'sort_order'),
@@ -71,21 +68,18 @@ export default function ShootMode() {
     Promise.all(
       galleryIds.map(id => base44.entities.TemplatePhoto.filter({ template_id: id }, 'sort_order'))
     ).then(results => {
-      const merged = results.flat();
-      const shuffled = [...merged].sort(() => Math.random() - 0.5);
-      setAllMultiPhotos(shuffled);
+      setAllMultiPhotos(results.flat().sort(() => Math.random() - 0.5));
     });
   }, [multiIds]);
 
   const sourcePhotos = isMulti ? allMultiPhotos : photos;
 
-  const buildSortedQueue = (src) => {
+  const buildSortedQueue = useCallback((src) => {
     if (isMulti) return src;
     if (sortBy === 'color+category') {
       return [...src].sort((a, b) => {
-        const colorDiff = (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2);
-        if (colorDiff !== 0) return colorDiff;
-        return (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8);
+        const cd = (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2);
+        return cd !== 0 ? cd : (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8);
       });
     } else if (sortBy === 'color') {
       return [...src].sort((a, b) => (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2));
@@ -97,16 +91,25 @@ export default function ShootMode() {
       return [...src].sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));
     }
     return src;
-  };
+  }, [isMulti, sortBy]);
 
+  // Initialize queue from fresh photos (skip if resuming or pending a resume answer)
   useEffect(() => {
-    if (sourcePhotos.length === 0 || initialPhotos.length > 0 || showResumeDialog) return;
+    if (sourcePhotos.length === 0) return;
+    if (showResumeDialog) return; // wait for user answer
+    if (initialPhotos.length > 0 && !startOverPending) return;
+
     const sorted = buildSortedQueue(sourcePhotos);
     setQueue(sorted);
     setInitialPhotos(sorted);
-  }, [sourcePhotos, sortBy, showResumeDialog]);
+    setCompleted([]);
+    setSkipped([]);
+    setCurrentIndex(0);
+    setActiveCategory('all');
+    setStartOverPending(false);
+  }, [sourcePhotos, showResumeDialog, startOverPending]);
 
-  // Save progress whenever state changes
+  // Persist progress
   useEffect(() => {
     if (initialPhotos.length === 0) return;
     localStorage.setItem(storageKey, JSON.stringify({ queue, completed, skipped, currentIndex, initialPhotos }));
@@ -121,46 +124,32 @@ export default function ShootMode() {
     setCurrentIndex(savedProgress.currentIndex || 0);
     setInitialPhotos(savedProgress.initialPhotos);
     setShowResumeDialog(false);
-    setSavedProgress(null);
   };
 
   const handleStartOver = () => {
     clearProgress();
-    const sorted = buildSortedQueue(sourcePhotos);
-    setQueue(sorted);
-    setInitialPhotos(sorted);
-    setCompleted([]);
-    setSkipped([]);
-    setCurrentIndex(0);
-    setActiveCategory('all');
     setShowResumeDialog(false);
-    setSavedProgress(null);
+    setStartOverPending(true); // trigger useEffect to build fresh queue
   };
 
   useEffect(() => {
     let wakeLock = null;
     const acquire = async () => {
-      if ('wakeLock' in navigator) {
-        wakeLock = await navigator.wakeLock.request('screen').catch(() => null);
-      }
+      if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen').catch(() => null);
     };
     acquire();
     return () => { if (wakeLock) wakeLock.release(); };
   }, []);
 
-  const filteredQueue = activeCategory === 'all'
-    ? queue
-    : queue.filter(p => p.pose_category === activeCategory);
-
+  const filteredQueue = activeCategory === 'all' ? queue : queue.filter(p => p.pose_category === activeCategory);
   const currentPhoto = filteredQueue[currentIndex];
   const availableCategories = [...new Set(queue.map(p => p.pose_category).filter(Boolean))];
 
   useEffect(() => {
     if (activeCategory === 'all' || availableCategories.length === 0) return;
     if (filteredQueue.length === 0 && queue.length > 0) {
-      const currentIdx = availableCategories.indexOf(activeCategory);
-      const nextCategory = availableCategories[currentIdx + 1] || 'all';
-      setActiveCategory(nextCategory);
+      const idx = availableCategories.indexOf(activeCategory);
+      setActiveCategory(availableCategories[idx + 1] || 'all');
       setCurrentIndex(0);
     }
   }, [filteredQueue.length, queue.length, activeCategory, availableCategories.join(',')]);
@@ -174,10 +163,7 @@ export default function ShootMode() {
 
   const handleLater = useCallback(() => {
     if (!currentPhoto) return;
-    setQueue(prev => {
-      const rest = prev.filter(p => p.id !== currentPhoto.id);
-      return [...rest, currentPhoto];
-    });
+    setQueue(prev => { const rest = prev.filter(p => p.id !== currentPhoto.id); return [...rest, currentPhoto]; });
     if (currentIndex >= filteredQueue.length - 1) setCurrentIndex(0);
   }, [currentPhoto, currentIndex, filteredQueue.length]);
 
@@ -213,15 +199,12 @@ export default function ShootMode() {
 
   const handleDragEnd = (_, info) => {
     const { offset, velocity } = info;
-    if (offset.x > 80 || velocity.x > 400) {
-      handleDone();
-    } else if (offset.x < -80 || velocity.x < -400) {
-      handleLater();
-    }
+    if (offset.x > 80 || velocity.x > 400) handleDone();
+    else if (offset.x < -80 || velocity.x < -400) handleLater();
   };
 
   // Resume dialog
-  if (showResumeDialog) {
+  if (showResumeDialog && savedProgress) {
     return (
       <div className="fixed inset-0 bg-background flex flex-col items-center justify-center text-center p-8">
         <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-5">
@@ -232,7 +215,7 @@ export default function ShootMode() {
           Would you like to resume this gallery where you left off?
         </p>
         <p className="font-dm text-xs text-muted-foreground mb-8">
-          {savedProgress?.completed?.length || 0} poses completed · {savedProgress?.queue?.length || 0} remaining
+          {savedProgress.completed?.length || 0} poses completed · {savedProgress.queue?.length || 0} remaining
         </p>
         <div className="flex gap-3 w-full max-w-xs">
           <button
@@ -285,17 +268,11 @@ export default function ShootMode() {
       {/* Top bar */}
       <div className="relative z-20 pb-1 px-4 bg-gradient-to-b from-black/70 to-transparent" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between mb-2">
-          <button
-            onClick={() => navigate(-1)}
-            aria-label="Close shoot mode"
-            className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-          >
+          <button onClick={() => navigate(-1)} aria-label="Close shoot mode" className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
             <X className="w-5 h-5" />
           </button>
           <div className="text-center">
-            <span className="font-dm text-white/70 text-xs">
-              {completed.length} / {initialPhotos.length - skipped.length}
-            </span>
+            <span className="font-dm text-white/70 text-xs">{completed.length} / {initialPhotos.length - skipped.length}</span>
           </div>
           <div className="flex items-center gap-1">
             <ShootTimer />
@@ -304,17 +281,12 @@ export default function ShootMode() {
                 <Grid3X3 className="w-4 h-4" />
               </button>
             </Link>
-            <button
-              onClick={handleRestart}
-              aria-label="Restart shoot"
-              className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-            >
+            <button onClick={handleRestart} aria-label="Restart shoot" className="h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Progress */}
         <div className="h-0.5 bg-white/10 rounded-full overflow-hidden mx-1">
           <div
             className="h-full bg-primary rounded-full transition-all duration-500"
@@ -323,11 +295,7 @@ export default function ShootMode() {
         </div>
 
         {availableCategories.length > 1 && (
-          <CategoryBar
-            activeCategory={activeCategory}
-            onCategoryChange={setActiveCategory}
-            availableCategories={availableCategories}
-          />
+          <CategoryBar activeCategory={activeCategory} onCategoryChange={setActiveCategory} availableCategories={availableCategories} />
         )}
       </div>
 
@@ -348,32 +316,17 @@ export default function ShootMode() {
               exit={{ scale: 0.92, opacity: 0 }}
               transition={{ duration: 0.18 }}
             >
-              <img
-                src={currentPhoto.image_url}
-                alt={currentPhoto.description || ''}
-                className="w-full h-full object-contain select-none pointer-events-none"
-                draggable={false}
-              />
-
-              {/* Swipe overlays */}
-              <motion.div
-                className="absolute inset-0 bg-primary/20 flex items-center justify-center rounded-lg pointer-events-none"
-                style={{ opacity: doneOpacity }}
-              >
+              <img src={currentPhoto.image_url} alt={currentPhoto.description || ''} className="w-full h-full object-contain select-none pointer-events-none" draggable={false} />
+              <motion.div className="absolute inset-0 bg-primary/20 flex items-center justify-center rounded-lg pointer-events-none" style={{ opacity: doneOpacity }}>
                 <div className="border-4 border-primary rounded-xl px-6 py-3 rotate-12">
                   <span className="font-playfair text-primary text-3xl font-bold">DONE</span>
                 </div>
               </motion.div>
-              <motion.div
-                className="absolute inset-0 bg-accent/20 flex items-center justify-center rounded-lg pointer-events-none"
-                style={{ opacity: laterOpacity }}
-              >
+              <motion.div className="absolute inset-0 bg-accent/20 flex items-center justify-center rounded-lg pointer-events-none" style={{ opacity: laterOpacity }}>
                 <div className="border-4 border-accent rounded-xl px-6 py-3 -rotate-12">
                   <span className="font-playfair text-accent text-3xl font-bold">LATER</span>
                 </div>
               </motion.div>
-
-              {/* Priority dot */}
               <div className={`absolute top-4 left-4 w-3 h-3 rounded-full ${
                 currentPhoto.color_priority === 'red' ? 'bg-red-500' :
                 currentPhoto.color_priority === 'yellow' ? 'bg-yellow-400' : 'bg-green-500'
@@ -386,16 +339,13 @@ export default function ShootMode() {
 
       {/* Bottom bar */}
       <div className="z-20 pb-4 px-5 bg-gradient-to-t from-black/70 to-transparent" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-       <div className="flex items-center justify-between mb-3">
-         <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">← Later</span>
-         <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">Done →</span>
-       </div>
-       <button
-         onClick={handleSkip}
-         className="w-full py-3 rounded-full bg-white/15 backdrop-blur-sm text-white font-dm text-sm font-medium hover:bg-white/25 transition-colors select-none"
-       >
-         Remove Photo
-       </button>
+        <div className="flex items-center justify-between mb-3">
+          <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">← Later</span>
+          <span className="font-dm text-[10px] text-white/35 uppercase tracking-widest">Done →</span>
+        </div>
+        <button onClick={handleSkip} className="w-full py-3 rounded-full bg-white/15 backdrop-blur-sm text-white font-dm text-sm font-medium hover:bg-white/25 transition-colors select-none">
+          Remove Photo
+        </button>
       </div>
     </div>
   );
