@@ -157,9 +157,9 @@ export default function GuideDetail() {
         });
       }));
 
-      // Delete any ShootTemplate that was created for this guide (same name, now empty or still named the same)
+      // Delete any ShootTemplate that was created for this guide
       const allTemplates = await base44.entities.ShootTemplate.list();
-      const guideTemplate = allTemplates.find(t => t.name === listing.name && t.created_by === user.email);
+      const guideTemplate = allTemplates.find(t => t.listing_id === id);
       if (guideTemplate) {
         await base44.entities.ShootTemplate.delete(guideTemplate.id);
       }
