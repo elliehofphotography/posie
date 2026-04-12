@@ -41,7 +41,7 @@ export default function BatchUploader({ galleries, onDone }) {
   };
 
   const templateOptions = [
-    { value: '', label: 'None (upload without assigning)' },
+    { value: '', label: 'Uploads (default)' },
     ...galleries.map(g => ({ value: g.id, label: g.name })),
     { value: '__new__', label: '+ Create new template…' },
   ];
@@ -60,11 +60,25 @@ export default function BatchUploader({ galleries, onDone }) {
         photo_count: 0,
       });
       templateId = newTemplate.id;
+    } else if (!targetTemplateId) {
+      // No template selected — auto-create or find an 'Uploads' gallery
+      const all = await base44.entities.ShootTemplate.list('-created_date');
+      const existing = all.find(t => t.name === 'Uploads' && t.template_type === 'gallery');
+      if (existing) {
+        templateId = existing.id;
+      } else {
+        const created = await base44.entities.ShootTemplate.create({
+          name: 'Uploads',
+          template_type: 'gallery',
+          photo_count: 0,
+        });
+        templateId = created.id;
+      }
     }
 
     const target = galleries.find(g => g.id === templateId);
     let existingCount = 0;
-    if (templateId && templateId !== '__new__') {
+    if (templateId) {
       const existing = await base44.entities.TemplatePhoto.filter({ template_id: templateId }, 'sort_order');
       existingCount = existing.length;
     }
@@ -74,18 +88,11 @@ export default function BatchUploader({ galleries, onDone }) {
       setFiles(prev => prev.map((f, idx) => idx === i ? { ...f, status: 'uploading' } : f));
       try {
         const { file_url } = await base44.integrations.Core.UploadFile({ file: files[i].file });
-        if (templateId && templateId !== '__new__') {
+        if (templateId) {
           await base44.entities.TemplatePhoto.create({
             template_id: templateId,
             image_url: file_url,
             sort_order: existingCount + successCount,
-          });
-        } else if (templateId) {
-          // newly created template
-          await base44.entities.TemplatePhoto.create({
-            template_id: templateId,
-            image_url: file_url,
-            sort_order: successCount,
           });
         }
         successCount++;
