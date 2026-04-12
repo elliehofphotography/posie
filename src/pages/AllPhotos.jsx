@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trash2, X, Upload } from 'lucide-react';
+import { Trash2, X, Plus } from 'lucide-react';
 import BatchUploader from '../components/photos/BatchUploader';
 import PageHeader from '../components/ui/PageHeader';
 import PhotoCard from '../components/photos/PhotoCard';
@@ -213,7 +213,7 @@ export default function AllPhotos() {
         className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
         aria-label="Batch upload"
       >
-        <Upload className="w-4 h-4" />
+        <Plus className="w-4 h-4" />
       </button>
       {photos.length > 0 && (
         <button
