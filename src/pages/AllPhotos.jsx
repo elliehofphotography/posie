@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trash2, X } from 'lucide-react';
+import { Trash2, X, Upload } from 'lucide-react';
+import BatchUploader from '../components/photos/BatchUploader';
 import PageHeader from '../components/ui/PageHeader';
 import PhotoCard from '../components/photos/PhotoCard';
 import PhotoDetailLightbox from '../components/ui/PhotoDetailLightbox';
@@ -23,6 +24,7 @@ export default function AllPhotos() {
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState([]);
   const [showBulkConfirm, setShowBulkConfirm] = useState(false);
+  const [showUploader, setShowUploader] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -203,14 +205,23 @@ export default function AllPhotos() {
   const exitSelectMode = () => { setSelectMode(false); setSelected([]); };
 
   const headerRight = selectMode ? null : (
-    photos.length > 0 ? (
+    <div className="flex items-center gap-2">
       <button
-        onClick={() => setSelectMode(true)}
-        className="px-4 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
+        onClick={() => setShowUploader(v => !v)}
+        className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-secondary transition-colors select-none"
+        aria-label="Batch upload"
       >
-        Select
+        <Upload className="w-4 h-4" />
       </button>
-    ) : null
+      {photos.length > 0 && (
+        <button
+          onClick={() => setSelectMode(true)}
+          className="px-4 py-2 rounded-full bg-muted font-dm text-sm text-foreground hover:bg-secondary transition-colors select-none"
+        >
+          Select
+        </button>
+      )}
+    </div>
   );
 
   return (
@@ -244,6 +255,12 @@ export default function AllPhotos() {
       )}
 
       <div className="p-4">
+        {showUploader && (
+          <BatchUploader
+            galleries={galleries}
+            onDone={() => { setShowUploader(false); queryClient.invalidateQueries({ queryKey: ['all_photos'] }); }}
+          />
+        )}
         {isLoading ? (
           <div className="columns-2 gap-3">
             {[1, 2, 3, 4, 5, 6].map(i => (
