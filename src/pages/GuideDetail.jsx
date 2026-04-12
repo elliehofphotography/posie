@@ -35,7 +35,8 @@ export default function GuideDetail() {
   const { data: downloads = [] } = useQuery({
     queryKey: ['downloads', id, user?.email],
     queryFn: () => base44.entities.Download.filter({ listing_id: id, user_email: user.email }),
-    enabled: !!id && !!user?.email
+    enabled: !!id && !!user?.email,
+    staleTime: 0,
   });
 
   const alreadyDownloaded = downloads.length > 0;
@@ -43,7 +44,8 @@ export default function GuideDetail() {
   const { data: purchases = [] } = useQuery({
     queryKey: ['purchases', id, user?.email],
     queryFn: () => base44.entities.Purchase.filter({ listing_id: id, user_email: user.email }),
-    enabled: !!id && !!user?.email
+    enabled: !!id && !!user?.email,
+    staleTime: 0,
   });
 
   const hasPurchased = purchases.length > 0;
