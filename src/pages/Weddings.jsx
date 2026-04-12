@@ -91,7 +91,7 @@ export default function Weddings() {
               )}
               <div className="p-4 flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="font-vina text-xl text-primary leading-tight">{folder.title}</h2>
+                  <h2 className="font-dm text-sm font-medium text-foreground">{folder.title}</h2>
                   {folder.date && (
                     <p className="font-dm text-xs text-muted-foreground mt-0.5">
                       {format(new Date(folder.date + 'T00:00:00'), 'MMMM d, yyyy')}
