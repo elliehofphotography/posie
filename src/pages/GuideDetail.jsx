@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, User, Tag, Trash2, Sparkles } from 'lucide-react';
+import { Download, User, Tag, Trash2, Sparkles, Camera, Aperture, Zap } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -233,39 +233,44 @@ export default function GuideDetail() {
         </div>
       }
 
-      {/* Pose Previews */}
-      {(listing.preview_image_1 || listing.preview_image_2) &&
+      {/* Sample Pose with Details */}
+      {guidePhotos.length > 0 &&
       <div className="px-5 pt-6">
-          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">Sample Poses</p>
-          <div className="grid grid-cols-2 gap-4">
-            {listing.preview_image_1 &&
-          <div>
-                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-                  <img src={listing.preview_image_1} alt="Sample pose 1" className="w-full h-full object-cover" />
-                  {listing.preview_image_1_direction && (
-                    <div className="absolute inset-0 flex items-end">
-                      <div className="w-full bg-gradient-to-t from-black/70 to-transparent px-3 py-3">
-                        <p className="font-dm text-white text-xs leading-snug">{listing.preview_image_1_direction}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
+          <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-3">Sample Pose</p>
+          <div className="rounded-2xl overflow-hidden bg-muted mb-4">
+            <img src={guidePhotos[0].image_url} alt="Sample pose" className="w-full aspect-[4/3] object-cover" />
+          </div>
+          <div className="space-y-3">
+            {guidePhotos[0].description && (
+              <div>
+                <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">Posing</p>
+                <p className="font-dm text-sm text-foreground leading-relaxed">{guidePhotos[0].description}</p>
               </div>
-          }
-            {listing.preview_image_2 &&
-          <div>
-                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-                  <img src={listing.preview_image_2} alt="Sample pose 2" className="w-full h-full object-cover" />
-                  {listing.preview_image_2_direction && (
-                    <div className="absolute inset-0 flex items-end">
-                      <div className="w-full bg-gradient-to-t from-black/70 to-transparent px-3 py-3">
-                        <p className="font-dm text-white text-xs leading-snug">{listing.preview_image_2_direction}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
+            )}
+            {guidePhotos[0].lens_suggestion && (
+              <div>
+                <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">Lens</p>
+                <p className="font-dm text-sm text-foreground">{guidePhotos[0].lens_suggestion}</p>
               </div>
-          }
+            )}
+            {guidePhotos[0].aperture_suggestion && (
+              <div>
+                <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">Camera Settings</p>
+                <p className="font-dm text-sm text-foreground">{guidePhotos[0].aperture_suggestion}</p>
+              </div>
+            )}
+            {guidePhotos[0].camera_angle && (
+              <div>
+                <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">Camera Angle</p>
+                <p className="font-dm text-sm text-foreground">{guidePhotos[0].camera_angle}</p>
+              </div>
+            )}
+            {guidePhotos[0].lighting_notes && (
+              <div>
+                <p className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">Lighting</p>
+                <p className="font-dm text-sm text-foreground">{guidePhotos[0].lighting_notes}</p>
+              </div>
+            )}
           </div>
         </div>
       }
