@@ -18,20 +18,13 @@ export default function AdminDiscover() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState('pending');
 
-  if (authUser?.role !== 'admin') {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="font-dm text-muted-foreground">Access denied.</p>
-      </div>
-    );
-  }
-
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ['discover_posts_admin', filter],
     queryFn: () => base44.entities.DiscoverPost.filter(
       filter === 'all' ? {} : { status: filter },
       '-created_date'
     ),
+    enabled: authUser?.role === 'admin',
   });
 
   const updateStatusMutation = useMutation({
@@ -41,6 +34,14 @@ export default function AdminDiscover() {
       queryClient.invalidateQueries({ queryKey: ['discover_posts'] });
     },
   });
+
+  if (authUser?.role !== 'admin') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="font-dm text-muted-foreground">Access denied.</p>
+      </div>
+    );
+  }
 
   const filters = ['pending', 'approved', 'rejected', 'all'];
 

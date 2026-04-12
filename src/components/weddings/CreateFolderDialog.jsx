@@ -13,6 +13,18 @@ export default function CreateFolderDialog({ open, onOpenChange, editFolder, onS
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
 
+  useEffect(() => {
+    if (editFolder) {
+      setForm({
+        title: editFolder.title || '',
+        date: editFolder.date || '',
+        description: editFolder.description || '',
+      });
+    } else {
+      setForm(EMPTY);
+    }
+  }, [editFolder, open]);
+
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
 
