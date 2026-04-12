@@ -397,6 +397,24 @@ export default function Home() {
               selected={selected}
               onToggle={toggleSelect}
             />
+            {downloadedListings.length > 0 && (
+              <div className="mt-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-1.5">
+                    <ShoppingBag className="w-3 h-3" /> Downloaded Guides
+                  </span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-3" style={{ scrollbarWidth: 'none' }}>
+                  {downloadedListings.map((listing) => (
+                    <div key={listing.id} className="shrink-0 w-32">
+                      <MarketplaceCard listing={listing} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {templates.some(t => t.template_type === 'shot_list') && (
               <div className="mt-6">
                 <div className="flex items-center gap-3 mb-4">
@@ -422,23 +440,7 @@ export default function Home() {
           }
       </div>
 
-      {/* Downloaded Guides */}
-      {downloadedListings.length > 0 &&
-        <div className="px-5 pb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="h-px flex-1 bg-border" />
-            <span className="font-dm text-[10px] uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-1.5">
-              <ShoppingBag className="w-3 h-3" /> Downloaded Guides
-            </span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
-          <div className="space-y-3">
-            {downloadedListings.map((listing) =>
-            <MarketplaceCard key={listing.id} listing={listing} />
-            )}
-          </div>
-        </div>
-        }
+
 
       <AddPhotoToGalleryFlow open={showAddPhotoFlow} onOpenChange={setShowAddPhotoFlow} />
 
