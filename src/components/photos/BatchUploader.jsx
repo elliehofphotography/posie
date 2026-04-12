@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
-import { Upload, X, CheckCircle2, Loader2, ChevronDown } from 'lucide-react';
+import { Plus, X, CheckCircle2, Loader2, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import BottomSheetSelect from '@/components/ui/BottomSheetSelect';
 
@@ -125,7 +125,7 @@ export default function BatchUploader({ galleries, onDone }) {
           isDragging ? 'border-primary bg-primary/5' : 'border-border bg-muted/40 hover:bg-muted/70'
         }`}
       >
-        <Upload className={`w-7 h-7 ${isDragging ? 'text-primary' : 'text-muted-foreground'}`} />
+        <Plus className={`w-7 h-7 ${isDragging ? 'text-primary' : 'text-muted-foreground'}`} />
         <p className="font-dm text-sm text-foreground font-medium">
           {isDragging ? 'Drop images here' : 'Drag & drop images, or tap to browse'}
         </p>
