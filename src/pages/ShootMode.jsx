@@ -22,9 +22,10 @@ const POSE_CATEGORY_ORDER = {
   'other': 8,
 };
 
+const getStorageKey = (id) => `shoot_progress_${id}`;
+
 export default function ShootMode() {
   const urlParams = new URLSearchParams(window.location.search);
-  // Support single id= OR multi ids= (comma-separated gallery IDs) + optional shotlist= + optional sortBy=
   const singleId = urlParams.get('id');
   const multiIds = urlParams.get('ids');
   const shotListOverrideId = urlParams.get('shotlist');
@@ -33,6 +34,7 @@ export default function ShootMode() {
   const galleryIds = multiIds ? multiIds.split(',') : (singleId ? [singleId] : []);
   const isMulti = !!multiIds;
   const navigate = useNavigate();
+  const storageKey = getStorageKey(singleId || multiIds || 'unknown');
 
   const [queue, setQueue] = useState([]);
   const [completed, setCompleted] = useState([]);
@@ -41,6 +43,8 @@ export default function ShootMode() {
   const [showMeta, setShowMeta] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
   const [initialPhotos, setInitialPhotos] = useState([]);
+  const [showResumeDialog, setShowResumeDialog] = useState(false);
+  const [savedProgress, setSavedProgress] = useState(null);
 
   // For single template, fetch normally
   const { data: photos = [] } = useQuery({
@@ -57,7 +61,6 @@ export default function ShootMode() {
       galleryIds.map(id => base44.entities.TemplatePhoto.filter({ template_id: id }, 'sort_order'))
     ).then(results => {
       const merged = results.flat();
-      // Shuffle
       const shuffled = [...merged].sort(() => Math.random() - 0.5);
       setAllMultiPhotos(shuffled);
     });
@@ -65,39 +68,77 @@ export default function ShootMode() {
 
   const sourcePhotos = isMulti ? allMultiPhotos : photos;
 
-  useEffect(() => {
-    if (sourcePhotos.length > 0 && initialPhotos.length === 0) {
-      let sorted;
-      
-      if (isMulti) {
-        sorted = sourcePhotos; // already shuffled
-      } else if (sortBy === 'color+category') {
-        sorted = [...sourcePhotos].sort((a, b) => {
-          const colorDiff = (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2);
-          if (colorDiff !== 0) return colorDiff;
-          return (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8);
-        });
-      } else if (sortBy === 'color') {
-        sorted = [...sourcePhotos].sort(
-          (a, b) => (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2)
-        );
-      } else if (sortBy === 'category') {
-        sorted = [...sourcePhotos].sort(
-          (a, b) => (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8)
-        );
-      } else if (sortBy === 'random') {
-        sorted = [...sourcePhotos].sort(() => Math.random() - 0.5);
-      } else if (sortBy === 'natural') {
-        // Natural order: most recently added first (reverse sort_order)
-        sorted = [...sourcePhotos].sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));
-      } else {
-        sorted = sourcePhotos;
-      }
-      
-      setQueue(sorted);
-      setInitialPhotos(sorted);
+  const buildSortedQueue = (src) => {
+    if (isMulti) return src;
+    if (sortBy === 'color+category') {
+      return [...src].sort((a, b) => {
+        const colorDiff = (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2);
+        if (colorDiff !== 0) return colorDiff;
+        return (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8);
+      });
+    } else if (sortBy === 'color') {
+      return [...src].sort((a, b) => (PRIORITY_ORDER[a.color_priority] ?? 2) - (PRIORITY_ORDER[b.color_priority] ?? 2));
+    } else if (sortBy === 'category') {
+      return [...src].sort((a, b) => (POSE_CATEGORY_ORDER[a.pose_category] ?? 8) - (POSE_CATEGORY_ORDER[b.pose_category] ?? 8));
+    } else if (sortBy === 'random') {
+      return [...src].sort(() => Math.random() - 0.5);
+    } else if (sortBy === 'natural') {
+      return [...src].sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));
     }
+    return src;
+  };
+
+  useEffect(() => {
+    if (sourcePhotos.length === 0 || initialPhotos.length > 0) return;
+
+    // Check for saved progress
+    const saved = localStorage.getItem(storageKey);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.initialPhotos && parsed.initialPhotos.length > 0 && parsed.queue && parsed.completed) {
+          setSavedProgress(parsed);
+          setShowResumeDialog(true);
+          return;
+        }
+      } catch {}
+    }
+
+    const sorted = buildSortedQueue(sourcePhotos);
+    setQueue(sorted);
+    setInitialPhotos(sorted);
   }, [sourcePhotos, sortBy]);
+
+  // Save progress whenever state changes
+  useEffect(() => {
+    if (initialPhotos.length === 0) return;
+    localStorage.setItem(storageKey, JSON.stringify({ queue, completed, skipped, currentIndex, initialPhotos }));
+  }, [queue, completed, skipped, currentIndex, initialPhotos]);
+
+  const clearProgress = () => localStorage.removeItem(storageKey);
+
+  const handleResume = () => {
+    setQueue(savedProgress.queue);
+    setCompleted(savedProgress.completed);
+    setSkipped(savedProgress.skipped || []);
+    setCurrentIndex(savedProgress.currentIndex || 0);
+    setInitialPhotos(savedProgress.initialPhotos);
+    setShowResumeDialog(false);
+    setSavedProgress(null);
+  };
+
+  const handleStartOver = () => {
+    clearProgress();
+    const sorted = buildSortedQueue(sourcePhotos);
+    setQueue(sorted);
+    setInitialPhotos(sorted);
+    setCompleted([]);
+    setSkipped([]);
+    setCurrentIndex(0);
+    setActiveCategory('all');
+    setShowResumeDialog(false);
+    setSavedProgress(null);
+  };
 
   useEffect(() => {
     let wakeLock = null;
@@ -117,7 +158,6 @@ export default function ShootMode() {
   const currentPhoto = filteredQueue[currentIndex];
   const availableCategories = [...new Set(queue.map(p => p.pose_category).filter(Boolean))];
 
-  // Auto-advance to next category when current category is exhausted
   useEffect(() => {
     if (activeCategory === 'all' || availableCategories.length === 0) return;
     if (filteredQueue.length === 0 && queue.length > 0) {
@@ -152,6 +192,7 @@ export default function ShootMode() {
   }, [currentPhoto, currentIndex, filteredQueue.length]);
 
   const handleRestart = () => {
+    clearProgress();
     setQueue([...initialPhotos]);
     setCompleted([]);
     setSkipped([]);
@@ -159,7 +200,6 @@ export default function ShootMode() {
     setActiveCategory('all');
   };
 
-  // Keyboard arrow key support for desktop
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'ArrowRight') handleDone();
@@ -183,6 +223,39 @@ export default function ShootMode() {
     }
   };
 
+  // Resume dialog
+  if (showResumeDialog) {
+    return (
+      <div className="fixed inset-0 bg-background flex flex-col items-center justify-center text-center p-8">
+        <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-5">
+          <span className="text-3xl">📸</span>
+        </div>
+        <h2 className="font-playfair text-2xl font-semibold text-foreground mb-2">Resume Gallery?</h2>
+        <p className="font-dm text-muted-foreground text-sm mb-2 max-w-xs leading-relaxed">
+          Would you like to resume this gallery where you left off?
+        </p>
+        <p className="font-dm text-xs text-muted-foreground mb-8">
+          {savedProgress?.completed?.length || 0} poses completed · {savedProgress?.queue?.length || 0} remaining
+        </p>
+        <div className="flex gap-3 w-full max-w-xs">
+          <button
+            onClick={handleStartOver}
+            className="flex-1 py-3 rounded-full border border-border font-dm text-sm text-foreground hover:bg-muted transition-colors"
+          >
+            Start Over
+          </button>
+          <button
+            onClick={handleResume}
+            className="flex-1 py-3 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            Resume
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Shoot complete
   if (queue.length === 0 && initialPhotos.length > 0) {
     return (
       <div className="fixed inset-0 bg-background flex flex-col items-center justify-center text-center p-8">
@@ -200,7 +273,7 @@ export default function ShootMode() {
             Restart
           </button>
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => { clearProgress(); navigate(-1); }}
             className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground font-dm text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             Done
