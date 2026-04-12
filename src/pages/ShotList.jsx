@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Check, GripVertical } from 'lucide-react';
+import { Plus, Trash2, Check, GripVertical, RotateCcw } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import PageHeader from '../components/ui/PageHeader';
 import { Input } from '@/components/ui/input';
@@ -96,11 +96,30 @@ export default function ShotList() {
 
   const completedCount = items.filter(i => i.is_completed).length;
 
+  const restartMutation = useMutation({
+    mutationFn: async () => {
+      await Promise.all(rawItems.map(item =>
+        base44.entities.ShotListItem.update(item.id, { is_completed: false })
+      ));
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['shotlist', templateId] }),
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
         title="Shot List"
         subtitle={`${completedCount} of ${items.length} done`}
+        right={completedCount > 0 && (
+          <button
+            onClick={() => restartMutation.mutate()}
+            disabled={restartMutation.isPending}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-muted text-muted-foreground text-xs font-dm font-medium hover:bg-secondary transition-colors disabled:opacity-50"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            Restart
+          </button>
+        )}
       />
 
       {/* Progress bar */}
