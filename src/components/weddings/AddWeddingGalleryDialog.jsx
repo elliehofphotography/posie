@@ -221,7 +221,7 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
                 const src = galleryTemplates.find(t => t.id === pendingTemplateId);
                 const srcPhotos = await base44.entities.TemplatePhoto.filter({ template_id: pendingTemplateId }, 'sort_order');
                 const newT = await base44.entities.ShootTemplate.create({
-                  name: src?.name || 'Gallery',
+                  name: form.title || src?.name || 'Gallery',
                   description: src?.description || '',
                   template_type: 'gallery',
                   photo_count: 0,
