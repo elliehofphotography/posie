@@ -19,11 +19,8 @@ export default function MarketplaceCard({ listing, isAdmin, onEdit }) {
             <p className="font-dm text-xs text-muted-foreground mt-0.5">{listing.author}</p>
             <div className="flex items-center mt-2">
               {listing.category && (
-                <span className="font-dm text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground mr-2">{listing.category}</span>
+                <span className="font-dm text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{listing.category}</span>
               )}
-              <span className="font-dm text-xs font-semibold ml-auto text-accent-foreground">
-                {listing.price && listing.price > 0 ? `$${listing.price.toFixed(2)}` : 'Free'}
-              </span>
             </div>
           </div>
         </div>
