@@ -168,7 +168,10 @@ export default function Home() {
   };
 
   const renameMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.ShootTemplate.update(id, data),
+    mutationFn: ({ id, data }) => {
+      const template = templates.find(t => t.id === id);
+      return base44.entities.ShootTemplate.update(id, { ...data, template_type: template?.template_type });
+    },
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: ['templates'] });
       const previous = queryClient.getQueryData(['templates']);
