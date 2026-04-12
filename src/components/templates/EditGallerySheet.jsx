@@ -38,23 +38,13 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
         <SheetHeader className="border-b border-border pb-4 gap-3">
           <div className="flex items-center justify-between">
             <SheetTitle className="font-playfair text-foreground">Edit Gallery</SheetTitle>
-            <div className="flex gap-2">
-              <button
-                onClick={() => onOpenChange(false)}
-                className="h-8 w-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
-                aria-label="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving || !name.trim()}
-                className="h-8 px-3 rounded-full flex items-center justify-center gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 font-dm text-xs font-medium"
-              >
-                <Check className="w-3.5 h-3.5" />
-                Save
-              </button>
-            </div>
+            <button
+              onClick={() => onOpenChange(false)}
+              className="h-8 w-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
           <div className="flex gap-2">
             <Input
@@ -72,6 +62,17 @@ export default function EditGallerySheet({ open, onOpenChange, template }) {
             </button>
           </div>
         </SheetHeader>
+
+        <div className="border-t border-border mt-4 pt-4">
+          <button
+            onClick={handleSave}
+            disabled={isSaving || !name.trim()}
+            className="w-full py-3 rounded-full flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 font-dm font-medium"
+          >
+            <Check className="w-4 h-4" />
+            Save
+          </button>
+        </div>
 
         {showCoverPicker && (
           <ChangeCoverDialog
