@@ -4,10 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Plus, Check } from 'lucide-react';
+import { Loader2, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import BottomSheetSelect from '@/components/ui/BottomSheetSelect';
-import { useQuery } from '@tanstack/react-query';
+import CreateTemplateDialog from '@/components/templates/CreateTemplateDialog';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const BASE_TYPES = [
   { value: 'engagement', label: 'Engagement' },
@@ -38,8 +39,10 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   const [customTypes, setCustomTypes] = useState(loadCustomTypes);
   const [addingCustom, setAddingCustom] = useState(false);
   const [customInput, setCustomInput] = useState('');
+  const [showCreateTemplate, setShowCreateTemplate] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { data: templates = [] } = useQuery({
+  const { data: templates = [], refetch: refetchTemplates } = useQuery({
     queryKey: ['templates'],
     queryFn: () => base44.entities.ShootTemplate.list('-created_date'),
   });
@@ -63,18 +66,30 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
     }
   }, [editGallery, open]);
 
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
   const handleAddCustomType = () => {
     const label = customInput.trim();
     if (!label) return;
     saveCustomType(label);
-    const updated = loadCustomTypes();
-    setCustomTypes(updated);
+    setCustomTypes(loadCustomTypes());
     set('type', label);
     setAddingCustom(false);
     setCustomInput('');
   };
 
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const handleCreateTemplate = async ({ name, description, template_type }) => {
+    const newTemplate = await base44.entities.ShootTemplate.create({
+      name,
+      description,
+      template_type,
+      photo_count: 0,
+    });
+    await refetchTemplates();
+    queryClient.invalidateQueries({ queryKey: ['templates'] });
+    set('template_id', newTemplate.id);
+    setShowCreateTemplate(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,82 +109,97 @@ export default function AddWeddingGalleryDialog({ open, onOpenChange, folderId, 
   const templateOptions = [
     { value: '', label: 'None (standalone)' },
     ...galleryTemplates.map(t => ({ value: t.id, label: t.name })),
+    { value: '__create_new__', label: '+ Create new Gallery Template' },
   ];
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-card border-border max-w-sm max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-primary text-2xl font-extralight uppercase tracking-widest">
-            {editGallery ? 'Edit Gallery' : 'Add Gallery'}
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Title *</Label>
-            <Input value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Bridal Portraits" className="bg-muted border-border font-dm" />
-          </div>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="bg-card border-border max-w-sm max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-primary text-2xl font-extralight uppercase tracking-widest">
+              {editGallery ? 'Edit Gallery' : 'Add Gallery'}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Title *</Label>
+              <Input value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Bridal Portraits" className="bg-muted border-border font-dm" />
+            </div>
 
-          <div className="space-y-1.5">
-            <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Type</Label>
-            <BottomSheetSelect
-              label="Type"
-              value={form.type}
-              onChange={(v) => {
-                if (v === '__add_custom__') {
-                  setAddingCustom(true);
-                } else {
-                  set('type', v);
-                }
-              }}
-              options={[
-                ...BASE_TYPES,
-                ...customTypes.map(t => ({ value: t, label: t })),
-                { value: '__add_custom__', label: '+ Add Custom Type...' },
-              ]}
-              placeholder="Select type"
-            />
-            {addingCustom && (
-              <div className="flex gap-2 mt-2">
-                <Input
-                  autoFocus
-                  value={customInput}
-                  onChange={e => setCustomInput(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomType(); } if (e.key === 'Escape') setAddingCustom(false); }}
-                  placeholder="e.g. Cake Cutting"
-                  className="bg-muted border-border font-dm flex-1"
-                />
-                <Button type="button" size="icon" onClick={handleAddCustomType} disabled={!customInput.trim()} className="shrink-0">
-                  <Check className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-          </div>
+            <div className="space-y-1.5">
+              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Type</Label>
+              <BottomSheetSelect
+                label="Type"
+                value={form.type}
+                onChange={(v) => {
+                  if (v === '__add_custom__') {
+                    setAddingCustom(true);
+                  } else {
+                    set('type', v);
+                  }
+                }}
+                options={[
+                  ...BASE_TYPES,
+                  ...customTypes.map(t => ({ value: t, label: t })),
+                  { value: '__add_custom__', label: '+ Add Custom Type...' },
+                ]}
+                placeholder="Select type"
+              />
+              {addingCustom && (
+                <div className="flex gap-2 mt-2">
+                  <Input
+                    autoFocus
+                    value={customInput}
+                    onChange={e => setCustomInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomType(); } if (e.key === 'Escape') setAddingCustom(false); }}
+                    placeholder="e.g. Cake Cutting"
+                    className="bg-muted border-border font-dm flex-1"
+                  />
+                  <Button type="button" size="icon" onClick={handleAddCustomType} disabled={!customInput.trim()} className="shrink-0">
+                    <Check className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
+            </div>
 
-          <div className="space-y-1.5">
-            <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Link to Template (optional)</Label>
-            <BottomSheetSelect
-              label="Template"
-              value={form.template_id}
-              onChange={(v) => set('template_id', v)}
-              options={templateOptions}
-              placeholder="None"
-            />
-          </div>
+            <div className="space-y-1.5">
+              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Link to Template</Label>
+              <BottomSheetSelect
+                label="Template"
+                value={form.template_id}
+                onChange={(v) => {
+                  if (v === '__create_new__') {
+                    setShowCreateTemplate(true);
+                  } else {
+                    set('template_id', v);
+                  }
+                }}
+                options={templateOptions}
+                placeholder="None"
+              />
+            </div>
 
-          <div className="space-y-1.5">
-            <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Notes</Label>
-            <Textarea value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Any notes for this gallery..." className="bg-muted border-border h-16 resize-none font-dm" />
-          </div>
+            <div className="space-y-1.5">
+              <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Notes</Label>
+              <Textarea value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Any notes for this gallery..." className="bg-muted border-border h-16 resize-none font-dm" />
+            </div>
 
-          <DialogFooter className="gap-2 pt-1">
-            <Button type="button" variant="ghost" className="font-dm" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" disabled={!form.title.trim() || saving} className="bg-primary text-primary-foreground font-dm rounded-full px-6">
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : editGallery ? 'Save' : 'Add'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter className="gap-2 pt-1">
+              <Button type="button" variant="ghost" className="font-dm" onClick={() => onOpenChange(false)}>Cancel</Button>
+              <Button type="submit" disabled={!form.title.trim() || saving} className="bg-primary text-primary-foreground font-dm rounded-full px-6">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : editGallery ? 'Save' : 'Add'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <CreateTemplateDialog
+        open={showCreateTemplate}
+        onOpenChange={setShowCreateTemplate}
+        onSubmit={handleCreateTemplate}
+      />
+    </>
   );
 }
