@@ -112,7 +112,7 @@ export default function Weddings() {
                       </button>
                     }
                     items={[
-                      { label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: (e) => { e?.stopPropagation?.(); setEditingFolder(folder); } },
+                      { label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => setEditingFolder(folder) },
                       { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, destructive: true, onClick: (e) => { e?.stopPropagation?.(); deleteMutation.mutate(folder.id); } },
                     ]}
                     open={menuOpen === folder.id}
@@ -128,7 +128,12 @@ export default function Weddings() {
 
         <CreateFolderDialog
           open={showCreate || !!editingFolder}
-          onOpenChange={(v) => { if (!v) { setShowCreate(false); setEditingFolder(null); } }}
+          onOpenChange={(v) => {
+            if (!v) {
+              setShowCreate(false);
+              setEditingFolder(null);
+            }
+          }}
           editFolder={editingFolder}
           onSuccess={() => {
             queryClient.invalidateQueries({ queryKey: ['wedding_folders'] });
