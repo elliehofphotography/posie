@@ -83,7 +83,7 @@ export default function TemplateCard({ template, onDelete, onRename, onChangeCov
             { label: 'Edit', icon: <Pencil className="w-4 h-4" />, onClick: () => setShowEditGallery(true) },
             { label: 'Duplicate Gallery', icon: <Copy className="w-4 h-4" />, onClick: () => onDuplicate && onDuplicate(template) },
           ]),
-          { label: isShotList ? 'Share Shot List' : 'Share Gallery', icon: <Share2 className="w-4 h-4" />, onClick: handleShare },
+          ...(!template.listing_id ? [{ label: isShotList ? 'Share Shot List' : 'Share Gallery', icon: <Share2 className="w-4 h-4" />, onClick: handleShare }] : []),
           { label: 'Delete', icon: <Trash2 className="w-4 h-4" />, onClick: () => setTimeout(() => setShowDeleteConfirm(true), 300), destructive: true },
         ]}
         open={menuOpen}
