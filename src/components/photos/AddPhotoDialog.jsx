@@ -32,21 +32,34 @@ export default function AddPhotoDialog({ open, onOpenChange, onSubmit, editPhoto
 
   useEffect(() => {
     if (open) {
+      // Reset form when dialog opens (handles re-use with different editPhoto)
+      setForm(editPhoto || {
+        image_url: '',
+        description: '',
+        pose_category: '',
+        color_priority: 'green',
+        lens_suggestion: '',
+        aperture_suggestion: '',
+        lighting_notes: '',
+        camera_angle: '',
+        technical_notes: '',
+      });
+
       base44.auth.me().then(u => {
         const cats = getUserPoseCategories(u?.pose_categories);
         setCategories(cats);
-        if (!editPhoto && cats.length > 0 && !form.pose_category) {
-          setForm(prev => ({ ...prev, pose_category: cats[0].value }));
+        if (!editPhoto && cats.length > 0) {
+          setForm(prev => ({ ...prev, pose_category: prev.pose_category || cats[0].value }));
         }
       }).catch(() => {
         const cats = getUserPoseCategories(null);
         setCategories(cats);
-        if (!editPhoto && cats.length > 0 && !form.pose_category) {
-          setForm(prev => ({ ...prev, pose_category: cats[0].value }));
+        if (!editPhoto && cats.length > 0) {
+          setForm(prev => ({ ...prev, pose_category: prev.pose_category || cats[0].value }));
         }
       });
     }
-  }, [open]);
+  }, [open, editPhoto]);
 
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
