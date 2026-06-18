@@ -27,17 +27,17 @@ export default function ShotListCard({ template, onDelete, onRename }) {
   return (
     <div className="group relative">
       <Link to={`/ShotList?id=${template.id}`} className="block">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-card border border-border hover:border-primary/30 transition-colors">
+        <div className="flex items-center gap-3.5 px-4 py-4 rounded-2xl bg-card border border-border hover:border-primary/30 transition-colors">
           {/* Icon */}
-          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-            <List className="w-4.5 h-4.5 text-primary" />
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <List className="w-5 h-5 text-primary" />
           </div>
 
           {/* Text */}
           <div className="flex-1 min-w-0">
-            <p className="font-dm text-sm font-semibold text-foreground truncate">{template.name}</p>
+            <p className="font-dm text-sm font-semibold text-foreground">{template.name}</p>
             {template.description && (
-              <p className="font-dm text-xs text-muted-foreground truncate mt-0.5">{template.description}</p>
+              <p className="font-dm text-xs text-muted-foreground mt-0.5">{template.description}</p>
             )}
           </div>
 
