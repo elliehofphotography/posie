@@ -1,0 +1,55 @@
+{
+  "name": "MarketplaceListing",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Guide title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the guide"
+    },
+    "author": {
+      "type": "string",
+      "description": "Author name shown publicly"
+    },
+    "cover_image": {
+      "type": "string",
+      "description": "Cover image URL"
+    },
+    "preview_image_1": {
+      "type": "string",
+      "description": "First pose preview image URL"
+    },
+    "preview_image_1_direction": {
+      "type": "string",
+      "description": "Posing direction for the first preview image"
+    },
+    "preview_image_2": {
+      "type": "string",
+      "description": "Second pose preview image URL"
+    },
+    "preview_image_2_direction": {
+      "type": "string",
+      "description": "Posing direction for the second preview image"
+    },
+    "price": {
+      "type": "number",
+      "default": 0,
+      "description": "Price in USD (0 = free)"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category label"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether visible in marketplace"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

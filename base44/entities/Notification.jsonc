@@ -1,0 +1,27 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user to notify"
+    },
+    "message": {
+      "type": "string",
+      "description": "Notification message"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the user has read this notification"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Optional thumbnail image URL"
+    }
+  },
+  "required": [
+    "user_email",
+    "message"
+  ]
+}

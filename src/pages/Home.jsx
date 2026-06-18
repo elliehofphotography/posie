@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import TemplateCard from '../components/templates/TemplateCard';
 import SelectableTemplateCard from '../components/templates/SelectableTemplateCard';
+import ShotListCard from '../components/templates/ShotListCard';
 import CreateTemplateDialog from '../components/templates/CreateTemplateDialog';
 import MarketplaceCard from '../components/marketplace/MarketplaceCard';
 import PullToRefresh from '../components/layout/PullToRefresh';
@@ -37,10 +38,10 @@ function ShotListGrid({ templates, search, onDelete, onRename, selectMode, selec
   const filtered = shotLists.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
   if (filtered.length === 0) return null;
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="space-y-2">
       {filtered.map((t) => selectMode ?
         <SelectableTemplateCard key={t.id} template={t} selected={selected.includes(t.id)} onToggle={onToggle} onDelete={onDelete} onRename={onRename} /> :
-        <TemplateCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} />
+        <ShotListCard key={t.id} template={t} onDelete={onDelete} onRename={onRename} />
       )}
     </div>);
 }

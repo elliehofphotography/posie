@@ -1,0 +1,44 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "free",
+        "active",
+        "canceled"
+      ],
+      "default": "free",
+      "description": "Stripe subscription status"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Stripe subscription ID"
+    },
+    "pose_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User's custom pose category order"
+    }
+  },
+  "required": [
+    "stripe_customer_id",
+    "stripe_subscription_id",
+    "pose_categories"
+  ]
+}
