@@ -11,7 +11,6 @@ export default function CoverImageEditor({ open, onOpenChange, imageSrc, onApply
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
-  const [frameSize, setFrameSize] = useState({ w: 0, h: 0 });
   const [applying, setApplying] = useState(false);
   const dragRef = useRef(null);
   const frameRef = useRef(null);
@@ -26,20 +25,6 @@ export default function CoverImageEditor({ open, onOpenChange, imageSrc, onApply
       img.src = imageSrc;
     }
   }, [open, imageSrc]);
-
-  // Track frame dimensions for rendering
-  useEffect(() => {
-    if (!open) return;
-    const update = () => {
-      if (frameRef.current) {
-        setFrameSize({ w: frameRef.current.clientWidth, h: frameRef.current.clientHeight });
-      }
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    if (frameRef.current) ro.observe(frameRef.current);
-    return () => ro.disconnect();
-  }, [open]);
 
   const getDisplaySize = useCallback((z) => {
     const frame = frameRef.current;
@@ -170,10 +155,8 @@ export default function CoverImageEditor({ open, onOpenChange, imageSrc, onApply
             className="relative w-full overflow-hidden rounded-2xl bg-black select-none"
             style={{ aspectRatio: `${ASPECT}`, touchAction: 'none' }}
           >
-            {imageSrc && imgSize.w && frameSize.w && (() => {
-              const coverScale = Math.max(frameSize.w / imgSize.w, frameSize.h / imgSize.h);
-              const baseW = imgSize.w * coverScale;
-              const baseH = imgSize.h * coverScale;
+            {imageSrc && imgSize.w && (() => {
+              const imgAspect = imgSize.w / imgSize.h;
               const { maxX, maxY } = getDisplaySize(zoom);
               return (
                 <img
@@ -181,10 +164,11 @@ export default function CoverImageEditor({ open, onOpenChange, imageSrc, onApply
                   alt="Cover preview"
                   draggable={false}
                   onPointerDown={onPointerDown}
-                  className="absolute select-none"
+                  className="absolute select-none max-w-none"
                   style={{
-                    width: baseW,
-                    height: baseH,
+                    ...(imgAspect > ASPECT
+                      ? { height: '100%', width: 'auto' }
+                      : { width: '100%', height: 'auto' }),
                     left: '50%',
                     top: '50%',
                     transform: `translate(-50%, -50%) translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
