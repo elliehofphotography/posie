@@ -4,31 +4,58 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Crop } from 'lucide-react';
 import GuidePhotoEditor from './GuidePhotoEditor';
+import CoverImageEditor from './CoverImageEditor';
 import { base44 } from '@/api/base44Client';
 
 const CATEGORIES = ['Wedding', 'Bridal', 'Engagement', 'Portrait', 'Family', 'Fashion', 'Graduation', 'Newborn', 'Boudoir', 'Other'];
 
-function ImageUploadField({ label, value, onChange }) {
+function ImageUploadField({ label, value, onChange, enableCrop = false }) {
   const [uploading, setUploading] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [pendingImage, setPendingImage] = useState('');
+
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (enableCrop) {
+      const localUrl = URL.createObjectURL(file);
+      setPendingImage(localUrl);
+      setEditorOpen(true);
+      return;
+    }
     setUploading(true);
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     onChange(file_url);
     setUploading(false);
   };
+
+  const handleCropApply = async (blob) => {
+    setUploading(true);
+    const file = new File([blob], 'cover.jpg', { type: 'image/jpeg' });
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    onChange(file_url);
+    setUploading(false);
+    setEditorOpen(false);
+  };
+
   return (
     <div className="space-y-1.5">
       <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">{label}</Label>
       {value ? (
         <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
           <img src={value} alt="" className="w-full h-full object-cover" />
-          <button type="button" onClick={() => onChange('')} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
-            <X className="w-3 h-3 text-white" />
-          </button>
+          <div className="absolute top-2 right-2 flex gap-1.5">
+            {enableCrop && (
+              <button type="button" onClick={() => { setPendingImage(value); setEditorOpen(true); }} className="w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
+                <Crop className="w-3 h-3 text-white" />
+              </button>
+            )}
+            <button type="button" onClick={() => onChange('')} className="w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
+              <X className="w-3 h-3 text-white" />
+            </button>
+          </div>
         </div>
       ) : (
         <label className="flex flex-col items-center justify-center aspect-video rounded-xl border-2 border-dashed border-border bg-muted/50 cursor-pointer hover:border-primary/40 transition-colors">
@@ -42,6 +69,14 @@ function ImageUploadField({ label, value, onChange }) {
           )}
           <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
         </label>
+      )}
+      {enableCrop && (
+        <CoverImageEditor
+          open={editorOpen}
+          onOpenChange={setEditorOpen}
+          imageSrc={pendingImage}
+          onApply={handleCropApply}
+        />
       )}
     </div>
   );
@@ -111,7 +146,7 @@ export default function AdminGuideSheet({ open, onOpenChange, onSaved, listing =
         </DrawerHeader>
 
         <form onSubmit={handleSubmit} className="overflow-y-auto px-4 pb-4 space-y-4">
-          <ImageUploadField label="Cover Image" value={form.cover_image} onChange={v => update('cover_image', v)} />
+          <ImageUploadField label="Cover Image" value={form.cover_image} onChange={v => update('cover_image', v)} enableCrop />
 
           <div className="space-y-1.5">
             <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">Title *</Label>
