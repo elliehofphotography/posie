@@ -4,14 +4,17 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Crop } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import CoverImageEditor from './CoverImageEditor';
 
 const CATEGORIES = ['Wedding', 'Engagement', 'Portrait', 'Family', 'Fashion', 'Graduation', 'Newborn', 'Boudoir', 'Other'];
 
 export default function SubmitGuideSheet({ open, onOpenChange, onSubmit }) {
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [pendingImage, setPendingImage] = useState('');
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -25,10 +28,19 @@ export default function SubmitGuideSheet({ open, onOpenChange, onSubmit }) {
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    // Create a local object URL for cropping
+    const localUrl = URL.createObjectURL(file);
+    setPendingImage(localUrl);
+    setEditorOpen(true);
+  };
+
+  const handleCropApply = async (blob) => {
     setUploading(true);
+    const file = new File([blob], 'cover.jpg', { type: 'image/jpeg' });
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     update('cover_image', file_url);
     setUploading(false);
+    setEditorOpen(false);
   };
 
   const handleSubmit = async (e) => {
@@ -61,13 +73,22 @@ export default function SubmitGuideSheet({ open, onOpenChange, onSubmit }) {
           {form.cover_image ? (
             <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-muted">
               <img src={form.cover_image} alt="Cover" className="w-full h-full object-cover" />
-              <button
-                type="button"
-                onClick={() => update('cover_image', '')}
-                className="absolute bottom-2 right-2 px-3 py-1.5 rounded-full bg-black/50 text-white font-dm text-xs"
-              >
-                Change
-              </button>
+              <div className="absolute bottom-2 right-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setPendingImage(form.cover_image); setEditorOpen(true); }}
+                  className="px-3 py-1.5 rounded-full bg-black/50 text-white font-dm text-xs flex items-center gap-1"
+                >
+                  <Crop className="w-3 h-3" /> Adjust
+                </button>
+                <button
+                  type="button"
+                  onClick={() => update('cover_image', '')}
+                  className="px-3 py-1.5 rounded-full bg-black/50 text-white font-dm text-xs"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           ) : (
             <label className="flex flex-col items-center justify-center aspect-[16/9] rounded-2xl border-2 border-dashed border-border bg-muted/50 cursor-pointer hover:border-primary/40 transition-colors">
@@ -142,6 +163,13 @@ export default function SubmitGuideSheet({ open, onOpenChange, onSubmit }) {
             </button>
           </DrawerFooter>
         </form>
+
+        <CoverImageEditor
+          open={editorOpen}
+          onOpenChange={setEditorOpen}
+          imageSrc={pendingImage}
+          onApply={handleCropApply}
+        />
       </DrawerContent>
     </Drawer>
   );
