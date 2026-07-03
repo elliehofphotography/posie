@@ -26,38 +26,45 @@ export default function CoverImageEditor({ open, onOpenChange, imageSrc, onApply
     }
   }, [open, imageSrc]);
 
-  const clampOffset = useCallback((x, y, z) => {
+  const getDisplaySize = useCallback((z) => {
     const frame = frameRef.current;
-    if (!frame || !imgSize.w) return { x: 0, y: 0 };
+    if (!frame || !imgSize.w) return { dispW: 0, dispH: 0, maxX: 0, maxY: 0 };
     const fw = frame.clientWidth;
     const fh = frame.clientHeight;
-    // displayed image size at current zoom
-    const dispW = (imgSize.w / imgSize.h) * fh * z;
-    const dispH = fh * z;
-    // the image is "cover" fitted to frame height first, then scaled by zoom
-    // compute max pannable distance
+    // object-cover scale: the larger of the two ratios
+    const coverScale = Math.max(fw / imgSize.w, fh / imgSize.h);
+    const dispW = imgSize.w * coverScale * z;
+    const dispH = imgSize.h * coverScale * z;
     const maxX = Math.max(0, (dispW - fw) / 2);
     const maxY = Math.max(0, (dispH - fh) / 2);
+    return { dispW, dispH, maxX, maxY };
+  }, [imgSize]);
+
+  const clampOffset = useCallback((x, y, z) => {
+    const { maxX, maxY } = getDisplaySize(z);
     return {
       x: Math.max(-maxX, Math.min(maxX, x)),
       y: Math.max(-maxY, Math.min(maxY, y)),
     };
-  }, [imgSize]);
+  }, [getDisplaySize]);
 
   const onPointerDown = (e) => {
-    if (zoom <= 1) return;
+    e.preventDefault();
+    const { maxX, maxY } = getDisplaySize(zoom);
+    if (maxX === 0 && maxY === 0) return;
     const startX = e.clientX;
     const startY = e.clientY;
     const startOff = { ...offset };
-    dragRef.current = (ev) => {
+    const dragging = (ev) => {
       const dx = ev.clientX - startX;
       const dy = ev.clientY - startY;
       const clamped = clampOffset(startOff.x + dx, startOff.y + dy, zoom);
       setOffset(clamped);
     };
-    window.addEventListener('pointermove', dragRef.current);
+    dragRef.current = dragging;
+    window.addEventListener('pointermove', dragging);
     window.addEventListener('pointerup', () => {
-      if (dragRef.current) window.removeEventListener('pointermove', dragRef.current);
+      window.removeEventListener('pointermove', dragging);
       dragRef.current = null;
     }, { once: true });
   };
@@ -97,9 +104,10 @@ export default function CoverImageEditor({ open, onOpenChange, imageSrc, onApply
       // Scale factor from displayed pixels to output pixels
       const scale = OUTPUT_W / fw;
 
-      // Cover-fit the image to the frame height, then apply zoom and offset
-      const dispW = (img.naturalWidth / img.naturalHeight) * fh * zoom;
-      const dispH = fh * zoom;
+      // Cover-fit the image using the same object-cover logic as the preview
+      const coverScale = Math.max(fw / img.naturalWidth, fh / img.naturalHeight);
+      const dispW = img.naturalWidth * coverScale * zoom;
+      const dispH = img.naturalHeight * coverScale * zoom;
       // position of image top-left within the frame (before scaling)
       const imgLeft = (fw - dispW) / 2 + offset.x;
       const imgTop = (fh - dispH) / 2 + offset.y;
@@ -143,8 +151,9 @@ export default function CoverImageEditor({ open, onOpenChange, imageSrc, onApply
           {/* Crop frame */}
           <div
             ref={frameRef}
+            data-vaul-no-drag
             className="relative w-full overflow-hidden rounded-2xl bg-black select-none"
-            style={{ aspectRatio: `${ASPECT}` }}
+            style={{ aspectRatio: `${ASPECT}`, touchAction: 'none' }}
           >
             {imageSrc && (
               <img
