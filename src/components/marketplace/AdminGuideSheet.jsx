@@ -19,12 +19,6 @@ function ImageUploadField({ label, value, onChange, enableCrop = false }) {
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (enableCrop) {
-      const localUrl = URL.createObjectURL(file);
-      setPendingImage(localUrl);
-      setEditorOpen(true);
-      return;
-    }
     setUploading(true);
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     onChange(file_url);
