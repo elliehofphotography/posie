@@ -44,18 +44,23 @@ function ImageUploadField({ label, value, onChange, enableCrop = false }) {
     <div className="space-y-1.5">
       <Label className="font-dm text-muted-foreground text-xs uppercase tracking-wider">{label}</Label>
       {value ? (
-        <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
-          <img src={value} alt="" className="w-full h-full object-cover" />
-          <div className="absolute top-2 right-2 flex gap-1.5">
-            {enableCrop && (
-              <button type="button" onClick={() => { setPendingImage(value); setEditorOpen(true); }} className="w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
-                <Crop className="w-3 h-3 text-white" />
-              </button>
-            )}
-            <button type="button" onClick={() => onChange('')} className="w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
+        <div className="space-y-2">
+          <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
+            <img src={value} alt="" className="w-full h-full object-cover" />
+            <button type="button" onClick={() => onChange('')} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
               <X className="w-3 h-3 text-white" />
             </button>
           </div>
+          {enableCrop && (
+            <button
+              type="button"
+              onClick={() => { setPendingImage(value); setEditorOpen(true); }}
+              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-muted font-dm text-xs text-foreground hover:bg-secondary transition-colors select-none"
+            >
+              <Crop className="w-3.5 h-3.5" />
+              Adjust Cover
+            </button>
+          )}
         </div>
       ) : (
         <label className="flex flex-col items-center justify-center aspect-video rounded-xl border-2 border-dashed border-border bg-muted/50 cursor-pointer hover:border-primary/40 transition-colors">
