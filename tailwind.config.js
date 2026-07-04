@@ -6,7 +6,7 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			inter: ['var(--font-inter)'],
-  			playfair: ['var(--font-playfair)', 'cursive'],
+  			playfair: ['var(--font-playfair)', 'Georgia', 'serif'],
   			dm: ['var(--font-dm)', 'system-ui', 'sans-serif'],
   			vina: ['var(--font-vina)', 'system-ui', 'sans-serif'],
   		},
